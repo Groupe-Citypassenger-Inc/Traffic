@@ -228,7 +228,7 @@ export class DevicesListComponent implements OnInit {
 
   get_user_metrics() {
     const headers = new HttpHeaders().set("Content-Type", "application/json").set("Accept", "application/json");
-    let user_config_base_url = '/baggage/' + this._lang + '/assets/json/';
+    let user_config_base_url = '/traffic/' + this._lang + '/assets/json/';
     let user_config_url = user_config_base_url + this.user_information.username +  ".json.nousNeVoulousPlusDeConfigPerso";
 
     this.httpClient.get<any>(user_config_url, {headers}).pipe(

@@ -53,7 +53,7 @@
       </trans-unit>
 
       <trans-unit id="short_description_devices_table">
-        <target>Baggage vous permet de visualiser les données de performance de vos appareils. Sélectionnez un appareil dans le tableau
+        <target>Traffic vous permet de visualiser les données de performance de vos appareils. Sélectionnez un appareil dans le tableau
         ci-dessous, une fois l'appareil sélectionné, choisissez les données que vous souhaitez visualiser et cliquez ensuite sur le bouton &quot;Visualiser&quot;.</target>
       </trans-unit>
 
@@ -130,8 +130,8 @@
       </trans-unit>
 
       <trans-unit id="welcome_devices_table" datatype="html">
-        <source> Welcome to baggage <x id="INTERPOLATION" equiv-text="{{login_information[&apos;username&apos;]}}"/> !</source>
-        <target>Bienvenue sur Baggage <x id="INTERPOLATION" equiv-text="{{login_information[&apos;username&apos;]}}"/> !</target>
+        <source> Welcome to traffic <x id="INTERPOLATION" equiv-text="{{login_information[&apos;username&apos;]}}"/> !</source>
+        <target>Bienvenue sur Traffic <x id="INTERPOLATION" equiv-text="{{login_information[&apos;username&apos;]}}"/> !</target>
       </trans-unit>
 
       <trans-unit id="log_out_pop_up_title" datatype="html">

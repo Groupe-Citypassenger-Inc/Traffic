@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "baggage": {
+    "traffic": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -12,12 +12,12 @@
       "i18n": {
         "sourceLocale": {
           "code": "en",
-          "baseHref": "/baggage/en/"
+          "baseHref": "/traffic/en/"
         },
         "locales": {
           "fr": {
             "translation": "src/multilingual/translation.fr.xlf",
-            "baseHref": "/baggage/fr/"
+            "baseHref": "/traffic/fr/"
           }
         }
       },
@@ -28,7 +28,7 @@
             "allowedCommonJsDependencies":[
               "chart.js"
             ],
-            "outputPath": "dist/baggage/",
+            "outputPath": "dist/traffic/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -86,28 +86,28 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "baggage:build"
+            "browserTarget": "traffic:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "baggage:build:production"
+              "browserTarget": "traffic:build:production"
             },
             "fr": {
-              "baseHref": "/baggage/fr/",
-              "deployUrl": "/baggage/fr/",
-              "browserTarget": "baggage:build:fr"
+              "baseHref": "/traffic/fr/",
+              "deployUrl": "/traffic/fr/",
+              "browserTarget": "traffic:build:fr"
             },
             "en": {
-              "baseHref": "/baggage/en/",
-              "deployUrl": "/baggage/en/",
-              "browserTarget": "baggage:build:en"
+              "baseHref": "/traffic/en/",
+              "deployUrl": "/traffic/en/",
+              "browserTarget": "traffic:build:en"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "baggage:build"
+            "browserTarget": "traffic:build"
           }
         },
         "test": {
@@ -145,18 +145,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "baggage:serve"
+            "devServerTarget": "traffic:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "baggage:serve:production"
+              "devServerTarget": "traffic:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "baggage",
+  "defaultProject": "traffic",
   "schematics": {
     "@schematics/angular:component": {
       "styleext": "scss"
