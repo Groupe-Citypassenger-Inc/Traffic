@@ -28,14 +28,6 @@
       "en":"KVM_files_count",
       "fr":"KVM_files_count"
     },
-    "memstats_total_memory_bytes":{
-      "en":"memstats_total_memory_bytes",
-      "fr":"memstats_total_memory_bytes"
-    },
-    "memstats_used_memory_bytes":{
-      "en":"memstats_used_memory_bytes",
-      "fr":"memstats_used_memory_bytes"
-    },
     "scrape_duration_seconds":{
       "en":"scrape_duration_seconds",
       "fr":"scrape_duration_seconds"
@@ -174,14 +166,6 @@
     "KVM_files_count":{
       "en":"count of KVM files",
       "fr":"nombre de fichier KVM"
-    },
-    "memstats_total_memory_bytes":{
-      "en":"Total random access memory (byte)",
-      "fr":"Total mémoire vive (octet)"
-    },
-    "memstats_used_memory_bytes":{
-      "en":"Used random access memory (byte)",
-      "fr":"Mémoire vive utilisé (octet)"
     },
     "scrape_duration_seconds":{
       "en":"scrape duration (seconds)",

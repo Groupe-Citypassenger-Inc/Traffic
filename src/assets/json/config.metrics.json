@@ -255,34 +255,6 @@
     "promql": "",
     "tension": 0.5
   },
-  "memstats_total_memory_bytes": {
-    "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "memstats_used_memory_bytes": {
-    "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
   "scrape_duration_seconds": {
     "x": {
       "unit": {
