@@ -1,33 +1,5 @@
 {
   "Admin":{
-    "DCS": {
-      "en": "DCS usage stats",
-      "fr": "stats d'usage de DCS"
-    },
-    "output":{
-      "en":"output",
-      "fr":"output"
-    },
-    "input":{
-      "en":"input",
-      "fr":"input"
-    },
-    "output_raw":{
-      "en":"output raw",
-      "fr":"output raw"
-    },
-    "input_raw":{
-      "en":"input raw",
-      "fr":"input raw"
-    },
-    "Devices_on_lan_gauge":{
-      "en":"Devices_on_lan_gauge",
-      "fr":"Devices_on_lan_gauge"
-    },
-    "KVM_files_count":{
-      "en":"KVM_files_count",
-      "fr":"KVM_files_count"
-    },
     "cpustats_cpu_usage_percent":{
       "en":"cpustats_cpu_usage_percent",
       "fr":"cpustats_cpu_usage_percent"
@@ -36,285 +8,19 @@
       "en":"memstats_memory_usage_percent",
       "fr":"memstats_memory_usage_percent"
     },
-    "memstats_total_memory_bytes":{
-      "en":"memstats_total_memory_bytes",
-      "fr":"memstats_total_memory_bytes"
-    },
-    "memstats_used_memory_bytes":{
-      "en":"memstats_used_memory_bytes",
-      "fr":"memstats_used_memory_bytes"
-    },
-    "scrape_duration_seconds":{
-      "en":"scrape_duration_seconds",
-      "fr":"scrape_duration_seconds"
-    },
-    "scrape_samples_post_metric_relabeling":{
-      "en":"scrape_samples_post_metric_relabeling",
-      "fr":"scrape_samples_post_metric_relabeling"
-    },
-    "scrape_samples_scraped":{
-      "en":"scrape_samples_scraped",
-      "fr":"scrape_samples_scraped"
-    },
-    "scrape_series_added":{
-      "en":"scrape_series_added",
-      "fr":"scrape_series_added"
-    },
-    "up":{
-      "en":"up",
-      "fr":"up"
-    },
-    "go_goroutines":{
-      "en":"go_goroutines",
-      "fr":"go_goroutines"
-    },
-    "CONTROLLER": {
-      "en":"Information about the connection to controller",
-      "fr":"Informations sur les connexion à controller"
-    },
-    "pf_stats": {
-      "en":"all PF stats collected",
-      "fr":"ensemble des stats PF recoltées"
-    },
-    "pf_stats_latence": {
-      "en":"average latency of supervised services",
-      "fr":"latence moyenne des services supervisés"
-    },
-    "pf_stats_connection": {
-      "en":"average packets number per connection to controller",
-      "fr":"nombre moyen de paquet par connexion a controller"
-    },
-
-    "average_pfstats_latence": {
-      "en": "Average latency of supervised applications",
-      "fr": "Latence moyenne des applications supervisées"
-    },
-    "average_pfstats_latence_ARGUS": {
-      "en": "Average latency of the ARGUS service",
-      "fr": "Latence moyenne du service l'ARGUS"
-    },
-    "average_pfstats_latence_DCS": {
-      "en": "Average latency of the DCS net service",
-      "fr": "Latence moyenne du service DCS net"
-    },
-    "average_pfstats_latence_DIALOGYS": {
-      "en": "Average latency of the Dialogys service",
-      "fr": "Latence moyenne du service Dialogys"
-    },
-
-    "sum_pfstats_ccnxcount_1h": {
-      "en": "Number of connections on supervised applications (1h smoothing)",
-      "fr": "Nombre de connexions sur les applications supervisées (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
-      "en": "Number of connections on Dialogys (smoothing 1h)",
-      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_ARGUS": {
-      "en": "Number of connections on the Argus (smoothing 1h)",
-      "fr": "Nombre de connexions sur l'Argus (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_DCS": {
-      "en": "Number of connections on DCS net (smoothing 1h)",
-      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
-    },
-
-    "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
-      "en": "Nombre total de connexions à DCS ",
-      "fr": "Nombre total de connexions à DCS "
-    },
-    "sum_pfstats_ccnxcount_1h_DCS_one_ip": {
-      "en": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52",
-      "fr": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52"
-    },
-
-    "pfstats_up_down": {
-      "en": "Consommation de données par le service DCS (download/upload)",
-      "fr": "Consommation de données par le service DCS (download/upload)"
-    },
-    "pfstats_up_down_one_ip": {
-      "en":"Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52",
-      "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
-    },
-
-    "sum_pfstats_restransmit_1h": {
-      "en":" Number of retransmissions on the supervised applications (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur les applications supervisées (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_DIALOGYS": {
-      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_ARGUS": {
-      "en":" Number of retransmissions on the Argus (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur l'Argus (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_DCS": {
-      "en":" Number of retransmissions on DCS net (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
-    },
     "CPU_temperature":{
       "en": "CPU temperature",
       "fr": "Temperature du CPU"
     }
   },
   "Support":{
-    "DCS": {
-      "en": "DCS Usage Stats",
-      "fr": "Stats d'usage de DCS"
-    },
-    "output":{
-      "en":"output",
-      "fr":"output"
-    },
-    "input":{
-      "en":"input",
-      "fr":"input"
-    },
-    "output_raw":{
-      "en":"output raw",
-      "fr":"output raw"
-    },
-    "input_raw":{
-      "en":"input raw",
-      "fr":"input raw"
-    },
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
-    },
-    "KVM_files_count":{
-      "en":"count of KVM files",
-      "fr":"nombre de fichier KVM"
-    },
     "cpustats_cpu_usage_percent":{
-      "en":"cpu usage (%)",
-      "fr":"utilisation du cpu (%)"
+      "en":"cpustats_cpu_usage_percent",
+      "fr":"cpustats_cpu_usage_percent"
     },
     "memstats_memory_usage_percent":{
-      "en":"Random access memory usage (%)",
-      "fr":"Usage de la mémoire vive (%)"
-    },
-    "memstats_total_memory_bytes":{
-      "en":"Total random access memory (byte)",
-      "fr":"Total mémoire vive (octet)"
-    },
-    "memstats_used_memory_bytes":{
-      "en":"Used random access memory (byte)",
-      "fr":"Mémoire vive utilisé (octet)"
-    },
-    "scrape_duration_seconds":{
-      "en":"scrape duration (seconds)",
-      "fr":"durée de ramassage (secondes)"
-    },
-    "scrape_samples_post_metric_relabeling":{
-      "en":"scrape samples post metric relabeling",
-      "fr":"nombre de série réétiqueté"
-    },
-    "scrape_samples_scraped":{
-      "en":"scrape samples scraped",
-      "fr":"échantillons prélevés"
-    },
-    "scrape_series_added":{
-      "en":"scrape series added",
-      "fr":"ajout de série"
-    },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
-    },
-    "go_goroutines":{
-      "en":"go goroutines",
-      "fr":"go goroutines"
-    },
-    "go_goroutines_raw":{
-      "en":"go goroutines_raw",
-      "fr":"go goroutines_raw"
-    },
-    "CONTROLLER": {
-      "en":"Information about the connection to controller",
-      "fr":"Informations sur les connexion à controller"
-    },
-    "pf_stats": {
-      "en":"all PF stats collected",
-      "fr":"ensemble des stats PF recoltées"
-    },
-    "pf_stats_latence": {
-      "en":"average latency of supervised services",
-      "fr":"latence moyenne des services supervisés"
-    },
-    "pf_stats_connection": {
-      "en":"average packets number per connection to controller",
-      "fr":"nombre moyen de paquet par connexion a controller"
-    },
-
-    "average_pfstats_latence": {
-      "en": "Average latency of supervised applications",
-      "fr": "Latence moyenne des applications supervisées"
-    },
-    "average_pfstats_latence_ARGUS": {
-      "en": "Average latency of the ARGUS service",
-      "fr": "Latence moyenne du service l'ARGUS"
-    },
-    "average_pfstats_latence_DCS": {
-      "en": "Average latency of the DCS net service",
-      "fr": "Latence moyenne du service DCS net"
-    },
-    "average_pfstats_latence_DIALOGYS": {
-      "en": "Average latency of the Dialogys service",
-      "fr": "Latence moyenne du service Dialogys"
-    },
-
-    "sum_pfstats_ccnxcount_1h": {
-      "en": "Number of connections on supervised applications (1h smoothing)",
-      "fr": "Nombre de connexions sur les applications supervisées (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
-      "en": "Number of connections on Dialogys (smoothing 1h)",
-      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_ARGUS": {
-      "en": "Number of connections on the Argus (smoothing 1h)",
-      "fr": "Nombre de connexions sur l'Argus (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_DCS": {
-      "en": "Number of connections on DCS net (smoothing 1h)",
-      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
-    },
-
-    "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
-      "en": "Nombre total de connexions à DCS ",
-      "fr": "Nombre total de connexions à DCS "
-    },
-    "sum_pfstats_ccnxcount_1h_DCS_one_ip": {
-      "en": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52",
-      "fr": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52"
-    },
-
-    "pfstats_up_down": {
-      "en": "Consommation de données par le service DCS (download/upload)",
-      "fr": "Consommation de données par le service DCS (download/upload)"
-    },
-    "pfstats_up_down_one_ip": {
-      "en":"Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52",
-      "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
-    },
-
-    "sum_pfstats_restransmit_1h": {
-      "en":" Number of retransmissions on the supervised applications (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur les applications supervisées (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_DIALOGYS": {
-      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_ARGUS": {
-      "en":" Number of retransmissions on the Argus (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur l'Argus (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_DCS": {
-      "en":" Number of retransmissions on DCS net (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+      "en":"memstats_memory_usage_percent",
+      "fr":"memstats_memory_usage_percent"
     },
     "CPU_temperature":{
       "en": "CPU temperature",
@@ -322,105 +28,13 @@
     }
   },
   "User":{
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
+    "cpustats_cpu_usage_percent":{
+      "en":"cpustats_cpu_usage_percent",
+      "fr":"cpustats_cpu_usage_percent"
     },
     "memstats_memory_usage_percent":{
-      "en":"Random access memory usage (%)",
-      "fr":"Usage de la mémoire vive (%)"
-    },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
-    },
-    "go_goroutines":{
-      "en":"go goroutines en (user)",
-      "fr":"go goroutines fr (user)"
-    },
-    "output":{
-      "en":"output",
-      "fr":"output"
-    },
-    "input":{
-      "en":"input",
-      "fr":"input"
-    },
-    "pf_stats_latence": {
-      "en":"average latency of supervised services",
-      "fr":"latence moyenne des services supervisés"
-    },
-    "pf_stats_connection": {
-      "en":"average packets number per connection to controller",
-      "fr":"nombre moyen de paquet par connexion a controller"
-    },
-    "average_pfstats_latence": {
-      "en": "Average latency of supervised applications",
-      "fr": "Latence moyenne des applications supervisées"
-    },
-    "average_pfstats_latence_ARGUS": {
-      "en": "Average latency of the ARGUS service",
-      "fr": "Latence moyenne du service l'ARGUS"
-    },
-    "average_pfstats_latence_DCS": {
-      "en": "Average latency of the DCS net service",
-      "fr": "Latence moyenne du service DCS net"
-    },
-    "average_pfstats_latence_DIALOGYS": {
-      "en": "Average latency of the Dialogys service",
-      "fr": "Latence moyenne du service Dialogys"
-    },
-
-    "sum_pfstats_ccnxcount_1h": {
-      "en": "Number of connections on supervised applications (1h smoothing)",
-      "fr": "Nombre de connexions sur les applications supervisées (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
-      "en": "Number of connections on Dialogys (smoothing 1h)",
-      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_ARGUS": {
-      "en": "Number of connections on the Argus (smoothing 1h)",
-      "fr": "Nombre de connexions sur l'Argus (lissage 1h)"
-    },
-    "sum_pfstats_ccnxcount_1h_DCS": {
-      "en": "Number of connections on DCS net (smoothing 1h)",
-      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
-    },
-
-    "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
-      "en": "Nombre total de connexions à DCS ",
-      "fr": "Nombre total de connexions à DCS "
-    },
-    "sum_pfstats_ccnxcount_1h_DCS_one_ip": {
-      "en": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52",
-      "fr": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52"
-    },
-
-    "pfstats_up_down": {
-      "en": "Consommation de données par le service DCS (download/upload)",
-      "fr": "Consommation de données par le service DCS (download/upload)"
-    },
-    "pfstats_up_down_one_ip": {
-      "en":"Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52",
-      "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
-    },
-
-    "sum_pfstats_restransmit_1h": {
-      "en":" Number of retransmissions on the supervised applications (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur les applications supervisées (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_DIALOGYS": {
-      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_ARGUS": {
-      "en":" Number of retransmissions on the Argus (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur l'Argus (lissage 1h)"
-    },
-    "sum_pfstats_restransmit_1h_DCS": {
-      "en":" Number of retransmissions on DCS net (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+      "en":"memstats_memory_usage_percent",
+      "fr":"memstats_memory_usage_percent"
     },
     "CPU_temperature":{
       "en": "CPU temperature",
@@ -428,23 +42,31 @@
     }
   },
   "Marketing":{
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
+    "cpustats_cpu_usage_percent":{
+      "en":"cpustats_cpu_usage_percent",
+      "fr":"cpustats_cpu_usage_percent"
     },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
+    "memstats_memory_usage_percent":{
+      "en":"memstats_memory_usage_percent",
+      "fr":"memstats_memory_usage_percent"
+    },
+    "CPU_temperature":{
+      "en": "CPU temperature",
+      "fr": "Temperature du CPU"
     }
   },
   "Commercial ":{
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
+    "cpustats_cpu_usage_percent":{
+      "en":"cpustats_cpu_usage_percent",
+      "fr":"cpustats_cpu_usage_percent"
     },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
+    "memstats_memory_usage_percent":{
+      "en":"memstats_memory_usage_percent",
+      "fr":"memstats_memory_usage_percent"
+    },
+    "CPU_temperature":{
+      "en": "CPU temperature",
+      "fr": "Temperature du CPU"
     }
   }
 }
