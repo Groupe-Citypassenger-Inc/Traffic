@@ -20,14 +20,6 @@
       "en":"input raw",
       "fr":"input raw"
     },
-    "Devices_on_lan_gauge":{
-      "en":"Devices_on_lan_gauge",
-      "fr":"Devices_on_lan_gauge"
-    },
-    "KVM_files_count":{
-      "en":"KVM_files_count",
-      "fr":"KVM_files_count"
-    },
     "scrape_duration_seconds":{
       "en":"scrape_duration_seconds",
       "fr":"scrape_duration_seconds"
@@ -43,10 +35,6 @@
     "scrape_series_added":{
       "en":"scrape_series_added",
       "fr":"scrape_series_added"
-    },
-    "up":{
-      "en":"up",
-      "fr":"up"
     },
     "go_goroutines":{
       "en":"go_goroutines",
@@ -159,14 +147,6 @@
       "en":"input raw",
       "fr":"input raw"
     },
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
-    },
-    "KVM_files_count":{
-      "en":"count of KVM files",
-      "fr":"nombre de fichier KVM"
-    },
     "scrape_duration_seconds":{
       "en":"scrape duration (seconds)",
       "fr":"durée de ramassage (secondes)"
@@ -182,10 +162,6 @@
     "scrape_series_added":{
       "en":"scrape series added",
       "fr":"ajout de série"
-    },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
     },
     "go_goroutines":{
       "en":"go goroutines",
@@ -282,14 +258,6 @@
     }
   },
   "User":{
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
-    },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
-    },
     "go_goroutines":{
       "en":"go goroutines en (user)",
       "fr":"go goroutines fr (user)"
@@ -380,23 +348,7 @@
     }
   },
   "Marketing":{
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
-    },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
-    }
   },
   "Commercial ":{
-    "Devices_on_lan_gauge":{
-      "en":"Number of persons on the network",
-      "fr":"Nombre de personne sur le réseau"
-    },
-    "up":{
-      "en":"Device status",
-      "fr":"État de la machine"
-    }
   }
 }
