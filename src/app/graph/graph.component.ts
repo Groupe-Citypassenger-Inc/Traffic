@@ -532,7 +532,6 @@ export class GraphComponent implements OnInit {
     if ( isDevMode() ) {
       console.log('building : ' + metric + ' chart');
     }
-
     let data_labels: Array<number> = data['labels'];
     let data_size = data_labels.length;
     let start: number = data_labels[0];
@@ -560,15 +559,28 @@ export class GraphComponent implements OnInit {
 
     let tension = 0;
     let min = 0;
-    let unit: string = ' ';
+    let unitX: string = ' ';
+    let unitY: string = ' ';
     let step: number;
-    if (  metric in this.metrics_config ) {
-      tension = this.metrics_config[metric]['tension'];
-      unit += this.metrics_config[metric]['x']['unit'][this._lang];
-      min = this.metrics_config[metric]['y']['min'] === '' ? undefined : this.metrics_config[metric]['y']['min'];
-      step = this.metrics_config[metric]['y']['step'] === '' ? undefined : this.metrics_config[metric]['y']['step'];
-      if ( unit == undefined ) {
-        unit = '';
+    let yAxesTitle: string = '';
+    let metricData = undefined;
+    if (metric in this.metrics_config ) {
+      metricData = this.metrics_config;
+    } else if ( metric in this.metrics_config['custom_metric']['instant_vectors'] ) {
+      metricData = this.metrics_config['custom_metric']['instant_vectors'];
+    }
+    if(metricData != undefined){
+      tension = metricData[metric]['tension'];
+      unitX += metricData[metric]['x']['unit'][this._lang];
+      unitY += metricData[metric]['y']['unit'][this._lang];
+      yAxesTitle = metricData[metric]['y']['title'][this._lang]
+      min = metricData[metric]['y']['min'] === '' ? undefined : metricData[metric]['y']['min'];
+      step = metricData[metric]['y']['step'] === '' ? undefined : metricData[metric]['y']['step'];
+      if ( unitX == undefined ) {
+        unitX = '';
+      }
+      if ( unitY == undefined ) {
+        unitY = '';
       }
     }
     
@@ -609,7 +621,7 @@ export class GraphComponent implements OnInit {
                 label += ': ';
               }
               label += Math.round(tooltipItem.yLabel * 100) / 100;
-              label += unit;
+              label += unitX;
               return label;
             }
           }
@@ -652,7 +664,14 @@ export class GraphComponent implements OnInit {
             ticks: {
               fontColor: color,
               suggestedMin: min,    // minimum will be 0, unless there is a lower value.
-              stepSize: step
+              stepSize: step,
+              callback: function(value, index, values) {
+                return value + unitY;
+              }
+            },
+            scaleLabel: {
+              display: true,
+              labelString: yAxesTitle
             }
           }]
         }

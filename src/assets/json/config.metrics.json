@@ -4,135 +4,463 @@
       "pf_stats_connection":{
         "role": ["Support", "Admin", "User"],
         "query":"pf_stats{data_type='count',service='CONTROLLER'}%2Fignoring(data_type)pf_stats{data_type='ccnx_count',service='CONTROLLER'}",
-        "description":"pf stats ccnx count"
+        "description":"pf stats ccnx count",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connections"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
 
       "average_pfstats_latence": {
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency',src_ip='0.0.0.0'}[1h])",
-        "description": "Latence moyenne des applications supervisées"
+        "description": "Latence moyenne des applications supervisées",
+        "x": {
+          "unit": {
+            "fr": "ms",
+            "en": "ms"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : {
+            "en" : "ms",
+            "fr" : "ms"
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "average_pfstats_latence_ARGUS": {
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency',service='LARGUS',src_ip='0.0.0.0'}[1h])",
-        "description": "Latence moyenne du service l'ARGUS"
+        "description": "Latence moyenne du service l'ARGUS",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : {
+            "en" : "ms",
+            "fr" : "ms"
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "average_pfstats_latence_DCS": {
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DCS',src_ip='0.0.0.0'}[1h])",
-        "description": "Latence moyenne du service DCS net"
+        "description": "Latence moyenne du service DCS net",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : {
+            "en" : "ms",
+            "fr" : "ms"
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "average_pfstats_latence_DIALOGYS": {
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DIALOGYS',src_ip='0.0.0.0'}[1h])",
-        "description": "Latence moyenne du service Dialogys"
+        "description": "Latence moyenne du service Dialogys",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : {
+            "en" : "ms",
+            "fr" : "ms"
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
 
       "sum_pfstats_ccnxcount_1h": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de connexions sur les applications supervisées (lissage 1h)"
+        "description": "Nombre de connexions sur les applications supervisées (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "sum_pfstats_ccnxcount_1h_DIALOGYS": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DIALOGYS',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de connexions sur Dialogys (lissage 1h)"
+        "description": "Nombre de connexions sur Dialogys (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "sum_pfstats_ccnxcount_1h_ARGUS": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='LARGUS',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de connexions sur l'Argus (lissage 1h)"
+        "description": "Nombre de connexions sur l'Argus (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "sum_pfstats_ccnxcount_1h_DCS": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DCS',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de connexions sur DCS net (lissage 1h)"
+        "description": "Nombre de connexions sur DCS net (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
 
       "sum_pfstats_restransmit_1h": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='retransmit',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)"
+        "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "sum_pfstats_restransmit_1h_DIALOGYS": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='retransmit',service='DIALOGYS',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de retransmissions sur Dialogys (lissage 1h)"
+        "description": "Nombre de retransmissions sur Dialogys (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "sum_pfstats_restransmit_1h_ARGUS": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='retransmit',service='LARGUS',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de retransmissions sur l'Argus (lissage 1h)"
+        "description": "Nombre de retransmissions sur l'Argus (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "sum_pfstats_restransmit_1h_DCS": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='retransmit',service='DCS',src_ip='0.0.0.0'}[1h])",
-        "description": "Nombre de retransmissions sur DCS net (lissage 1h)"
+        "description": "Nombre de retransmissions sur DCS net (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
 
       "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DCS',src_ip%3D%7E'[%5E0].%2B'}[1h])",
-        "description": "Nombre de connexions sur DCS net (lissage 1h)"
+        "description": "Nombre de connexions sur DCS net (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : {
+            "en" : "",
+            "fr" : ""
+          },
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "sum_pfstats_ccnxcount_1h_DCS_one_ip": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DCS',src_ip='200.8.155.52'}[1h])",
-        "description": "Nombre de connexions sur DCS net (lissage 1h)"
+        "description": "Nombre de connexions sur DCS net (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },  
+          "unit" : {
+            "en": "",
+            "fr": ""
+          },       
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "pfstats_up_down": {
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_(?:UP|DOWN)',service='DCS',src_ip='0.0.0.0'}",
-        "description": "Nombre de connexions sur DCS net (lissage 1h)"
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : {
+            "en" : "B",
+            "fr" : "o"
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       },
       "pfstats_up_down_one_ip": {
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_(?:UP|DOWN)',service='DCS',src_ip='200.8.155.52'}",
-        "description": "Nombre de connexions sur DCS net (lissage 1h)"
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },          
+          "unit" : {
+            "en" : "B",
+            "fr" : "o"
+          },      
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       }
     },
     "range_vectors":{
     }
-  },
-  "DIALOGYS": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0,
-      "step": 1
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "CONTROLLER": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0,
-      "step": 1
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
+  },  
   "example": {
     "x": {
-      "unit": "s",
+      "unit": "___",
       "min": 0
     },
     "y": {
-      "unit": "byte",
+      "title" : "___",
+      "unit": "___",
       "min": 0,
-      "step": ""
+      "step": "___"
     },
     "type": "range_vectors",
     "promql": "deriv",
@@ -146,6 +474,14 @@
       }
     },
     "y": {
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
+      },      
       "min": 0,
       "step": ""
     },
@@ -161,6 +497,14 @@
       }
     },
     "y": {
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },      
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
+      },
       "min": 0,
       "step": ""
     },
@@ -170,12 +514,20 @@
   },
   "output_raw": {
     "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
       }
     },
     "y": {
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },      
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
+      },      
       "min": 0
     },
     "type": "",
@@ -184,26 +536,20 @@
   },
   "input_raw": {
     "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
       }
     },
     "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "go_goroutines": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
+      },
       "min": 0
     },
     "type": "",
@@ -218,6 +564,8 @@
       }
     },
     "y": {
+      "title" : "___",
+      "unit" :"___",
       "min": 0,
       "step": 1
     },

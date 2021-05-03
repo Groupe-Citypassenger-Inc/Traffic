@@ -92,11 +92,11 @@
     },
 
     "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
-      "en": "Nombre total de connexions à DCS ",
+      "en": "Total number of connections on DCS net",
       "fr": "Nombre total de connexions à DCS "
     },
     "sum_pfstats_ccnxcount_1h_DCS_one_ip": {
-      "en": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52",
+      "en": "Number of connections to DCS by the station at IP 200.8.155.52",
       "fr": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52"
     },
 
@@ -223,11 +223,11 @@
     },
 
     "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
-      "en": "Nombre total de connexions à DCS ",
+      "en": "Total number of connections on DCS net",
       "fr": "Nombre total de connexions à DCS "
     },
     "sum_pfstats_ccnxcount_1h_DCS_one_ip": {
-      "en": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52",
+      "en": "Number of connections to DCS by the station at IP 200.8.155.52",
       "fr": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52"
     },
 
@@ -311,13 +311,13 @@
       "en": "Number of connections on DCS net (smoothing 1h)",
       "fr": "Nombre de connexions sur DCS net (lissage 1h)"
     },
-
+    
     "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
-      "en": "Nombre total de connexions à DCS ",
+      "en": "Total number of connections on DCS net",
       "fr": "Nombre total de connexions à DCS "
     },
     "sum_pfstats_ccnxcount_1h_DCS_one_ip": {
-      "en": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52",
+      "en": "Number of connections to DCS by the station at IP 200.8.155.52",
       "fr": "Nombre de connexions à DCS par le poste à l'IP 200.8.155.52"
     },
 
