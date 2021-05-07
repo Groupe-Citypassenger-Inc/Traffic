@@ -107,6 +107,20 @@
               <mat-icon>visibility</mat-icon>
             </button>
 
+            <!-- Stack lines -->
+            <button *ngIf='false == this.graphs_records[query]["m_stacked"]'
+            i18n-matTooltip='tooltip Stack lines@@tooltip_stacked_lines_graph' mat-button
+            matTooltip='Stack lines' class='icon_button' (click)='switch_stack_lines(query, true)'>
+            <mat-icon>stacked_line_chart</mat-icon>
+            </button>
+
+            <!-- Stack lines -->
+            <button *ngIf='this.graphs_records[query]["m_stacked"]'
+            i18n-matTooltip='tooltip Unstack lines@@tooltip_unstacked_lines_graph' mat-button
+            matTooltip='Unstack lines' class='icon_button' (click)='switch_stack_lines(query, true)'>
+            <mat-icon>multiline_chart</mat-icon>
+            </button>
+
             <!-- remove metric -->
             <button mat-button
               i18n-matTooltip='tooltip Remove this metric@@tooltip_remove_this_metric_time_selection_graph'
