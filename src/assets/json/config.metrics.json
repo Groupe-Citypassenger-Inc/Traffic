@@ -17,15 +17,13 @@
             "fr": "Nombre de connections"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },      
           "min": 0,
           "step": ""
         },
-        "type": "",
-        "promql": "",
-        "tension": 0.5
+        "type": ""
       },
 
       "average_pfstats_latence": {
@@ -50,9 +48,7 @@
           "min": 0,
           "step": ""
         },
-        "type": "",
-        "promql": "",
-        "tension": 0.5
+        "type": ""
       },
       "average_pfstats_latence_ARGUS": {
         "role": ["Support", "Admin", "User"],
@@ -77,8 +73,7 @@
           "step": ""
         },
         "type": "",
-        "promql": "",
-        "tension": 0.5
+        "promql": ""
       },
       "average_pfstats_latence_DCS": {
         "role": ["Support", "Admin", "User"],
@@ -149,8 +144,8 @@
             "fr": "Nombre de connexions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },      
           "min": 0,
           "step": ""
@@ -175,8 +170,8 @@
             "fr": "Nombre de connexions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },      
           "min": 0,
           "step": ""
@@ -201,8 +196,8 @@
             "fr": "Nombre de connexions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },      
           "min": 0,
           "step": ""
@@ -227,8 +222,8 @@
             "fr": "Nombre de connexions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },      
           "min": 0,
           "step": ""
@@ -254,8 +249,8 @@
             "fr": "Nombre de retransmissions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },      
           "min": 0,
           "step": ""
@@ -280,8 +275,8 @@
             "fr": "Nombre de retransmissions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },      
           "min": 0,
           "step": ""
@@ -306,8 +301,8 @@
             "fr": "Nombre de retransmissions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },
           "min": 0,
           "step": ""
@@ -332,8 +327,8 @@
             "fr": "Nombre de retransmissions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },
           "min": 0,
           "step": ""
@@ -359,8 +354,8 @@
             "fr": "Nombre de connexions"
           },          
           "unit" : {
-            "en" : "",
-            "fr" : ""
+            "en" : "number",
+            "fr" : "number"
           },
           "min": 0,
           "step": ""
@@ -385,8 +380,8 @@
             "fr": "Nombre de connexions"
           },  
           "unit" : {
-            "en": "",
-            "fr": ""
+            "en": "number",
+            "fr": "number"
           },       
           "min": 0,
           "step": ""
@@ -411,8 +406,8 @@
             "fr": "Consommation bande passante"
           },
           "unit" : {
-            "en" : "B",
-            "fr" : "o"
+            "en" : "octet",
+            "fr" : "octet"
           },      
           "min": 0,
           "step": ""
@@ -437,8 +432,8 @@
             "fr": "Consommation bande passante"
           },          
           "unit" : {
-            "en" : "B",
-            "fr" : "o"
+            "en" : "octet",
+            "fr" : "octet"
           },      
           "min": 0,
           "step": ""
@@ -479,11 +474,12 @@
         "fr": "Consommation bande passante"
       },
       "unit" : {
-        "en" : "B",
-        "fr" : "o"
+        "en" : "octet",
+        "fr" : "octet"
       },      
       "min": 0,
-      "step": ""
+      "step": "",
+      "stacked": false
     },
     "type": "range_vectors",
     "promql": "deriv",
@@ -502,11 +498,12 @@
         "fr": "Consommation bande passante"
       },      
       "unit" : {
-        "en" : "B",
-        "fr" : "o"
+        "en" : "octet",
+        "fr" : "octet"
       },
       "min": 0,
-      "step": ""
+      "step": "",
+      "stacked": false
     },
     "type": "range_vectors",
     "promql": "deriv",
@@ -515,8 +512,8 @@
   "output_raw": {
     "x": {
       "unit" : {
-        "en" : "B",
-        "fr" : "o"
+        "en" : "octet",
+        "fr" : "octet"
       }
     },
     "y": {
@@ -525,10 +522,12 @@
         "fr": "Consommation bande passante"
       },      
       "unit" : {
-        "en" : "B",
-        "fr" : "o"
+        "en" : "octet",
+        "fr" : "octet"
       },      
-      "min": 0
+      "min": 0,
+      "step": "",
+      "stacked": false
     },
     "type": "",
     "promql": "",
@@ -547,10 +546,12 @@
         "fr": "Consommation bande passante"
       },
       "unit" : {
-        "en" : "B",
-        "fr" : "o"
+        "en" : "octet",
+        "fr" : "octet"
       },
-      "min": 0
+      "min": 0,
+      "step": "",
+      "stacked": false
     },
     "type": "",
     "promql": "",

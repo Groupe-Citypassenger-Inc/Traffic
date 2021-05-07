@@ -111,6 +111,14 @@
         <target>Afficher toutes les courbes</target>
       </trans-unit>
 
+      <trans-unit id="tooltip_stacked_lines_graph">
+        <target>Empiler les lignes</target>
+      </trans-unit>    
+
+      <trans-unit id="tooltip_unstacked_lines_graph">
+        <target>Dépiler les lignes</target>
+      </trans-unit>
+
       <trans-unit id="tooltip_remove_this_metric_time_selection_graph">
         <target>Supprimer ce graphique</target>
       </trans-unit>
