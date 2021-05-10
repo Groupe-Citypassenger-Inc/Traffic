@@ -603,7 +603,6 @@ export class GraphComponent implements OnInit {
       metricData = this.metrics_config['custom_metric']['instant_vectors'];
     }
     if(metricData != undefined){
-      tension = metricData[metric]['tension'] = 0;
       unitX += metricData[metric]['x']['unit'][this._lang];
       unitY += metricData[metric]['y']['unit'][this._lang];
       yAxesTitle = metricData[metric]['y']['title'][this._lang]
