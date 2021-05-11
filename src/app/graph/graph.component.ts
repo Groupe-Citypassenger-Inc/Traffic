@@ -1,22 +1,10 @@
-import { Component, OnInit, Input, SimpleChanges, ChangeDetectorRef, ApplicationRef, isDevMode, ɵConsole, ViewEncapsulation } from '@angular/core';
-import { HttpClientModule, HttpClient, HttpHeaders }    from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef, isDevMode, ViewEncapsulation } from '@angular/core';
+import { HttpClient, HttpHeaders }    from '@angular/common/http';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, timeout, map, max } from 'rxjs/operators';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { BrowserModule } from '@angular/platform-browser';
-import { Form, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatNativeDateModule, _countGroupLabelsBeforeOption } from '@angular/material/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, LOCALE_ID } from '@angular/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDatetimepickerModule, MatNativeDatetimeModule } from '@mat-datetimepicker/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { catchError, timeout } from 'rxjs/operators';
+
+import { _countGroupLabelsBeforeOption } from '@angular/material/core';
 
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import Chart from 'chart.js/auto';
@@ -24,14 +12,12 @@ import 'chartjs-adapter-moment';
 
 import { throwError, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { setPriority } from 'os';
 import { LanguageService } from '../lingual_service/language.service';
 import { AuthService } from '../auth_services/auth.service';
 //import { LoaderService } from '../loader/loader.service';
 import { NotificationServiceService } from '../notification/notification-service.service'
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
-import { element } from 'protractor';
 
 export interface unit_conversion {
   minute : number,
