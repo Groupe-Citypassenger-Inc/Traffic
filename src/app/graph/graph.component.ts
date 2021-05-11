@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, SimpleChanges, ChangeDetectorRef, ApplicationRef, isDevMode, ɵConsole } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, ChangeDetectorRef, ApplicationRef, isDevMode, ɵConsole, ViewEncapsulation } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpHeaders }    from '@angular/common/http';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, timeout, map } from 'rxjs/operators';
+import { catchError, timeout, map, max } from 'rxjs/operators';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BrowserModule } from '@angular/platform-browser';
 import { Form, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -582,6 +582,11 @@ export class GraphComponent implements OnInit {
     return step;
   }
 
+  checkEmptyOrUndefined(str){
+    if (str === undefined || str === '') { return }
+    return str;
+  }
+
   chart_builder(metric:string, data:Object): Chart {
     if ( isDevMode() ) {
       console.log('building : ' + metric + ' chart');
@@ -611,13 +616,11 @@ export class GraphComponent implements OnInit {
       throw new Error('An error as occured. Can\'t get id ok : ' + metric);
     }
 
-    let tension = 0;
     let min = 0;
     let unitX: string = '';
     let unitY: string = '';
-    let step: number;
     let yAxesTitle: string = '';
-    let stacked: boolean;
+    let stacked: boolean = false;
     let metricData = undefined;
     if (metric in this.metrics_config ) {
       metricData = this.metrics_config;
@@ -625,12 +628,11 @@ export class GraphComponent implements OnInit {
       metricData = this.metrics_config['custom_metric']['instant_vectors'];
     }
     if(metricData != undefined){
-      unitX += metricData[metric]['x']['unit'][this._lang];
-      unitY += metricData[metric]['y']['unit'][this._lang];
-      yAxesTitle = metricData[metric]['y']['title'][this._lang]
-      min = metricData[metric]['y']['min'] === '' ? undefined : metricData[metric]['y']['min'];
-      step = metricData[metric]['y']['step'] === '' ? undefined : metricData[metric]['y']['step'];
-      stacked = metricData[metric]['y']['stacked'] === '' ? undefined : metricData[metric]['y']['stacked'];
+      unitX = this.checkEmptyOrUndefined(metricData[metric]['x']['unit']);
+      unitY = this.checkEmptyOrUndefined(metricData[metric]['y']['unit']);
+      yAxesTitle = this.checkEmptyOrUndefined(metricData[metric]['y']['title'][this._lang]);
+      min = this.checkEmptyOrUndefined(metricData[metric]['y']['min']);
+      stacked = this.checkEmptyOrUndefined(metricData[metric]['y']['stacked']);
     }
     let color: string = '#000000'; //default value
     if( this._is_dark_mode_enabled ) {
@@ -639,13 +641,15 @@ export class GraphComponent implements OnInit {
 
     Chart.defaults.maintainAspectRatio = false;
     Chart.defaults.elements.line.borderWidth = 2;
-    Chart.defaults.elements.line.tension = tension;
+    Chart.defaults.elements.line.tension = 0; // Use this to curve the lines, 0 means straight line
     Chart.defaults.font.family = 'Ubuntu, sans-serif';
-    
+
     let unitInformation = new Map();
-    unitInformation.set('octet', ['o', 'Ko', 'Mo', 'Go', 'To']);
-    unitInformation.set('number', ['', 'K', 'M', 'B']);
-    unitInformation.set('ms', ['ms', 's']);
+    unitInformation.set('bytes', ['B', 'KB', 'MB', 'GB', 'TB', 'TB']);
+    unitInformation.set('number', ['', 'K', 'M', 'B', 'T']);
+    unitInformation.set('time', ['ms', 's']);
+    unitInformation.set('', ['', '', '', '', '', '']);
+
     const config = {
       type: 'line',
       data: data,
@@ -663,7 +667,8 @@ export class GraphComponent implements OnInit {
           },
           y: {
             stacked: stacked,
-            min: min,
+            suggestedMin: min,
+            suggestedMax: 1, // this will avoid y axis going from -1 to 1 if all values are 0
             ticks: {
               callback: function(value, index) {
                 let valueInt = parseInt(value);
@@ -674,6 +679,10 @@ export class GraphComponent implements OnInit {
                 }
                 return valueInt + ' ' + unitInformation.get(unitY)[thousandCounter];
               }
+            },
+            title : {
+              display: true,
+              text: yAxesTitle
             }
           }
         },
