@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, isDevMode, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, isDevMode } from '@angular/core';
 import { HttpClient, HttpHeaders }    from '@angular/common/http';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,8 +36,7 @@ export interface params {
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./graph.component.css']
 })
 
 export class GraphComponent implements OnInit {
@@ -569,7 +568,7 @@ export class GraphComponent implements OnInit {
   }
 
   checkEmptyOrUndefined(str){
-    if (str === undefined || str === '') { return }
+    if (str === undefined || str === '') { return '';}
     return str;
   }
 
