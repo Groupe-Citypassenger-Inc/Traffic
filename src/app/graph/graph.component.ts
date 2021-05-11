@@ -441,25 +441,42 @@ export class GraphComponent implements OnInit {
 
   completeResponse(data_to_complete, start_time, end_time, step) {
     data_to_complete.forEach(dataset => {
-      let tmpData = dataset['values'];
-      for(let i = 0; i < tmpData.length - 1; i++) {
-        let firstTime = tmpData[i][0];
-        let secondTime = tmpData[i+1][0];
-        let missingSteps = (secondTime - firstTime) / step;
-        for(let j = 1; j < missingSteps; j++){
-          let dataToAdd = [firstTime + j * step, 'NaN'];
-          i++;
-          dataset['values'].splice(i, 0, dataToAdd);
+      let currentDataset = dataset['values'];
+      let tabLength = currentDataset.length - 1
+      let completedDataset = []
+
+      // Complete missing value before tab
+      let firstTime = currentDataset[0][0];
+      if(firstTime > start_time){
+        let missingStepsBefore = (firstTime - start_time)/step ;
+        for(let i = missingStepsBefore; i > 0; i--){
+          let time = firstTime - (i * step);
+          completedDataset.push([time, 'NaN']);
         }
       }
-      while(dataset['values'][0][0] > start_time){
-        let dataToAdd = [dataset['values'][0][0] - step, "NaN"];
-        dataset['values'].splice(0, 0, dataToAdd)
+
+      // Complete missing value inside tab
+      for(let i = 0; i < currentDataset.length - 1; i++) {
+        let firstTime = currentDataset[i][0];
+        let secondTime = currentDataset[i+1][0];
+        let missingSteps = (secondTime - firstTime - step) / step;
+        completedDataset.push(currentDataset[i]);
+        for(let j = 1; j <= missingSteps; j++){
+          let time = firstTime + (j * step);
+          completedDataset.push([time, 'NaN']);
+        }
       }
-      while(dataset['values'][dataset['values'].length-1][0] < end_time){
-        let dataToAdd = [dataset['values'][dataset['values'].length-1][0] + step, "NaN"];
-        dataset['values'].push(dataToAdd)
+
+      // Complete missing value after tab
+      let lastTime = currentDataset[tabLength][0];
+      if(lastTime < end_time){
+        let missingStepsAfter = (end_time - lastTime)/step;
+        for(let i = 1; i <= missingStepsAfter; i++){
+          let time = lastTime + (i * step);
+          completedDataset.push([time, 'NaN']);
+        }
       }
+      dataset['values'] = completedDataset;
     });
     return data_to_complete;
   }
