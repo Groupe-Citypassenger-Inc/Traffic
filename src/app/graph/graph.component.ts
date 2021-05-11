@@ -50,7 +50,8 @@ export interface params {
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.css']
+  styleUrls: ['./graph.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class GraphComponent implements OnInit {
@@ -106,6 +107,7 @@ export class GraphComponent implements OnInit {
   theme_subscription: Subscription;
 
   CRC_table:Array<number> = [];
+  graph_legends = new Map();
 
   constructor(private appRef: ChangeDetectorRef,  
               private _formBuilder: FormBuilder, 
@@ -423,6 +425,8 @@ export class GraphComponent implements OnInit {
         let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
         let parsed_data = this.parse_response(data_completed_to_parse, raw_metric_name);
         this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
+        let chart = this.graphs_records[raw_metric_name]['m_chart'];
+        this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
         this.switch_stack_lines(raw_metric_name, false);
       });
   }
@@ -500,8 +504,9 @@ export class GraphComponent implements OnInit {
       dataset = {
         label: label,
         data: metric_value_list,
-        pointRadius: 0,
-        borderColor : '#' + this.crc32(label),
+        pointRadius: 0, // Graph dot size : 0 -> no dot
+        borderColor : '#' + this.crc32(label), // Line color
+        backgroundColor : '#' + this.crc32(label), // Legend color
       };
       datasets.push(dataset);
     }
@@ -614,77 +619,6 @@ export class GraphComponent implements OnInit {
     if( this._is_dark_mode_enabled ) {
       color = '#e2e2e2'
     }
-    data['datasets'].forEach(element => {
-      element['backgroundColor'] = element['borderColor'];
-    });
-
-    const getOrCreateLegendList = (chart, id) => {
-      const legendContainer = document.getElementById(id);
-      let listContainer = legendContainer.querySelector('ul');
-
-      if (!listContainer) {
-        listContainer = document.createElement('ul');
-        listContainer.style.display = 'flex';
-        listContainer.style.flexDirection = 'column';
-        listContainer.style.margin = '0px';
-        listContainer.style.padding = '0px';
-    
-        legendContainer.appendChild(listContainer);
-      }
-      return listContainer;
-    };
-
-    const htmlLegendPlugin = {
-      id: 'htmlLegend',
-      afterUpdate(chart, args, options) {
-        const ul = getOrCreateLegendList(chart, options.containerID);
-    
-        // Remove old legend items
-        while (ul.firstChild) {
-          ul.firstChild.remove();
-        }
-        const items = chart.options.plugins.legend.labels.generateLabels(chart);
-
-        items.forEach(item => {
-          const li = document.createElement('li');
-          li.style.alignItems = 'center';
-          li.style.cursor = 'pointer';
-          li.style.display = 'flex';
-          li.style.flexDirection = 'row';
-          li.style.marginLeft = '10px';
-    
-          li.onclick = () => {
-            chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
-            chart.update();
-          };
-    
-          // Color box
-          const boxSpan = document.createElement('span');
-          boxSpan.style.background = item.fillStyle;
-          boxSpan.style.borderColor = item.strokeStyle;
-          boxSpan.style.borderWidth = item.lineWidth + 'px';
-          boxSpan.style.display = 'inline-block';
-          boxSpan.style.height = '20px';
-          boxSpan.style.marginRight = '10px';
-          boxSpan.style.width = '20px';
-    
-          // Text
-          const textContainer = document.createElement('p');
-          textContainer.style.color = item.fontColor;
-          textContainer.style.margin = '0px';
-          textContainer.style.padding = '0px';
-          textContainer.style.fontSize = '14px';
-          textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
-          
-          const text = document.createTextNode(item.text);
-          textContainer.appendChild(text);
-    
-          li.appendChild(boxSpan);
-          li.appendChild(textContainer);
-          ul.appendChild(li);
-        });
-      }
-    };
 
     Chart.defaults.maintainAspectRatio = false;
     Chart.defaults.elements.line.borderWidth = 2;
@@ -730,9 +664,6 @@ export class GraphComponent implements OnInit {
           filler: {
             propagate: false
           },
-          htmlLegend: {
-            containerID: "legend_" + metric,
-          },
           legend: {
             display: false,
           }
@@ -740,12 +671,18 @@ export class GraphComponent implements OnInit {
         interaction: {
           intersect: false
         }
-      },
-      plugins: [htmlLegendPlugin]
+      }
     }
-    
     var chart = new Chart(ctx, config);
     return chart;
+  }
+
+  // Show/Hide legend and curve on click
+  show_hide_legend(legend, query){
+    let chart = this.graphs_records[query]['m_chart'];
+    chart.setDatasetVisibility(legend.datasetIndex, !chart.isDatasetVisible(legend.datasetIndex));
+    chart.update();
+    legend.hidden = !legend.hidden;
   }
 
   incrementValue(step: number = 1, query : string): void {
@@ -866,7 +803,10 @@ export class GraphComponent implements OnInit {
       }
       meta.hidden = !_is_disabled;
     });
-    this.graphs_records[metric]["m_hidden"] = !_is_disabled
+    this.graphs_records[metric]["m_hidden"] = !_is_disabled;
+    this.graph_legends.get(metric).forEach(element => {
+      element.hidden = !_is_disabled ;
+    });;
     this.graphs_records[metric]['m_chart'].update();
   }
 
