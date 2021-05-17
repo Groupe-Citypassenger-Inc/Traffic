@@ -30,14 +30,14 @@ input[type=number] {
   width: 10px;
 }
 
-ul {
+.graph_legend ul {
   display: flex;
   flex-direction: column;
   margin: 0px;
   padding: 0px;
 }
 
-ul>li {
+.graph_legend ul>li {
   align-items: center;
   cursor: pointer;
   display: flex;
@@ -45,14 +45,14 @@ ul>li {
   margin-left: 10px;
 }
 
-ul>li>span {
+.graph_legend ul>li>span {
   display: inline-block;
   height: 20px;
   margin-right: 10px;
   width: 20px;
 }
 
-ul>li>p {
+.graph_legend ul>li>p {
   margin: 0px;
   padding: 0px;
   font-size: 14px;

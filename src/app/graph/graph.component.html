@@ -140,7 +140,7 @@
         <div style="min-width: 100%; min-height: 100%; margin-bottom: 2%;">
           <canvas id={{query}} width="800" height="400"></canvas>
         </div>
-        <div>
+        <div class="graph_legend">
           <ul>
             <li *ngFor='let legend of graph_legends.get(query)' (click)='hide_legend(legend, query)'>
               <span [style.background]="legend.fillStyle" 
