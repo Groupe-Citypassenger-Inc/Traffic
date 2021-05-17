@@ -407,12 +407,18 @@ export class GraphComponent implements OnInit {
           }
           throw new Error ('Request to prom : not successful');
         }
+        // Complete data
         let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
+        // Parse data
         let parsed_data = this.parse_response(data_completed_to_parse, raw_metric_name);
+        // Build chart
         let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
         this.keep_legend_visibility(raw_metric_name, chart);
+
+        // Create legends
         this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
-        this.switch_stack_lines(raw_metric_name, false);
+        // Apply graph options
+        this.switch_stack_lines(raw_metric_name, chart.options.scales.y.stacked);
       });
   }
 
@@ -627,17 +633,22 @@ export class GraphComponent implements OnInit {
       color = '#e2e2e2'
     }
 
-    Chart.defaults.maintainAspectRatio = false;
-    Chart.defaults.elements.line.borderWidth = 2;
-    Chart.defaults.elements.line.tension = 0; // Use this to curve the lines, 0 means straight line
-    Chart.defaults.font.family = 'Ubuntu, sans-serif';
-
     let unitInformation = new Map();
     unitInformation.set('bytes', ['B', 'KB', 'MB', 'GB', 'TB', 'TB']);
     unitInformation.set('number', ['', 'K', 'M', 'B', 'T']);
     unitInformation.set('time', ['ms', 's']);
+    unitInformation.set('wrongUnitName', ['wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name']);
     unitInformation.set('', ['', '', '', '', '', '']);
 
+    if(unitInformation.get(unitY) === undefined)
+    {
+      unitY = "wrongUnitName";
+    }
+
+    Chart.defaults.maintainAspectRatio = false;
+    Chart.defaults.elements.line.borderWidth = 2;
+    Chart.defaults.elements.line.tension = 0; // Use this to curve the lines, 0 means straight line
+    Chart.defaults.font.family = 'Ubuntu, sans-serif';
     const config = {
       type: 'line',
       data: data,
