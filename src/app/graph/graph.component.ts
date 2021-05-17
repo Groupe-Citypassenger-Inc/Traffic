@@ -645,14 +645,11 @@ export class GraphComponent implements OnInit {
       unitY = "wrongUnitName";
     }
 
-    Chart.defaults.maintainAspectRatio = false;
-    Chart.defaults.elements.line.borderWidth = 2;
-    Chart.defaults.elements.line.tension = 0; // Use this to curve the lines, 0 means straight line
-    Chart.defaults.font.family = 'Ubuntu, sans-serif';
     const config = {
       type: 'line',
       data: data,
       options: {
+        maintainAspectRatio: false,
         responsive : true,
         scales: {
           x: {
@@ -695,6 +692,15 @@ export class GraphComponent implements OnInit {
         },
         interaction: {
           intersect: false
+        },
+        elements: {
+          line: {
+            borderWidth: 2,
+            tension: 0 // Use this to curve the lines, 0 means straight line
+          }
+        },
+        font: {
+          family: 'Ubuntu, sans-serif'
         }
       }
     }
