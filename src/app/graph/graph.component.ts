@@ -409,8 +409,8 @@ export class GraphComponent implements OnInit {
         }
         let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
         let parsed_data = this.parse_response(data_completed_to_parse, raw_metric_name);
-        this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
-        let chart = this.graphs_records[raw_metric_name]['m_chart'];
+        let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
+        this.keep_legend_visibility(raw_metric_name, chart);
         this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
         this.switch_stack_lines(raw_metric_name, false);
       });
@@ -689,11 +689,21 @@ export class GraphComponent implements OnInit {
   }
 
   // Show/Hide legend and curve on click
-  show_hide_legend(legend, query){
+  hide_legend(legend, query){
     let chart = this.graphs_records[query]['m_chart'];
     chart.setDatasetVisibility(legend.datasetIndex, !chart.isDatasetVisible(legend.datasetIndex));
-    chart.update();
     legend.hidden = !legend.hidden;
+    chart.update();
+  }
+
+  keep_legend_visibility(metric, chart){
+    let legends = this.graph_legends.get(metric);
+    if(legends !== undefined){
+      legends.forEach(legend => {
+        chart.setDatasetVisibility(legend.datasetIndex, !legend.hidden);
+      });
+    }
+    chart.update();
   }
 
   incrementValue(step: number = 1, query : string): void {
