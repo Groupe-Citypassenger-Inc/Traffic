@@ -418,7 +418,7 @@ export class GraphComponent implements OnInit {
         // Create legends
         this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
         // Apply graph options
-        this.switch_stack_lines(raw_metric_name, chart.options.scales.y.stacked);
+        this.stack_lines(this.graphs_records[raw_metric_name]);
       });
   }
 
@@ -845,25 +845,19 @@ export class GraphComponent implements OnInit {
     this.graphs_records[metric]['m_chart'].update();
   }
 
-  switch_stack_lines(metric:string, switchValue): void {
-    let _is_stacked: boolean = this.graphs_records[metric]["m_stacked"];
-    if(switchValue){
-      _is_stacked = !_is_stacked;
-    }
-    if(_is_stacked){
-      this.graphs_records[metric]['m_chart'].options.scales.y.stacked = true;
-      this.graphs_records[metric]['m_chart'].data.datasets.forEach(element => {
-        element.fill = 'origin';
-      });
-      this.graphs_records[metric]["m_stacked"] = true;
-    } else {
-      this.graphs_records[metric]['m_chart'].options.scales.y.stacked = false;
-      this.graphs_records[metric]['m_chart'].data.datasets.forEach(element => {
-        element.fill = false;
-      });
-      this.graphs_records[metric]["m_stacked"] = false;
-    }
-    this.graphs_records[metric]['m_chart'].update();
+  switch_stack_lines(grm) {
+    grm["m_stacked"] = !grm["m_stacked"]
+    this.stack_lines(grm)
+  }
+
+  stack_lines(grm:string): void {
+    let _is_stacked: boolean = grm["m_stacked"];
+    grm['m_chart'].options.scales.y.stacked = _is_stacked;
+    grm["m_stacked"] = _is_stacked;
+    grm['m_chart'].data.datasets.forEach(element => {
+      element.fill = _is_stacked ? 'origin' : false;;
+    });
+    grm['m_chart'].update();
   }
 
   change_theme(dark_theme:boolean): void {

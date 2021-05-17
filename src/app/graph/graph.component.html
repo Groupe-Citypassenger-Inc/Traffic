@@ -113,7 +113,7 @@
 
             <!-- Stack lines -->
             <button *ngIf='false == this.graphs_records[query]["m_stacked"]' mat-button
-              (click)='switch_stack_lines(query, true)'
+              (click)='switch_stack_lines(this.graphs_records[query])'
               i18n-matTooltip='tooltip Stack lines@@tooltip_stacked_lines_graph'
               matTooltip='Stack lines' class='icon_button'>
               <mat-icon>stacked_line_chart</mat-icon>
@@ -121,7 +121,7 @@
 
             <!-- Unstack lines -->
             <button *ngIf='this.graphs_records[query]["m_stacked"]' mat-button
-              (click)='switch_stack_lines(query, true)'
+              (click)='switch_stack_lines(this.graphs_records[query])'
               i18n-matTooltip='tooltip Unstack lines@@tooltip_unstacked_lines_graph'
               matTooltip='Unstack lines' class='icon_button'>
               <mat-icon>multiline_chart</mat-icon>
