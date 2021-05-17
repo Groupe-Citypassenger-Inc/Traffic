@@ -101,12 +101,12 @@
     },
 
     "pfstats_up_down": {
-      "en": "Data consumption by the DCS service (download/upload)",
-      "fr": "Consommation de données par le service DCS (download/upload)"
+      "en": "Bandwidth usage by the DCS service (download/upload)",
+      "fr": "Utilisation de données par le service DCS (download/upload)"
     },
     "pfstats_up_down_one_ip": {
-      "en": "Data consumption by the DCS service (download/upload) by the station at IP 200.8.155.52",
-      "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
+      "en": "Bandwidth usage by the DCS service (download/upload) by the station at IP 200.8.155.52",
+      "fr": "Utilisation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
     },
 
     "sum_pfstats_restransmit_1h": {
@@ -232,12 +232,12 @@
     },
 
     "pfstats_up_down": {
-      "en": "Data consumption by the DCS service (download/upload)",
-      "fr": "Consommation de données par le service DCS (download/upload)"
+      "en": "Bandwidth usage by the DCS service (download/upload)",
+      "fr": "Utilisation de données par le service DCS (download/upload)"
     },
     "pfstats_up_down_one_ip": {
-      "en": "Data consumption by the DCS service (download/upload) by the station at IP 200.8.155.52",
-      "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
+      "en": "Bandwidth usage by the DCS service (download/upload) by the station at IP 200.8.155.52",
+      "fr": "Utilisation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
     },
 
     "sum_pfstats_restransmit_1h": {
@@ -322,12 +322,12 @@
     },
 
     "pfstats_up_down": {
-      "en": "Data consumption by the DCS service (download/upload)",
-      "fr": "Consommation de données par le service DCS (download/upload)"
+      "en": "Bandwidth usage by the DCS service (download/upload)",
+      "fr": "Utilisation de données par le service DCS (download/upload)"
     },
     "pfstats_up_down_one_ip": {
-      "en": "Data consumption by the DCS service (download/upload) by the station at IP 200.8.155.52",
-      "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
+      "en": "Bandwidth usage by the DCS service (download/upload) by the station at IP 200.8.155.52",
+      "fr": "Utilisation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
     },
 
     "sum_pfstats_restransmit_1h": {
