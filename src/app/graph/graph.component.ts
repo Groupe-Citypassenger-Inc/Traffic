@@ -567,9 +567,12 @@ export class GraphComponent implements OnInit {
     return step;
   }
 
-  checkEmptyOrUndefined(str){
-    if (str === undefined || str === '') { return '';}
-    return str;
+  checkEmptyOrUndefined(value, defaultValue){
+    if (value === undefined || value === null || value === '') 
+    { 
+      return defaultValue;
+    }
+    return value;
   }
 
   chart_builder(metric:string, data:Object): Chart {
@@ -613,11 +616,11 @@ export class GraphComponent implements OnInit {
       metricData = this.metrics_config['custom_metric']['instant_vectors'];
     }
     if(metricData != undefined){
-      unitX = this.checkEmptyOrUndefined(metricData[metric]['x']['unit']);
-      unitY = this.checkEmptyOrUndefined(metricData[metric]['y']['unit']);
-      yAxesTitle = this.checkEmptyOrUndefined(metricData[metric]['y']['title'][this._lang]);
-      min = this.checkEmptyOrUndefined(metricData[metric]['y']['min']);
-      stacked = this.checkEmptyOrUndefined(metricData[metric]['y']['stacked']);
+      unitX = this.checkEmptyOrUndefined(metricData[metric]['x']['unit'], '');
+      unitY = this.checkEmptyOrUndefined(metricData[metric]['y']['unit'], '');
+      yAxesTitle = this.checkEmptyOrUndefined(metricData[metric]['y']['title'][this._lang], '');
+      min = this.checkEmptyOrUndefined(metricData[metric]['y']['min'], 0);
+      stacked = this.checkEmptyOrUndefined(metricData[metric]['y']['stacked'], false);
     }
     let color: string = '#000000'; //default value
     if( this._is_dark_mode_enabled ) {
