@@ -142,7 +142,7 @@
         </div>
         <div class="graph_legend">
           <ul>
-            <li *ngFor='let legend of graph_legends.get(query)' (click)='hide_legend(legend, query)'>
+            <li *ngFor='let legend of graph_legends.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
               <span [style.background]="legend.fillStyle" 
                 [style.borderColor]="legend.strokeStyle" 
                 [style.borderWidth]="legend.lineWidth + 'px'">

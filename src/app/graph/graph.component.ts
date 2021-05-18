@@ -637,12 +637,12 @@ export class GraphComponent implements OnInit {
     unitInformation.set('bytes', ['B', 'KB', 'MB', 'GB', 'TB', 'TB']);
     unitInformation.set('number', ['', 'K', 'M', 'B', 'T']);
     unitInformation.set('time', ['ms', 's']);
-    unitInformation.set('wrongUnitName', ['wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name']);
+    unitInformation.set('unknownName', ['wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name']);
     unitInformation.set('', ['', '', '', '', '', '']);
 
     if(unitInformation.get(unitY) === undefined)
     {
-      unitY = "wrongUnitName";
+      unitY = "unknownName";
     }
 
     const config = {
@@ -667,13 +667,12 @@ export class GraphComponent implements OnInit {
             suggestedMax: 1, // this will avoid y axis going from -1 to 1 if all values are 0
             ticks: {
               callback: function(value, index) {
-                let valueInt = parseInt(value);
                 let thousandCounter = 0;
-                while(valueInt >= 1000){
-                  valueInt = valueInt / 1000;
+                while(value >= 1000){
+                  value = value / 1000;
                   thousandCounter ++;
                 }
-                return valueInt + ' ' + unitInformation.get(unitY)[thousandCounter];
+                return value + ' ' + unitInformation.get(unitY)[thousandCounter];
               }
             },
             title : {
@@ -709,11 +708,10 @@ export class GraphComponent implements OnInit {
   }
 
   // Show/Hide legend and curve on click
-  hide_legend(legend, query){
-    let chart = this.graphs_records[query]['m_chart'];
-    chart.setDatasetVisibility(legend.datasetIndex, !chart.isDatasetVisible(legend.datasetIndex));
+  switch_visibility_legend(legend, metric_chart){
+    metric_chart.setDatasetVisibility(legend.datasetIndex, !metric_chart.isDatasetVisible(legend.datasetIndex));
     legend.hidden = !legend.hidden;
-    chart.update();
+    metric_chart.update();
   }
 
   keep_legend_visibility(metric, chart){
