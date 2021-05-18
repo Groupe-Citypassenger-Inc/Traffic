@@ -29,3 +29,31 @@ input[type=number] {
   margin-right: 10px;
   width: 10px;
 }
+
+.graph_legend ul {
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  padding: 0px;
+}
+
+.graph_legend ul>li {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+
+.graph_legend ul>li>span {
+  display: inline-block;
+  height: 20px;
+  margin-right: 10px;
+  width: 20px;
+}
+
+.graph_legend ul>li>p {
+  margin: 0px;
+  padding: 0px;
+  font-size: 14px;
+}

@@ -80,51 +80,58 @@
             </mat-slide-toggle>
 
             <!-- Refresh -->
-            <button mat-button i18n-matTooltip='tooltip refresh chart @@tooltip_refresh_time_selection_graph'
-              matTooltip='Refresh' class='icon_button' (click)='regenerate(query)'>
+            <button mat-button 
+              (click)='regenerate(query)'
+              i18n-matTooltip='tooltip refresh chart @@tooltip_refresh_time_selection_graph'
+              matTooltip='Refresh' class='icon_button' >
               <mat-icon>cached</mat-icon>
             </button>
 
             <!-- Reset settings -->
-            <button mat-button
+            <button *ngIf='!is_mobile' mat-button
+              (click)='set_default_settings(query)'
               i18n-matTooltip='tooltip restore default|tooltip of button which restore default settings@@tooltip_restore_default_time_selection_graph'
-              matTooltip='Restore default values' class='icon_button' (click)='set_default_settings(query)'
-              *ngIf='!is_mobile'>
+              matTooltip='Restore default values' class='icon_button'>
               <mat-icon>restore</mat-icon>
             </button>
 
             <!-- Hide curves -->
-            <button *ngIf='!this.graphs_records[query]["m_hidden"]'
-              i18n-matTooltip='tooltip Hide all curves@@tooltip_hide_all_curves_time_selection_graph' mat-button
-              matTooltip='Hide all curves' class='icon_button' (click)='hide_lines(query)'>
+            <button *ngIf='!this.graphs_records[query]["m_hidden"]' mat-button
+              (click)='hide_lines(query)'
+              i18n-matTooltip='tooltip Hide all curves@@tooltip_hide_all_curves_time_selection_graph' 
+              matTooltip='Hide all curves' class='icon_button'>
               <mat-icon>visibility_off</mat-icon>
             </button>
 
             <!-- Show curves -->
-            <button *ngIf='this.graphs_records[query]["m_hidden"]'
-              i18n-matTooltip='tooltip Show all curves@@tooltip_show_all_curves_time_selection_graph' mat-button
-              matTooltip='Show all curves' class='icon_button' (click)='hide_lines(query)'>
+            <button *ngIf='this.graphs_records[query]["m_hidden"]' mat-button
+              (click)='hide_lines(query)'
+              i18n-matTooltip='tooltip Show all curves@@tooltip_show_all_curves_time_selection_graph'
+              matTooltip='Show all curves' class='icon_button'>
               <mat-icon>visibility</mat-icon>
             </button>
 
             <!-- Stack lines -->
-            <button *ngIf='false == this.graphs_records[query]["m_stacked"]'
-            i18n-matTooltip='tooltip Stack lines@@tooltip_stacked_lines_graph' mat-button
-            matTooltip='Stack lines' class='icon_button' (click)='switch_stack_lines(query, true)'>
-            <mat-icon>stacked_line_chart</mat-icon>
+            <button *ngIf='false == this.graphs_records[query]["m_stacked"]' mat-button
+              (click)='switch_stack_lines(this.graphs_records[query])'
+              i18n-matTooltip='tooltip Stack lines@@tooltip_stacked_lines_graph'
+              matTooltip='Stack lines' class='icon_button'>
+              <mat-icon>stacked_line_chart</mat-icon>
             </button>
 
-            <!-- Stack lines -->
-            <button *ngIf='this.graphs_records[query]["m_stacked"]'
-            i18n-matTooltip='tooltip Unstack lines@@tooltip_unstacked_lines_graph' mat-button
-            matTooltip='Unstack lines' class='icon_button' (click)='switch_stack_lines(query, true)'>
-            <mat-icon>multiline_chart</mat-icon>
+            <!-- Unstack lines -->
+            <button *ngIf='this.graphs_records[query]["m_stacked"]' mat-button
+              (click)='switch_stack_lines(this.graphs_records[query])'
+              i18n-matTooltip='tooltip Unstack lines@@tooltip_unstacked_lines_graph'
+              matTooltip='Unstack lines' class='icon_button'>
+              <mat-icon>multiline_chart</mat-icon>
             </button>
 
             <!-- remove metric -->
-            <button mat-button
+            <button *ngIf='!is_mobile' mat-button
+              (click)='delete(query)'
               i18n-matTooltip='tooltip Remove this metric@@tooltip_remove_this_metric_time_selection_graph'
-              matTooltip='Remove this chart' class='icon_button' (click)='delete(query)' *ngIf='!is_mobile'>
+              matTooltip='Remove this chart' class='icon_button'>
               <mat-icon>power_settings_new</mat-icon>
             </button>
 
@@ -133,7 +140,20 @@
         <div style="min-width: 100%; min-height: 100%; margin-bottom: 2%;">
           <canvas id={{query}} width="800" height="400"></canvas>
         </div>
-        <div id="{{'legend_' + query}}"></div>
+        <div class="graph_legend">
+          <ul>
+            <li *ngFor='let legend of graph_legends.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
+              <span [style.background]="legend.fillStyle" 
+                [style.borderColor]="legend.strokeStyle" 
+                [style.borderWidth]="legend.lineWidth + 'px'">
+              </span>
+              <p [style.color]="legend.fontColor" 
+                [style.textDecoration]="legend.hidden ? 'line-through' : '' ">
+                {{legend.text}}
+              </p>
+            </li>
+          </ul>
+        </div>
         <br/><br/>
       </div>
     </div>

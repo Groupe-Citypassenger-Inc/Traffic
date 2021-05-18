@@ -16,10 +16,8 @@
             "en": "Number of connections",
             "fr": "Nombre de connections"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },      
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -41,10 +39,7 @@
             "en": "Latency",
             "fr": "Latence"
           },          
-          "unit" : {
-            "en" : "ms",
-            "fr" : "ms"
-          },      
+          "unit" : "time", 
           "min": 0,
           "step": ""
         },
@@ -65,10 +60,8 @@
             "en": "Latency",
             "fr": "Latence"
           },          
-          "unit" : {
-            "en" : "ms",
-            "fr" : "ms"
-          },      
+          "unit" : "time", 
+     
           "min": 0,
           "step": ""
         },
@@ -90,10 +83,8 @@
             "en": "Latency",
             "fr": "Latence"
           },          
-          "unit" : {
-            "en" : "ms",
-            "fr" : "ms"
-          },      
+          "unit" : "time", 
+  
           "min": 0,
           "step": ""
         },
@@ -116,10 +107,8 @@
             "en": "Latency",
             "fr": "Latence"
           },          
-          "unit" : {
-            "en" : "ms",
-            "fr" : "ms"
-          },      
+          "unit" : "time", 
+     
           "min": 0,
           "step": ""
         },
@@ -143,10 +132,8 @@
             "en": "Number of connections",
             "fr": "Nombre de connexions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },      
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -169,10 +156,8 @@
             "en": "Number of connections",
             "fr": "Nombre de connexions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },      
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -195,10 +180,8 @@
             "en": "Number of connections",
             "fr": "Nombre de connexions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },      
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -221,10 +204,8 @@
             "en": "Number of connections",
             "fr": "Nombre de connexions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },      
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -248,10 +229,8 @@
             "en": "Number of retransmissions",
             "fr": "Nombre de retransmissions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },      
+          "unit" : "number",  
+  
           "min": 0,
           "step": ""
         },
@@ -274,10 +253,8 @@
             "en": "Number of retransmissions",
             "fr": "Nombre de retransmissions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },      
+          "unit" : "number",  
+    
           "min": 0,
           "step": ""
         },
@@ -300,10 +277,8 @@
             "en": "Number of retransmissions",
             "fr": "Nombre de retransmissions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -326,10 +301,8 @@
             "en": "Number of retransmissions",
             "fr": "Nombre de retransmissions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -353,10 +326,8 @@
             "en": "Number of connections",
             "fr": "Nombre de connexions"
           },          
-          "unit" : {
-            "en" : "number",
-            "fr" : "number"
-          },
+          "unit" : "number",  
+
           "min": 0,
           "step": ""
         },
@@ -379,10 +350,7 @@
             "en": "Number of connections",
             "fr": "Nombre de connexions"
           },  
-          "unit" : {
-            "en": "number",
-            "fr": "number"
-          },       
+          "unit" : "number",  
           "min": 0,
           "step": ""
         },
@@ -405,10 +373,7 @@
             "en": "Bandwidth consumption",
             "fr": "Consommation bande passante"
           },
-          "unit" : {
-            "en" : "octet",
-            "fr" : "octet"
-          },      
+          "unit" : "bytes",
           "min": 0,
           "step": ""
         },
@@ -431,10 +396,7 @@
             "en": "Bandwidth consumption",
             "fr": "Consommation bande passante"
           },          
-          "unit" : {
-            "en" : "octet",
-            "fr" : "octet"
-          },      
+          "unit" : "bytes",
           "min": 0,
           "step": ""
         },
@@ -473,10 +435,7 @@
         "en": "Bandwidth consumption",
         "fr": "Consommation bande passante"
       },
-      "unit" : {
-        "en" : "octet",
-        "fr" : "octet"
-      },      
+      "unit" : "bytes",  
       "min": 0,
       "step": "",
       "stacked": false
@@ -497,10 +456,7 @@
         "en": "Bandwidth consumption",
         "fr": "Consommation bande passante"
       },      
-      "unit" : {
-        "en" : "octet",
-        "fr" : "octet"
-      },
+      "unit" : "bytes",
       "min": 0,
       "step": "",
       "stacked": false
@@ -512,8 +468,8 @@
   "output_raw": {
     "x": {
       "unit" : {
-        "en" : "octet",
-        "fr" : "octet"
+        "en" : "B",
+        "fr" : "o"
       }
     },
     "y": {
@@ -521,10 +477,7 @@
         "en": "Bandwidth consumption",
         "fr": "Consommation bande passante"
       },      
-      "unit" : {
-        "en" : "octet",
-        "fr" : "octet"
-      },      
+      "unit" : "bytes",    
       "min": 0,
       "step": "",
       "stacked": false
@@ -545,10 +498,7 @@
         "en": "Bandwidth consumption",
         "fr": "Consommation bande passante"
       },
-      "unit" : {
-        "en" : "octet",
-        "fr" : "octet"
-      },
+      "unit" : "bytes",
       "min": 0,
       "step": "",
       "stacked": false

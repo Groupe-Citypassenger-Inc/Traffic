@@ -1,22 +1,10 @@
-import { Component, OnInit, Input, SimpleChanges, ChangeDetectorRef, ApplicationRef, isDevMode, ɵConsole } from '@angular/core';
-import { HttpClientModule, HttpClient, HttpHeaders }    from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef, isDevMode } from '@angular/core';
+import { HttpClient, HttpHeaders }    from '@angular/common/http';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, timeout, map } from 'rxjs/operators';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { BrowserModule } from '@angular/platform-browser';
-import { Form, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatNativeDateModule, _countGroupLabelsBeforeOption } from '@angular/material/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, LOCALE_ID } from '@angular/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDatetimepickerModule, MatNativeDatetimeModule } from '@mat-datetimepicker/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { catchError, timeout } from 'rxjs/operators';
+
+import { _countGroupLabelsBeforeOption } from '@angular/material/core';
 
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import Chart from 'chart.js/auto';
@@ -24,14 +12,12 @@ import 'chartjs-adapter-moment';
 
 import { throwError, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { setPriority } from 'os';
 import { LanguageService } from '../lingual_service/language.service';
 import { AuthService } from '../auth_services/auth.service';
 //import { LoaderService } from '../loader/loader.service';
 import { NotificationServiceService } from '../notification/notification-service.service'
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
-import { element } from 'protractor';
 
 export interface unit_conversion {
   minute : number,
@@ -106,6 +92,7 @@ export class GraphComponent implements OnInit {
   theme_subscription: Subscription;
 
   CRC_table:Array<number> = [];
+  graph_legends = new Map();
 
   constructor(private appRef: ChangeDetectorRef,  
               private _formBuilder: FormBuilder, 
@@ -420,10 +407,18 @@ export class GraphComponent implements OnInit {
           }
           throw new Error ('Request to prom : not successful');
         }
+        // Complete data
         let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
+        // Parse data
         let parsed_data = this.parse_response(data_completed_to_parse, raw_metric_name);
-        this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
-        this.switch_stack_lines(raw_metric_name, false);
+        // Build chart
+        let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
+        this.keep_legend_visibility(raw_metric_name, chart);
+
+        // Create legends
+        this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
+        // Apply graph options
+        this.stack_lines(this.graphs_records[raw_metric_name]);
       });
   }
 
@@ -437,25 +432,42 @@ export class GraphComponent implements OnInit {
 
   completeResponse(data_to_complete, start_time, end_time, step) {
     data_to_complete.forEach(dataset => {
-      let tmpData = dataset['values'];
-      for(let i = 0; i < tmpData.length - 1; i++) {
-        let firstTime = tmpData[i][0];
-        let secondTime = tmpData[i+1][0];
-        let missingSteps = (secondTime - firstTime) / step;
-        for(let j = 1; j < missingSteps; j++){
-          let dataToAdd = [firstTime + j * step, 'NaN'];
-          i++;
-          dataset['values'].splice(i, 0, dataToAdd);
+      let currentDataset = dataset['values'];
+      let tabLength = currentDataset.length - 1
+      let completedDataset = []
+
+      // Complete missing value before tab
+      let firstTime = currentDataset[0][0];
+      if(firstTime > start_time){
+        let missingStepsBefore = (firstTime - start_time)/step ;
+        for(let i = missingStepsBefore; i > 0; i--){
+          let time = firstTime - (i * step);
+          completedDataset.push([time, 'NaN']);
         }
       }
-      while(dataset['values'][0][0] > start_time){
-        let dataToAdd = [dataset['values'][0][0] - step, "NaN"];
-        dataset['values'].splice(0, 0, dataToAdd)
+
+      // Complete missing value inside tab
+      for(let i = 0; i < currentDataset.length - 1; i++) {
+        let firstTime = currentDataset[i][0];
+        let secondTime = currentDataset[i+1][0];
+        let missingSteps = (secondTime - firstTime - step) / step;
+        completedDataset.push(currentDataset[i]);
+        for(let j = 1; j <= missingSteps; j++){
+          let time = firstTime + (j * step);
+          completedDataset.push([time, 'NaN']);
+        }
       }
-      while(dataset['values'][dataset['values'].length-1][0] < end_time){
-        let dataToAdd = [dataset['values'][dataset['values'].length-1][0] + step, "NaN"];
-        dataset['values'].push(dataToAdd)
+
+      // Complete missing value after tab
+      let lastTime = currentDataset[tabLength][0];
+      if(lastTime < end_time){
+        let missingStepsAfter = (end_time - lastTime)/step;
+        for(let i = 1; i <= missingStepsAfter; i++){
+          let time = lastTime + (i * step);
+          completedDataset.push([time, 'NaN']);
+        }
       }
+      dataset['values'] = completedDataset;
     });
     return data_to_complete;
   }
@@ -500,8 +512,9 @@ export class GraphComponent implements OnInit {
       dataset = {
         label: label,
         data: metric_value_list,
-        pointRadius: 0,
-        borderColor : '#' + this.crc32(label),
+        pointRadius: 0, // Graph dot size : 0 -> no dot
+        borderColor : '#' + this.crc32(label), // Line color
+        backgroundColor : '#' + this.crc32(label), // Legend color
       };
       datasets.push(dataset);
     }
@@ -560,6 +573,14 @@ export class GraphComponent implements OnInit {
     return step;
   }
 
+  GetDefaultOrCurrent(value, defaultValue){
+    if (value === undefined || value === null || value === '') 
+    { 
+      return defaultValue;
+    }
+    return value;
+  }
+
   chart_builder(metric:string, data:Object): Chart {
     if ( isDevMode() ) {
       console.log('building : ' + metric + ' chart');
@@ -589,13 +610,11 @@ export class GraphComponent implements OnInit {
       throw new Error('An error as occured. Can\'t get id ok : ' + metric);
     }
 
-    let tension = 0;
     let min = 0;
     let unitX: string = '';
     let unitY: string = '';
-    let step: number;
     let yAxesTitle: string = '';
-    let stacked: boolean;
+    let stacked: boolean = false;
     let metricData = undefined;
     if (metric in this.metrics_config ) {
       metricData = this.metrics_config;
@@ -603,102 +622,34 @@ export class GraphComponent implements OnInit {
       metricData = this.metrics_config['custom_metric']['instant_vectors'];
     }
     if(metricData != undefined){
-      unitX += metricData[metric]['x']['unit'][this._lang];
-      unitY += metricData[metric]['y']['unit'][this._lang];
-      yAxesTitle = metricData[metric]['y']['title'][this._lang]
-      min = metricData[metric]['y']['min'] === '' ? undefined : metricData[metric]['y']['min'];
-      step = metricData[metric]['y']['step'] === '' ? undefined : metricData[metric]['y']['step'];
-      stacked = metricData[metric]['y']['stacked'] === '' ? undefined : metricData[metric]['y']['stacked'];
+      unitX = this.GetDefaultOrCurrent(metricData[metric]['x']['unit'], '');
+      unitY = this.GetDefaultOrCurrent(metricData[metric]['y']['unit'], '');
+      yAxesTitle = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
+      min = this.GetDefaultOrCurrent(metricData[metric]['y']['min'], 0);
+      stacked = this.GetDefaultOrCurrent(metricData[metric]['y']['stacked'], false);
     }
     let color: string = '#000000'; //default value
     if( this._is_dark_mode_enabled ) {
       color = '#e2e2e2'
     }
-    data['datasets'].forEach(element => {
-      element['backgroundColor'] = element['borderColor'];
-    });
 
-    const getOrCreateLegendList = (chart, id) => {
-      const legendContainer = document.getElementById(id);
-      let listContainer = legendContainer.querySelector('ul');
-
-      if (!listContainer) {
-        listContainer = document.createElement('ul');
-        listContainer.style.display = 'flex';
-        listContainer.style.flexDirection = 'column';
-        listContainer.style.margin = '0px';
-        listContainer.style.padding = '0px';
-    
-        legendContainer.appendChild(listContainer);
-      }
-      return listContainer;
-    };
-
-    const htmlLegendPlugin = {
-      id: 'htmlLegend',
-      afterUpdate(chart, args, options) {
-        const ul = getOrCreateLegendList(chart, options.containerID);
-    
-        // Remove old legend items
-        while (ul.firstChild) {
-          ul.firstChild.remove();
-        }
-        const items = chart.options.plugins.legend.labels.generateLabels(chart);
-
-        items.forEach(item => {
-          const li = document.createElement('li');
-          li.style.alignItems = 'center';
-          li.style.cursor = 'pointer';
-          li.style.display = 'flex';
-          li.style.flexDirection = 'row';
-          li.style.marginLeft = '10px';
-    
-          li.onclick = () => {
-            chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
-            chart.update();
-          };
-    
-          // Color box
-          const boxSpan = document.createElement('span');
-          boxSpan.style.background = item.fillStyle;
-          boxSpan.style.borderColor = item.strokeStyle;
-          boxSpan.style.borderWidth = item.lineWidth + 'px';
-          boxSpan.style.display = 'inline-block';
-          boxSpan.style.height = '20px';
-          boxSpan.style.marginRight = '10px';
-          boxSpan.style.width = '20px';
-    
-          // Text
-          const textContainer = document.createElement('p');
-          textContainer.style.color = item.fontColor;
-          textContainer.style.margin = '0px';
-          textContainer.style.padding = '0px';
-          textContainer.style.fontSize = '14px';
-          textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
-          
-          const text = document.createTextNode(item.text);
-          textContainer.appendChild(text);
-    
-          li.appendChild(boxSpan);
-          li.appendChild(textContainer);
-          ul.appendChild(li);
-        });
-      }
-    };
-
-    Chart.defaults.maintainAspectRatio = false;
-    Chart.defaults.elements.line.borderWidth = 2;
-    Chart.defaults.elements.line.tension = tension;
-    Chart.defaults.font.family = 'Ubuntu, sans-serif';
-    
     let unitInformation = new Map();
-    unitInformation.set('octet', ['o', 'Ko', 'Mo', 'Go', 'To']);
-    unitInformation.set('number', ['', 'K', 'M', 'B']);
-    unitInformation.set('ms', ['ms', 's']);
+    unitInformation.set('bytes', ['B', 'KB', 'MB', 'GB', 'TB', 'TB']);
+    unitInformation.set('number', ['', 'K', 'M', 'B', 'T']);
+    unitInformation.set('time', ['ms', 's']);
+    unitInformation.set('unknownName', ['wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name']);
+    unitInformation.set('', ['', '', '', '', '', '']);
+
+    if(unitInformation.get(unitY) === undefined)
+    {
+      unitY = "unknownName";
+    }
+
     const config = {
       type: 'line',
       data: data,
       options: {
+        maintainAspectRatio: false,
         responsive : true,
         scales: {
           x: {
@@ -712,17 +663,21 @@ export class GraphComponent implements OnInit {
           },
           y: {
             stacked: stacked,
-            min: min,
+            suggestedMin: min,
+            suggestedMax: 1, // this will avoid y axis going from -1 to 1 if all values are 0
             ticks: {
               callback: function(value, index) {
-                let valueInt = parseInt(value);
                 let thousandCounter = 0;
-                while(valueInt >= 1000){
-                  valueInt = valueInt / 1000;
+                while(value >= 1000){
+                  value = value / 1000;
                   thousandCounter ++;
                 }
-                return valueInt + ' ' + unitInformation.get(unitY)[thousandCounter];
+                return value + ' ' + unitInformation.get(unitY)[thousandCounter];
               }
+            },
+            title : {
+              display: true,
+              text: yAxesTitle
             }
           }
         },
@@ -730,22 +685,43 @@ export class GraphComponent implements OnInit {
           filler: {
             propagate: false
           },
-          htmlLegend: {
-            containerID: "legend_" + metric,
-          },
           legend: {
             display: false,
           }
         },
         interaction: {
           intersect: false
+        },
+        elements: {
+          line: {
+            borderWidth: 2,
+            tension: 0 // Use this to curve the lines, 0 means straight line
+          }
+        },
+        font: {
+          family: 'Ubuntu, sans-serif'
         }
-      },
-      plugins: [htmlLegendPlugin]
+      }
     }
-    
     var chart = new Chart(ctx, config);
     return chart;
+  }
+
+  // Show/Hide legend and curve on click
+  switch_visibility_legend(legend, metric_chart){
+    metric_chart.setDatasetVisibility(legend.datasetIndex, !metric_chart.isDatasetVisible(legend.datasetIndex));
+    legend.hidden = !legend.hidden;
+    metric_chart.update();
+  }
+
+  keep_legend_visibility(metric, chart){
+    let legends = this.graph_legends.get(metric);
+    if(legends !== undefined){
+      legends.forEach(legend => {
+        chart.setDatasetVisibility(legend.datasetIndex, !legend.hidden);
+      });
+    }
+    chart.update();
   }
 
   incrementValue(step: number = 1, query : string): void {
@@ -866,29 +842,26 @@ export class GraphComponent implements OnInit {
       }
       meta.hidden = !_is_disabled;
     });
-    this.graphs_records[metric]["m_hidden"] = !_is_disabled
+    this.graphs_records[metric]["m_hidden"] = !_is_disabled;
+    this.graph_legends.get(metric).forEach(element => {
+      element.hidden = !_is_disabled ;
+    });;
     this.graphs_records[metric]['m_chart'].update();
   }
 
-  switch_stack_lines(metric:string, switchValue): void {
-    let _is_stacked: boolean = this.graphs_records[metric]["m_stacked"];
-    if(switchValue){
-      _is_stacked = !_is_stacked;
-    }
-    if(_is_stacked){
-      this.graphs_records[metric]['m_chart'].options.scales.y.stacked = true;
-      this.graphs_records[metric]['m_chart'].data.datasets.forEach(element => {
-        element.fill = 'origin';
-      });
-      this.graphs_records[metric]["m_stacked"] = true;
-    } else {
-      this.graphs_records[metric]['m_chart'].options.scales.y.stacked = false;
-      this.graphs_records[metric]['m_chart'].data.datasets.forEach(element => {
-        element.fill = false;
-      });
-      this.graphs_records[metric]["m_stacked"] = false;
-    }
-    this.graphs_records[metric]['m_chart'].update();
+  switch_stack_lines(grm) {
+    grm["m_stacked"] = !grm["m_stacked"]
+    this.stack_lines(grm)
+  }
+
+  stack_lines(grm:string): void {
+    let _is_stacked: boolean = grm["m_stacked"];
+    grm['m_chart'].options.scales.y.stacked = _is_stacked;
+    grm["m_stacked"] = _is_stacked;
+    grm['m_chart'].data.datasets.forEach(element => {
+      element.fill = _is_stacked ? 'origin' : false;;
+    });
+    grm['m_chart'].update();
   }
 
   change_theme(dark_theme:boolean): void {
