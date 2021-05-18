@@ -573,7 +573,7 @@ export class GraphComponent implements OnInit {
     return step;
   }
 
-  checkEmptyOrUndefined(value, defaultValue){
+  setDefaultIfUndefined(value, defaultValue){
     if (value === undefined || value === null || value === '') 
     { 
       return defaultValue;
@@ -622,11 +622,11 @@ export class GraphComponent implements OnInit {
       metricData = this.metrics_config['custom_metric']['instant_vectors'];
     }
     if(metricData != undefined){
-      unitX = this.checkEmptyOrUndefined(metricData[metric]['x']['unit'], '');
-      unitY = this.checkEmptyOrUndefined(metricData[metric]['y']['unit'], '');
-      yAxesTitle = this.checkEmptyOrUndefined(metricData[metric]['y']['title'][this._lang], '');
-      min = this.checkEmptyOrUndefined(metricData[metric]['y']['min'], 0);
-      stacked = this.checkEmptyOrUndefined(metricData[metric]['y']['stacked'], false);
+      unitX = this.setDefaultIfUndefined(metricData[metric]['x']['unit'], '');
+      unitY = this.setDefaultIfUndefined(metricData[metric]['y']['unit'], '');
+      yAxesTitle = this.setDefaultIfUndefined(metricData[metric]['y']['title'][this._lang], '');
+      min = this.setDefaultIfUndefined(metricData[metric]['y']['min'], 0);
+      stacked = this.setDefaultIfUndefined(metricData[metric]['y']['stacked'], false);
     }
     let color: string = '#000000'; //default value
     if( this._is_dark_mode_enabled ) {
