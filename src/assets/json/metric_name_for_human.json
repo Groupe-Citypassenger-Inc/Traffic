@@ -61,34 +61,78 @@
       "en": "Average latency of supervised applications",
       "fr": "Latence moyenne des applications supervisées"
     },
-    "average_pfstats_latence_ARGUS": {
-      "en": "Average latency of the ARGUS service",
-      "fr": "Latence moyenne du service l'ARGUS"
-    },
     "average_pfstats_latence_DCS": {
       "en": "Average latency of the DCS net service",
       "fr": "Latence moyenne du service DCS net"
     },
+    "average_pfstats_latence_RVA": {
+      "en": "Average latency of the RVA service",
+      "fr": "Latence moyenne du service RVA"
+    },
+    "average_pfstats_latence_MOVE": {
+      "en": "Average latency of the MOVE service",
+      "fr": "Latence moyenne du service MOVE"
+    },
+    "average_pfstats_latence_MAEVA": {
+      "en": "Average latency of the MAEVA service",
+      "fr": "Latence moyenne du service MAEVA"
+    },
+    "average_pfstats_latence_ARGUS": {
+      "en": "Average latency of the ARGUS service",
+      "fr": "Latence moyenne du service l'ARGUS"
+    },
     "average_pfstats_latence_DIALOGYS": {
       "en": "Average latency of the Dialogys service",
       "fr": "Latence moyenne du service Dialogys"
+    },
+    "average_pfstats_latence_R_CAMPUS": {
+      "en": "Average latency of the R_CAMPUS service",
+      "fr": "Latence moyenne du service R_CAMPUS"
     },
 
     "sum_pfstats_ccnxcount_1h": {
       "en": "Number of connections on supervised applications (1h smoothing)",
       "fr": "Nombre de connexions sur les applications supervisées (lissage 1h)"
     },
-    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
-      "en": "Number of connections on Dialogys (smoothing 1h)",
-      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
+    "sum_pfstats_ccnxcount_1h_DCS": {
+      "en": "Number of connections on DCS net (smoothing 1h)",
+      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_DFM": {
+      "en": "Number of connections on DFM (smoothing 1h)",
+      "fr": "Nombre de connexions sur DFM (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_RVA": {
+      "en": "Number of connections on RVA (smoothing 1h)",
+      "fr": "Nombre de connexions sur RVA (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_MOVE": {
+      "en": "Number of connections on MOVE (smoothing 1h)",
+      "fr": "Nombre de connexions sur MOVE (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_MAEVA": {
+      "en": "Number of connections on MAEVA (smoothing 1h)",
+      "fr": "Nombre de connexions sur MAEVA (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_RBOX5": {
+      "en": "Number of connections on RBOX5 (smoothing 1h)",
+      "fr": "Nombre de connexions sur RBOX5 (lissage 1h)"
     },
     "sum_pfstats_ccnxcount_1h_ARGUS": {
       "en": "Number of connections on the Argus (smoothing 1h)",
       "fr": "Nombre de connexions sur l'Argus (lissage 1h)"
     },
-    "sum_pfstats_ccnxcount_1h_DCS": {
-      "en": "Number of connections on DCS net (smoothing 1h)",
-      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
+    "sum_pfstats_ccnxcount_1h_RPARTS": {
+      "en": "Number of connections on RPARTS (smoothing 1h)",
+      "fr": "Nombre de connexions sur RPARTS (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
+      "en": "Number of connections on Dialogys (smoothing 1h)",
+      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_R_CAMPUS": {
+      "en": "Number of connections on R_CAMPUS (smoothing 1h)",
+      "fr": "Nombre de connexions sur R_CAMPUS (lissage 1h)"
     },
 
     "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
@@ -101,11 +145,11 @@
     },
 
     "pfstats_up_down": {
-      "en": "Consommation de données par le service DCS (download/upload)",
+      "en": "Bandwidth usage by the DCS service (download/upload)",
       "fr": "Consommation de données par le service DCS (download/upload)"
     },
     "pfstats_up_down_one_ip": {
-      "en":"Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52",
+      "en": "Bandwidth usage by the DCS service (download/upload) by the station at IP 200.8.155.52",
       "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
     },
 
@@ -113,23 +157,52 @@
       "en":" Number of retransmissions on the supervised applications (smoothing 1h)",
       "fr": "Nombre de retransmissions sur les applications supervisées (lissage 1h)"
     },
-    "sum_pfstats_restransmit_1h_DIALOGYS": {
-      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
+    "sum_pfstats_restransmit_1h_DCS": {
+      "en":" Number of retransmissions on DCS net (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_DFM": {
+      "en":" Number of retransmissions on DFM (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur DFM (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_RVA": {
+      "en":" Number of retransmissions on RVA (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RVA (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_MOVE": {
+      "en":" Number of retransmissions on MOVE (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur MOVE (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_MAEVA": {
+      "en":" Number of retransmissions on MAEVA (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur MAEVA (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_RBOX5": {
+      "en":" Number of retransmissions on RBOX5 (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RBOX5 (lissage 1h)"
     },
     "sum_pfstats_restransmit_1h_ARGUS": {
       "en":" Number of retransmissions on the Argus (smoothing 1h)",
       "fr": "Nombre de retransmissions sur l'Argus (lissage 1h)"
     },
-    "sum_pfstats_restransmit_1h_DCS": {
-      "en":" Number of retransmissions on DCS net (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+    "sum_pfstats_restransmit_1h_RPARTS": {
+      "en":" Number of retransmissions on RPARTS (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RPARTS (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_DIALOGYS": {
+      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_R_CAMPUS": {
+      "en":" Number of retransmissions on R_CAMPUS (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur R_CAMPUS (lissage 1h)"
     }
+
   },
   "Support":{
     "DCS": {
-      "en": "DCS Usage Stats",
-      "fr": "Stats d'usage de DCS"
+      "en": "DCS usage stats",
+      "fr": "stats d'usage de DCS"
     },
     "output":{
       "en":"output",
@@ -148,28 +221,24 @@
       "fr":"input raw"
     },
     "scrape_duration_seconds":{
-      "en":"scrape duration (seconds)",
-      "fr":"durée de ramassage (secondes)"
+      "en":"scrape_duration_seconds",
+      "fr":"scrape_duration_seconds"
     },
     "scrape_samples_post_metric_relabeling":{
-      "en":"scrape samples post metric relabeling",
-      "fr":"nombre de série réétiqueté"
+      "en":"scrape_samples_post_metric_relabeling",
+      "fr":"scrape_samples_post_metric_relabeling"
     },
     "scrape_samples_scraped":{
-      "en":"scrape samples scraped",
-      "fr":"échantillons prélevés"
+      "en":"scrape_samples_scraped",
+      "fr":"scrape_samples_scraped"
     },
     "scrape_series_added":{
-      "en":"scrape series added",
-      "fr":"ajout de série"
+      "en":"scrape_series_added",
+      "fr":"scrape_series_added"
     },
     "go_goroutines":{
-      "en":"go goroutines",
-      "fr":"go goroutines"
-    },
-    "go_goroutines_raw":{
-      "en":"go goroutines_raw",
-      "fr":"go goroutines_raw"
+      "en":"go_goroutines",
+      "fr":"go_goroutines"
     },
     "CONTROLLER": {
       "en":"Information about the connection to controller",
@@ -192,34 +261,78 @@
       "en": "Average latency of supervised applications",
       "fr": "Latence moyenne des applications supervisées"
     },
-    "average_pfstats_latence_ARGUS": {
-      "en": "Average latency of the ARGUS service",
-      "fr": "Latence moyenne du service l'ARGUS"
-    },
     "average_pfstats_latence_DCS": {
       "en": "Average latency of the DCS net service",
       "fr": "Latence moyenne du service DCS net"
     },
+    "average_pfstats_latence_RVA": {
+      "en": "Average latency of the RVA service",
+      "fr": "Latence moyenne du service RVA"
+    },
+    "average_pfstats_latence_MOVE": {
+      "en": "Average latency of the MOVE service",
+      "fr": "Latence moyenne du service MOVE"
+    },
+    "average_pfstats_latence_MAEVA": {
+      "en": "Average latency of the MAEVA service",
+      "fr": "Latence moyenne du service MAEVA"
+    },
+    "average_pfstats_latence_ARGUS": {
+      "en": "Average latency of the ARGUS service",
+      "fr": "Latence moyenne du service l'ARGUS"
+    },
     "average_pfstats_latence_DIALOGYS": {
       "en": "Average latency of the Dialogys service",
       "fr": "Latence moyenne du service Dialogys"
+    },
+    "average_pfstats_latence_R_CAMPUS": {
+      "en": "Average latency of the R_CAMPUS service",
+      "fr": "Latence moyenne du service R_CAMPUS"
     },
 
     "sum_pfstats_ccnxcount_1h": {
       "en": "Number of connections on supervised applications (1h smoothing)",
       "fr": "Nombre de connexions sur les applications supervisées (lissage 1h)"
     },
-    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
-      "en": "Number of connections on Dialogys (smoothing 1h)",
-      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
+    "sum_pfstats_ccnxcount_1h_DCS": {
+      "en": "Number of connections on DCS net (smoothing 1h)",
+      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_DFM": {
+      "en": "Number of connections on DFM (smoothing 1h)",
+      "fr": "Nombre de connexions sur DFM (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_RVA": {
+      "en": "Number of connections on RVA (smoothing 1h)",
+      "fr": "Nombre de connexions sur RVA (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_MOVE": {
+      "en": "Number of connections on MOVE (smoothing 1h)",
+      "fr": "Nombre de connexions sur MOVE (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_MAEVA": {
+      "en": "Number of connections on MAEVA (smoothing 1h)",
+      "fr": "Nombre de connexions sur MAEVA (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_RBOX5": {
+      "en": "Number of connections on RBOX5 (smoothing 1h)",
+      "fr": "Nombre de connexions sur RBOX5 (lissage 1h)"
     },
     "sum_pfstats_ccnxcount_1h_ARGUS": {
       "en": "Number of connections on the Argus (smoothing 1h)",
       "fr": "Nombre de connexions sur l'Argus (lissage 1h)"
     },
-    "sum_pfstats_ccnxcount_1h_DCS": {
-      "en": "Number of connections on DCS net (smoothing 1h)",
-      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
+    "sum_pfstats_ccnxcount_1h_RPARTS": {
+      "en": "Number of connections on RPARTS (smoothing 1h)",
+      "fr": "Nombre de connexions sur RPARTS (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
+      "en": "Number of connections on Dialogys (smoothing 1h)",
+      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_R_CAMPUS": {
+      "en": "Number of connections on R_CAMPUS (smoothing 1h)",
+      "fr": "Nombre de connexions sur R_CAMPUS (lissage 1h)"
     },
 
     "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
@@ -232,11 +345,11 @@
     },
 
     "pfstats_up_down": {
-      "en": "Consommation de données par le service DCS (download/upload)",
+      "en": "Bandwidth usage by the DCS service (download/upload)",
       "fr": "Consommation de données par le service DCS (download/upload)"
     },
     "pfstats_up_down_one_ip": {
-      "en":"Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52",
+      "en": "Bandwidth usage by the DCS service (download/upload) by the station at IP 200.8.155.52",
       "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
     },
 
@@ -244,17 +357,45 @@
       "en":" Number of retransmissions on the supervised applications (smoothing 1h)",
       "fr": "Nombre de retransmissions sur les applications supervisées (lissage 1h)"
     },
-    "sum_pfstats_restransmit_1h_DIALOGYS": {
-      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
+    "sum_pfstats_restransmit_1h_DCS": {
+      "en":" Number of retransmissions on DCS net (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_DFM": {
+      "en":" Number of retransmissions on DFM (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur DFM (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_RVA": {
+      "en":" Number of retransmissions on RVA (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RVA (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_MOVE": {
+      "en":" Number of retransmissions on MOVE (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur MOVE (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_MAEVA": {
+      "en":" Number of retransmissions on MAEVA (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur MAEVA (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_RBOX5": {
+      "en":" Number of retransmissions on RBOX5 (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RBOX5 (lissage 1h)"
     },
     "sum_pfstats_restransmit_1h_ARGUS": {
       "en":" Number of retransmissions on the Argus (smoothing 1h)",
       "fr": "Nombre de retransmissions sur l'Argus (lissage 1h)"
     },
-    "sum_pfstats_restransmit_1h_DCS": {
-      "en":" Number of retransmissions on DCS net (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+    "sum_pfstats_restransmit_1h_RPARTS": {
+      "en":" Number of retransmissions on RPARTS (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RPARTS (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_DIALOGYS": {
+      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_R_CAMPUS": {
+      "en":" Number of retransmissions on R_CAMPUS (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur R_CAMPUS (lissage 1h)"
     }
   },
   "User":{
@@ -282,36 +423,79 @@
       "en": "Average latency of supervised applications",
       "fr": "Latence moyenne des applications supervisées"
     },
-    "average_pfstats_latence_ARGUS": {
-      "en": "Average latency of the ARGUS service",
-      "fr": "Latence moyenne du service l'ARGUS"
-    },
     "average_pfstats_latence_DCS": {
       "en": "Average latency of the DCS net service",
       "fr": "Latence moyenne du service DCS net"
     },
+    "average_pfstats_latence_RVA": {
+      "en": "Average latency of the RVA service",
+      "fr": "Latence moyenne du service RVA"
+    },
+    "average_pfstats_latence_MOVE": {
+      "en": "Average latency of the MOVE service",
+      "fr": "Latence moyenne du service MOVE"
+    },
+    "average_pfstats_latence_MAEVA": {
+      "en": "Average latency of the MAEVA service",
+      "fr": "Latence moyenne du service MAEVA"
+    },
+    "average_pfstats_latence_ARGUS": {
+      "en": "Average latency of the ARGUS service",
+      "fr": "Latence moyenne du service l'ARGUS"
+    },
     "average_pfstats_latence_DIALOGYS": {
       "en": "Average latency of the Dialogys service",
       "fr": "Latence moyenne du service Dialogys"
+    },
+    "average_pfstats_latence_R_CAMPUS": {
+      "en": "Average latency of the R_CAMPUS service",
+      "fr": "Latence moyenne du service R_CAMPUS"
     },
 
     "sum_pfstats_ccnxcount_1h": {
       "en": "Number of connections on supervised applications (1h smoothing)",
       "fr": "Nombre de connexions sur les applications supervisées (lissage 1h)"
     },
-    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
-      "en": "Number of connections on Dialogys (smoothing 1h)",
-      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
+    "sum_pfstats_ccnxcount_1h_DCS": {
+      "en": "Number of connections on DCS net (smoothing 1h)",
+      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_DFM": {
+      "en": "Number of connections on DFM (smoothing 1h)",
+      "fr": "Nombre de connexions sur DFM (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_RVA": {
+      "en": "Number of connections on RVA (smoothing 1h)",
+      "fr": "Nombre de connexions sur RVA (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_MOVE": {
+      "en": "Number of connections on MOVE (smoothing 1h)",
+      "fr": "Nombre de connexions sur MOVE (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_MAEVA": {
+      "en": "Number of connections on MAEVA (smoothing 1h)",
+      "fr": "Nombre de connexions sur MAEVA (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_RBOX5": {
+      "en": "Number of connections on RBOX5 (smoothing 1h)",
+      "fr": "Nombre de connexions sur RBOX5 (lissage 1h)"
     },
     "sum_pfstats_ccnxcount_1h_ARGUS": {
       "en": "Number of connections on the Argus (smoothing 1h)",
       "fr": "Nombre de connexions sur l'Argus (lissage 1h)"
     },
-    "sum_pfstats_ccnxcount_1h_DCS": {
-      "en": "Number of connections on DCS net (smoothing 1h)",
-      "fr": "Nombre de connexions sur DCS net (lissage 1h)"
+    "sum_pfstats_ccnxcount_1h_RPARTS": {
+      "en": "Number of connections on RPARTS (smoothing 1h)",
+      "fr": "Nombre de connexions sur RPARTS (lissage 1h)"
     },
-    
+    "sum_pfstats_ccnxcount_1h_DIALOGYS": {
+      "en": "Number of connections on Dialogys (smoothing 1h)",
+      "fr": "Nombre de connexions sur Dialogys (lissage 1h)"
+    },
+    "sum_pfstats_ccnxcount_1h_R_CAMPUS": {
+      "en": "Number of connections on R_CAMPUS (smoothing 1h)",
+      "fr": "Nombre de connexions sur R_CAMPUS (lissage 1h)"
+    },
     "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
       "en": "Total number of connections on DCS net",
       "fr": "Nombre total de connexions à DCS "
@@ -322,29 +506,56 @@
     },
 
     "pfstats_up_down": {
-      "en": "Consommation de données par le service DCS (download/upload)",
+      "en": "Bandwidth usage by the DCS service (download/upload)",
       "fr": "Consommation de données par le service DCS (download/upload)"
     },
     "pfstats_up_down_one_ip": {
-      "en":"Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52",
+      "en": "Bandwidth usage by the DCS service (download/upload) by the station at IP 200.8.155.52",
       "fr": "Consommation de données par le service DCS (download/upload) par le poste à l'IP 200.8.155.52"
     },
-
     "sum_pfstats_restransmit_1h": {
       "en":" Number of retransmissions on the supervised applications (smoothing 1h)",
       "fr": "Nombre de retransmissions sur les applications supervisées (lissage 1h)"
     },
-    "sum_pfstats_restransmit_1h_DIALOGYS": {
-      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
+    "sum_pfstats_restransmit_1h_DCS": {
+      "en":" Number of retransmissions on DCS net (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_DFM": {
+      "en":" Number of retransmissions on DFM (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur DFM (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_RVA": {
+      "en":" Number of retransmissions on RVA (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RVA (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_MOVE": {
+      "en":" Number of retransmissions on MOVE (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur MOVE (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_MAEVA": {
+      "en":" Number of retransmissions on MAEVA (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur MAEVA (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_RBOX5": {
+      "en":" Number of retransmissions on RBOX5 (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RBOX5 (lissage 1h)"
     },
     "sum_pfstats_restransmit_1h_ARGUS": {
       "en":" Number of retransmissions on the Argus (smoothing 1h)",
       "fr": "Nombre de retransmissions sur l'Argus (lissage 1h)"
     },
-    "sum_pfstats_restransmit_1h_DCS": {
-      "en":" Number of retransmissions on DCS net (smoothing 1h)",
-      "fr": "Nombre de retransmissions sur DCS net (lissage 1h)"
+    "sum_pfstats_restransmit_1h_RPARTS": {
+      "en":" Number of retransmissions on RPARTS (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur RPARTS (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_DIALOGYS": {
+      "en":" Number of retransmissions on Dialogys (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
+    },
+    "sum_pfstats_restransmit_1h_R_CAMPUS": {
+      "en":" Number of retransmissions on R_CAMPUS (smoothing 1h)",
+      "fr": "Nombre de retransmissions sur R_CAMPUS (lissage 1h)"
     }
   },
   "Marketing":{
