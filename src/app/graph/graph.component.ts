@@ -512,7 +512,7 @@ export class GraphComponent implements OnInit {
       dataset = {
         label: label,
         data: metric_value_list,
-        pointRadius: 0, // Graph dot size : 0 -> no dot
+        pointRadius: 1, // Graph dot size : 0 -> no dot
         borderColor : '#' + this.crc32(label), // Line color
         backgroundColor : '#' + this.crc32(label), // Legend color
       };
