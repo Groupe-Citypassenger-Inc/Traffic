@@ -65,6 +65,10 @@
       "en": "Average latency of the DCS net service",
       "fr": "Latence moyenne du service DCS net"
     },
+    "average_pfstats_latence_DFM": {
+      "en": "Average latency of the DFM service",
+      "fr": "Latence moyenne du service DFM"
+    },
     "average_pfstats_latence_RVA": {
       "en": "Average latency of the RVA service",
       "fr": "Latence moyenne du service RVA"
@@ -77,9 +81,17 @@
       "en": "Average latency of the MAEVA service",
       "fr": "Latence moyenne du service MAEVA"
     },
+    "average_pfstats_latence_RBOX5": {
+      "en": "Average latency of the RBOX5 service",
+      "fr": "Latence moyenne du service RBOX5"
+    },
     "average_pfstats_latence_ARGUS": {
       "en": "Average latency of the ARGUS service",
       "fr": "Latence moyenne du service l'ARGUS"
+    },
+    "average_pfstats_latence_RPARTS": {
+      "en": "Average latency of the RPARTS service",
+      "fr": "Latence moyenne du service RPARTS"
     },
     "average_pfstats_latence_DIALOGYS": {
       "en": "Average latency of the Dialogys service",
@@ -265,6 +277,10 @@
       "en": "Average latency of the DCS net service",
       "fr": "Latence moyenne du service DCS net"
     },
+    "average_pfstats_latence_DFM": {
+      "en": "Average latency of the DFM service",
+      "fr": "Latence moyenne du service DFM"
+    },
     "average_pfstats_latence_RVA": {
       "en": "Average latency of the RVA service",
       "fr": "Latence moyenne du service RVA"
@@ -277,9 +293,17 @@
       "en": "Average latency of the MAEVA service",
       "fr": "Latence moyenne du service MAEVA"
     },
+    "average_pfstats_latence_RBOX5": {
+      "en": "Average latency of the RBOX5 service",
+      "fr": "Latence moyenne du service RBOX5"
+    },
     "average_pfstats_latence_ARGUS": {
       "en": "Average latency of the ARGUS service",
       "fr": "Latence moyenne du service l'ARGUS"
+    },
+    "average_pfstats_latence_RPARTS": {
+      "en": "Average latency of the RPARTS service",
+      "fr": "Latence moyenne du service RPARTS"
     },
     "average_pfstats_latence_DIALOGYS": {
       "en": "Average latency of the Dialogys service",
@@ -427,6 +451,10 @@
       "en": "Average latency of the DCS net service",
       "fr": "Latence moyenne du service DCS net"
     },
+    "average_pfstats_latence_DFM": {
+      "en": "Average latency of the DFM service",
+      "fr": "Latence moyenne du service DFM"
+    },
     "average_pfstats_latence_RVA": {
       "en": "Average latency of the RVA service",
       "fr": "Latence moyenne du service RVA"
@@ -439,9 +467,17 @@
       "en": "Average latency of the MAEVA service",
       "fr": "Latence moyenne du service MAEVA"
     },
+    "average_pfstats_latence_RBOX5": {
+      "en": "Average latency of the RBOX5 service",
+      "fr": "Latence moyenne du service RBOX5"
+    },
     "average_pfstats_latence_ARGUS": {
       "en": "Average latency of the ARGUS service",
       "fr": "Latence moyenne du service l'ARGUS"
+    },
+    "average_pfstats_latence_RPARTS": {
+      "en": "Average latency of the RPARTS service",
+      "fr": "Latence moyenne du service RPARTS"
     },
     "average_pfstats_latence_DIALOGYS": {
       "en": "Average latency of the Dialogys service",

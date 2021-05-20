@@ -71,6 +71,30 @@
         "promql": "",
         "tension": 0.5
       },
+      "average_pfstats_latence_DFM": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DFM',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service DFM",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
       "average_pfstats_latence_RVA": {
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency',service='RVA',src_ip='0.0.0.0'}[1h])",
@@ -140,10 +164,56 @@
         "type": "",
         "promql": ""
       },
+      "average_pfstats_latence_RBOX5": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='RBOX5',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service RBOX5",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
       "average_pfstats_latence_ARGUS": {
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency',service='LARGUS',src_ip='0.0.0.0'}[1h])",
         "description": "Latence moyenne du service l'ARGUS",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+      "average_pfstats_latence_RPARTS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='RPARTS',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service RPARTS",
         "x": {
           "unit": {
             "fr": "",
