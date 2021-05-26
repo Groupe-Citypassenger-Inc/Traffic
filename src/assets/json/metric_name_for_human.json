@@ -206,10 +206,75 @@
       "fr": "Nombre de retransmissions sur Dialogys (lissage 1h)"
     },
     "sum_pfstats_restransmit_1h_R_CAMPUS": {
-      "en":" Number of retransmissions on R_CAMPUS (smoothing 1h)",
+      "en": "Number of retransmissions on R_CAMPUS (smoothing 1h)",
       "fr": "Nombre de retransmissions sur R_CAMPUS (lissage 1h)"
-    }
+    },
+    "pfstats_up": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par tous les service (upload)"
+    },
+    "pfstats_down": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par tous les service (download)"
+    },
+    "pfstats_up_down_DCS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DCS (download/upload)"
+    },
+    "pfstats_up_down_DFM": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DFM (download/upload)"
+    },
+    "pfstats_up_down_RVA": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RVA (download/upload)"
+    },
+    "pfstats_up_down_MOVE": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service MOVE (download/upload)"
+    },
+    "pfstats_up_down_MAEVA": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service MAEVA (download/upload)"
+    },
+    "pfstats_up_down_RBOX5": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RBOX5 (download/upload)"
+    },
 
+    "pfstats_up_down_LARGUS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service LARGUS (download/upload)"
+    },
+    "pfstats_up_down_RPARTS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RPARTS (download/upload)"
+    },
+    "pfstats_up_down_DIALOGYS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DIALOGYS (download/upload)"
+    },
+    "pfstats_up_down_R_CAMPUS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service R_CAMPUS (download/upload)"
+    },
+    "output_wan_raw": {
+      "en": "xxxxxx",
+      "fr": "output wan raw"
+    },
+    "output_wan": {
+      "en": "xxxxxx",
+      "fr": "output wan"
+    },
+
+    "input_wan_raw": {
+      "en": "xxxxxx",
+      "fr": "inoput wan raw"
+    },
+    "input_wan": {
+      "en": "input wan",
+      "fr": "input wan"
+    }
   },
   "Support":{
     "DCS": {
@@ -420,6 +485,72 @@
     "sum_pfstats_restransmit_1h_R_CAMPUS": {
       "en":" Number of retransmissions on R_CAMPUS (smoothing 1h)",
       "fr": "Nombre de retransmissions sur R_CAMPUS (lissage 1h)"
+    },
+    "pfstats_up": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par tous les service (upload)"
+    },
+    "pfstats_down": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par tous les service (download)"
+    },
+    "pfstats_up_down_DCS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DCS (download/upload)"
+    },
+    "pfstats_up_down_DFM": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DFM (download/upload)"
+    },
+    "pfstats_up_down_RVA": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RVA (download/upload)"
+    },
+    "pfstats_up_down_MOVE": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service MOVE (download/upload)"
+    },
+    "pfstats_up_down_MAEVA": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service MAEVA (download/upload)"
+    },
+    "pfstats_up_down_RBOX5": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RBOX5 (download/upload)"
+    },
+
+    "pfstats_up_down_LARGUS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service LARGUS (download/upload)"
+    },
+    "pfstats_up_down_RPARTS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RPARTS (download/upload)"
+    },
+    "pfstats_up_down_DIALOGYS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DIALOGYS (download/upload)"
+    },
+    "pfstats_up_down_R_CAMPUS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service R_CAMPUS (download/upload)"
+    },
+    "output_wan_raw": {
+      "en": "xxxxxx",
+      "fr": "output wan raw"
+    },
+    "output_wan": {
+      "en": "xxxxxx",
+      "fr": "output wan"
+    },
+
+    "input_wan_raw": {
+      "en": "xxxxxx",
+      "fr": "inoput wan raw"
+    },
+    "input_wan": {
+      "en": "input wan",
+      "fr": "input wan"
     }
   },
   "User":{
@@ -592,6 +723,72 @@
     "sum_pfstats_restransmit_1h_R_CAMPUS": {
       "en":" Number of retransmissions on R_CAMPUS (smoothing 1h)",
       "fr": "Nombre de retransmissions sur R_CAMPUS (lissage 1h)"
+    },
+    "pfstats_up": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par tous les service (upload)"
+    },
+    "pfstats_down": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par tous les service (download)"
+    },
+    "pfstats_up_down_DCS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DCS (download/upload)"
+    },
+    "pfstats_up_down_DFM": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DFM (download/upload)"
+    },
+    "pfstats_up_down_RVA": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RVA (download/upload)"
+    },
+    "pfstats_up_down_MOVE": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service MOVE (download/upload)"
+    },
+    "pfstats_up_down_MAEVA": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service MAEVA (download/upload)"
+    },
+    "pfstats_up_down_RBOX5": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RBOX5 (download/upload)"
+    },
+
+    "pfstats_up_down_LARGUS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service LARGUS (download/upload)"
+    },
+    "pfstats_up_down_RPARTS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service RPARTS (download/upload)"
+    },
+    "pfstats_up_down_DIALOGYS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service DIALOGYS (download/upload)"
+    },
+    "pfstats_up_down_R_CAMPUS": {
+      "en": "xxxxxx",
+      "fr": "Consommation de données par le service R_CAMPUS (download/upload)"
+    },
+    "output_wan_raw": {
+      "en": "xxxxxx",
+      "fr": "output wan raw"
+    },
+    "output_wan": {
+      "en": "xxxxxx",
+      "fr": "output wan"
+    },
+
+    "input_wan_raw": {
+      "en": "xxxxxx",
+      "fr": "inoput wan raw"
+    },
+    "input_wan": {
+      "en": "input wan",
+      "fr": "input wan"
     }
   },
   "Marketing":{

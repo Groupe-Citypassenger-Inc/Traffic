@@ -1,6 +1,8 @@
 {
   "custom_metric":{
     "instant_vectors":{
+      
+
       "pf_stats_connection":{
         "role": ["Support", "Admin", "User"],
         "query":"pf_stats{data_type='count',service='CONTROLLER'}%2Fignoring(data_type)pf_stats{data_type='ccnx_count',service='CONTROLLER'}",
@@ -837,9 +839,10 @@
         "promql": "",
         "tension": 0.5
       },
-      "pfstats_up_down": {
+
+      "pfstats_up": {
         "role": ["Support", "Admin", "User"],
-        "query": "pf_stats{data_type=~'bytes_(?:UP|DOWN)',service='DCS',src_ip='0.0.0.0'}",
+        "query": "pf_stats{data_type=~'bytes_UP',src_ip='0.0.0.0'}",
         "description": "Consommation bande passante",
         "x": {
           "unit": {
@@ -860,10 +863,377 @@
         "type": "",
         "promql": "",
         "tension": 0.5
+      },
+      "pfstats_down": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_DOWN',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      "pfstats_up_down_DCS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='DCS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_DFM": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='DFM',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_RVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='RVA',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_MOVE": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='MOVE',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_MAEVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='MAEVA',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_RBOX5": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='RBOX5',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_LARGUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='LARGUS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_RPARTS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='RPARTS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_DIALOGYS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='DIALOGYS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_R_CAMPUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='R_CAMPUS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      
+
+      "output_wan_raw": {
+        "role": ["Support", "Admin", "User"],
+        "query": "output{wan=~'.%2B'}[10m]",
+        "description": "Wan output",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "output_wan": {
+        "role": ["Support", "Admin", "User"],
+        "query": "increase(output{wan=~'.%2B'}[10m])",
+        "description": "Wan output",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "input_wan_raw": {
+        "role": ["Support", "Admin", "User"],
+        "query": "input{wan=~'.%2B'}[10m]",
+        "description": "Wan input",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      
+      "input_wan": {
+        "role": ["Support", "Admin", "User"],
+        "query": "increase(input{wan=~'.%2B'}[10m])",
+        "description": "Wan input",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       }
     },
     "range_vectors":{
     }
+    
   },  
   "example": {
     "x": {
