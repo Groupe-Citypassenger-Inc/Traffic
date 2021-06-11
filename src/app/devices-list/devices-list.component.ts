@@ -299,6 +299,12 @@ export class DevicesListComponent implements OnInit {
       }
     });
 
+    Object.keys(custom_metric["multi_query"]).forEach(metric =>{
+      if ( custom_metric["multi_query"][metric]["role"].includes(this.user_information.role) ) {
+        metric_list.push(metric);
+      }
+    });
+
     prometheus_metrics.forEach(metric_name => {
       if (metric_name in this.metrics_config) {
         metric_list.push(metric_name);

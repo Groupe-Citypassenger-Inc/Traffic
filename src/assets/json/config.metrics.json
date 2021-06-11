@@ -1,6 +1,8 @@
 {
   "custom_metric":{
     "instant_vectors":{
+      
+
       "pf_stats_connection":{
         "role": ["Support", "Admin", "User"],
         "query":"pf_stats{data_type='count',service='CONTROLLER'}%2Fignoring(data_type)pf_stats{data_type='ccnx_count',service='CONTROLLER'}",
@@ -41,6 +43,37 @@
           },          
           "unit" : "time", 
           "min": 0,
+          "step": ""
+        },
+        "metric_separator" : [""], 
+        "metric_legend": ["service -SERVICE- sur l'IP [-SRC_IP-]"],
+        "legend_text_to_replace": [{"-SERVICE-" : "service: ", "-SRC_IP-": "src_ip: "}],
+        "y_axis_scales": {
+          "yNotStacked" : {
+            "stacked": false,
+            "display" : true
+          }
+        },
+        "type": ""
+      },
+
+      "average_pfstats_latence_not_0000": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DCS'}[1h])",
+        "description": "Latence moyenne des applications supervisées 0000",
+        "x": {
+          "unit": {
+            "fr": "ms",
+            "en": "ms"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
           "step": "",
           "stacked": false
         },
@@ -49,7 +82,7 @@
       
       "average_pfstats_latence_DCS": {
         "role": ["Support", "Admin", "User"],
-        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DCS',src_ip='0.0.0.0'}[1h])",
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DCS'}[1h])",
         "description": "Latence moyenne du service DCS net",
         "x": {
           "unit": {
@@ -305,9 +338,35 @@
         "promql": "",
         "tension": 0.5
       },
+      "sum_pfstats_ccnxcount_1h_all": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count'}[1h])",
+        "description": "Nombre de connexions sur les applications supervisées (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+
       "sum_pfstats_ccnxcount_1h_DCS": {
         "role": ["Support", "Admin", "User"],
-        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DCS',src_ip='0.0.0.0'}[1h])",
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DCS'}[1h])",
         "description": "Nombre de connexions sur DCS net (lissage 1h)",
         "x": {
           "unit": {
@@ -548,6 +607,30 @@
       "sum_pfstats_restransmit_1h": {
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='retransmit',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_0000": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit'}[1h])",
         "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)",
         "x": {
           "unit": {
@@ -839,7 +922,7 @@
       },
       "pfstats_up_down": {
         "role": ["Support", "Admin", "User"],
-        "query": "pf_stats{data_type=~'bytes_(?:UP|DOWN)',service='DCS',src_ip='0.0.0.0'}",
+        "query": "pf_stats{data_type=~'bytes_DOWN',src_ip='0.0.0.0'}",
         "description": "Consommation bande passante",
         "x": {
           "unit": {
@@ -849,7 +932,7 @@
         },
         "y": {
           "title" : {
-            "en": "Bandwidth consumption",
+            "en": "Bandwidth usage",
             "fr": "Consommation bande passante"
           },
           "unit" : "bytes",
@@ -863,23 +946,140 @@
       }
     },
     "range_vectors":{
+      
+    },
+    "multi_query" : {
+      "complex_pf_stats_connection_with_max_1m":{
+        "role": ["Support", "Admin", "User"],
+        "query": "(pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0'}[1m]) or sum(rate(input{wan=~'.%2B'}[1m]))",
+        "include" : "bytes_DOWN",
+        "description":"pf_stats_connection_with_max",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Un truc",
+            "fr": "Un truc"
+          },          
+          "unit" : "bytes",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": ""
+      },
+      "complex_pf_stats_connection_with_max_5m":{
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0'}[5m] or sum(increase(input{wan=~'.%2B'}[5m]))",
+        "include" : "bytes_DOWN",
+        "description":"pf_stats_connection_with_max",
+        "y": {
+          "title" : {
+            "en": "Bandwidth usage",
+            "fr": "Consommation bande passante"
+          },          
+          "unit" : "bytesSec",  
+          "min": 0,
+          "step": ""
+        },
+        "separator" : ["bytes_DOWN"], 
+        "legendReplace": [{"-SERVICE-" : "service:", "-SRC_IP-": "src_ip:"}, {}],
+        "yAxis": {
+          "yStacked" : {
+            "stacked": true,
+            "fill" : "origin"
+          } ,
+          "yNotStacked" : {
+            "stacked": false,
+            "display" : false
+          }
+        },
+        "type": ""
+      },
+
+      "complex_pf_stats_connection_with_max_15m":{
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0'}[15m] or sum(increase(input{wan=~'.%2B'}[15m]))",
+        "description":"complex_pf_stats_connection_with_max_15m",
+        "y": {
+          "title" : {
+            "en": "Bandwidth usage",
+            "fr": "Consommation bande passante"
+          },          
+          "unit" : "bytesSec",  
+          "min": 0,
+          "step": ""
+        },
+        "metric_separator" : ["", "bytes_DOWN"], 
+        "metric_legend": ["Somme des downloads des wans", "Download bande passante par le service -SERVICE- sur l'IP [-SRC_IP-]"],
+        "legend_text_to_replace": [{}, {"-SERVICE-" : "service: ", "-SRC_IP-": "src_ip: "}],
+        "y_axis_scales": {
+          "yNotStacked" : {
+            "stacked": false,
+            "display" : false
+          },
+          "yStacked" : {
+            "stacked": true,
+            "fill" : "origin"
+          }
+        },
+        "type": ""
+      },
+
+      "complex_pf_stats_connection_with_max_40m":{
+        "role": ["Support", "Admin", "User"],
+        "query": "(pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0'}[40m]) or sum(rate(input{wan=~'.%2B'}[40m]))",
+        "separator" : "bytes_DOWN",
+        "description":"pf_stats_connection_with_max",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth usage",
+            "fr": "Consommation bande passante"
+          },          
+          "unit" : "bytes",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": ""
+      },
+      
+
+      "complex_pf_stats_connection_with_max_1H":{
+        "role": ["Support", "Admin", "User"],
+        "query": "(pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0'}[1h]) or sum(rate(input{wan=~'.%2B'}[1h]))",
+        "include" : "bytes_DOWN",
+        "description":"pf_stats_connection_with_max",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth usage",
+            "fr": "Consommation bande passante"
+          },           
+          "unit" : "bytes",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": ""
+      }
     }
   },  
-  "example": {
-    "x": {
-      "unit": "___",
-      "min": 0
-    },
-    "y": {
-      "title" : "___",
-      "unit": "___",
-      "min": 0,
-      "step": "___"
-    },
-    "type": "range_vectors",
-    "promql": "deriv",
-    "tension": 1
-  },
   "output": {
     "x": {
       "unit": {
@@ -889,7 +1089,7 @@
     },
     "y": {
       "title" : {
-        "en": "Bandwidth consumption",
+        "en": "Bandwidth usage",
         "fr": "Consommation bande passante"
       },
       "unit" : "bytes",  
@@ -910,7 +1110,7 @@
     },
     "y": {
       "title" : {
-        "en": "Bandwidth consumption",
+        "en": "Bandwidth usage",
         "fr": "Consommation bande passante"
       },      
       "unit" : "bytes",
@@ -931,7 +1131,7 @@
     },
     "y": {
       "title" : {
-        "en": "Bandwidth consumption",
+        "en": "Bandwidth usage",
         "fr": "Consommation bande passante"
       },      
       "unit" : "bytes",    
@@ -952,7 +1152,7 @@
     },
     "y": {
       "title" : {
-        "en": "Bandwidth consumption",
+        "en": "Bandwidth usage",
         "fr": "Consommation bande passante"
       },
       "unit" : "bytes",
@@ -980,5 +1180,50 @@
     "type": "",
     "promql": "",
     "tension": 0.5
+  },
+
+  
+  "example_simple": {
+    "x": {
+      "unit": "___",
+      "min": 0
+    },
+    "y": {
+      "title" : "___",
+      "unit": "___",
+      "min": 0,
+      "step": "___"
+    },
+    "type": "range_vectors",
+    "promql": "deriv",
+    "tension": 1
+  },
+  "example_multi_query":{
+    "role": ["Support", "Admin", "User"],
+    "query": "promql query, use 'A(data_type=~'bytes_DOWN') or B()' to combine query A & B on the same Chart",
+    "description":"example of multi query structure",
+    "x": {
+      "unit": {
+        "fr": "X Axis Unit is time",
+        "en": ""
+      }
+    },
+    "y": {
+      "title" : {
+        "en": "Y axis Title",
+        "fr": ""
+      },          
+      "unit" : "y axis Unit"  
+    },
+    "separator" : "divide metrics into 2 parts -> separator example : 'bytes_DOWN'", 
+    "metricLegend": ["first part metrics legend, use -AAAAA- for text you want to replace", "second part metrics legend"],
+    "legendReplace": ["to replace use Object, [key = text to replace inside newLegend | value = key of oldLegend to acces the value we need]",{"-AAAAA-" : "aaaaa"}, {}],
+    "yAxis": {
+      "yStacked" : {
+        "chart option you want to had to the axis named yStacked": ""
+      } ,
+      "yNotStacked" : {
+      }
+    }
   }
 }
