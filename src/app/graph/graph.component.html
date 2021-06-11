@@ -127,6 +127,14 @@
               <mat-icon>multiline_chart</mat-icon>
             </button>
 
+            <!-- Select a specific IP -->
+            <mat-form-field appearance="fill">
+              <mat-label>IP</mat-label>
+              <mat-select [formControl]='this.graphs_records[query]["m_selected_IPs"]' multiple (selectionChange)='showIPSelection(this.graphs_records[query], graph_legends.get(query), query)'>
+                <mat-option *ngFor='let ip of this.graphs_records[query]["m_request_IPs"]' [value]="ip">{{ip}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
             <!-- remove metric -->
             <button *ngIf='!is_mobile' mat-button
               (click)='delete(query)'
@@ -142,7 +150,7 @@
         </div>
         <div class="graph_legend">
           <ul>
-            <li *ngFor='let legend of graph_legends.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
+            <li *ngFor='let legend of graph_legends_to_display.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
               <span [style.background]="legend.fillStyle" 
                 [style.borderColor]="legend.strokeStyle" 
                 [style.borderWidth]="legend.lineWidth + 'px'">
