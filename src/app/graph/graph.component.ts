@@ -675,11 +675,11 @@ export class GraphComponent implements OnInit {
     for ( const [key, value] of Object.entries(keyword_to_replace) )  {
       if ( element[value + ''] !== undefined ) {        // [value] : type unknown | [value+''] : type string
         new_label = new_label.replaceAll(key, element[value + '']);
-      } else {
-        let get_old_label_value = old_label.split(value)[1];
-        get_old_label_value = get_old_label_value.split(" }")[0];
-        new_label = new_label.replaceAll(key, get_old_label_value);
+        continue
       }
+      let get_old_label_value = old_label.split(value)[1];
+      get_old_label_value = get_old_label_value.split(" }")[0];
+      new_label = new_label.replaceAll(key, get_old_label_value);
     }
     return new_label;
   }
