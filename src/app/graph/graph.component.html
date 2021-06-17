@@ -159,12 +159,14 @@
         <div class="graph_legend">
           <ul style="flex-wrap: wrap; flex-direction: row; align-content: flex-start;">
             <li style="flex-direction: row;" *ngFor='let legend of graph_legends_to_display.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
+
               <span [style.background]="legend.fillStyle" 
                 [style.borderColor]="legend.strokeStyle" 
                 [style.borderWidth]="legend.lineWidth + 'px'">
               </span>
               <p style="display: inline-block;" 
                 [style.color]="legend.fontColor" 
+
                 [style.textDecoration]="legend.hidden ? 'line-through' : '' ">
                 {{legend.text}}
               </p>
