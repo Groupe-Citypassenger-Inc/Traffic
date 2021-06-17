@@ -617,8 +617,9 @@ export class GraphComponent implements OnInit {
     for (var i = 0; i < str.length; i++ ) {
       crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
     }
-    let tmpColor = ((crc ^ (-1)) >>> 0).toString(16);
-    return tmpColor.slice(0, 6-tmpColor.length);
+    let tmpColor = Math.abs(((crc ^ (-1)) >>> 0)).toString(16); 
+    tmpColor += '000000'; // tmpColor.length has to be 6 or above
+    return tmpColor.substring(0, 6);
   }
 
   // Compute a step for range_query (interval between 2 points in second)
@@ -1015,7 +1016,7 @@ export class GraphComponent implements OnInit {
     
     grm["m_stacked"] = _is_stacked;
     grm['m_chart'].data.datasets.forEach(element => {
-      if(element.yAxisID === "yStacked" || element.yAxisID === undefined){
+      if(element.yAxisID === "yStacked"){
         element.fill = _is_stacked ? 'origin' : false;
       }
     });
