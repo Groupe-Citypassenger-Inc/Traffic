@@ -803,7 +803,7 @@ export class GraphComponent implements OnInit {
           array_index = i
         }
       }
-      element.y_axis_id = y_axis_id[array_index];
+      element.yAxisID = y_axis_id[array_index];
       // keep old label if there is no label inside configuration
       if(metric_legend.length !== 0){
         let new_label = metric_legend[array_index];
@@ -1007,7 +1007,7 @@ export class GraphComponent implements OnInit {
     
     grm["m_stacked"] = _is_stacked;
     grm['m_chart'].data.datasets.forEach(element => {
-      if(element.y_axis_id === "yStacked" || element.y_axis_id === undefined){
+      if(element.yAxisID === "yStacked" || element.yAxisID === undefined){
         element.fill = _is_stacked ? 'origin' : false;
       }
     });
