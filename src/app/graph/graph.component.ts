@@ -671,11 +671,15 @@ export class GraphComponent implements OnInit {
 
   // for each keyword in keyword_to_replace
   // replace the keyword of new_label by the value of old_label
-  replaceLabel(old_label, new_label, keyword_to_replace){
-    for (const [key, value] of Object.entries(keyword_to_replace)) {
-      let get_old_label_value = old_label.split(value)[1];
-      get_old_label_value = get_old_label_value.split(" }")[0]
-      new_label = new_label.replaceAll(key, get_old_label_value);
+  replaceLabel(element, old_label, new_label, keyword_to_replace){
+    for (const [key, value] of Object.entries(keyword_to_replace))  {
+      if(element[value + ''] !== undefined){        // [value] : type unknown | [value+''] : type string
+        new_label = new_label.replaceAll(key, element[value + '']);
+      } else {
+        let get_old_label_value = old_label.split(value)[1];
+        get_old_label_value = get_old_label_value.split(" }")[0];
+        new_label = new_label.replaceAll(key, get_old_label_value);
+      }
     }
     return new_label;
   }
@@ -810,7 +814,7 @@ export class GraphComponent implements OnInit {
       // keep old label if there is no label inside configuration
       if(metric_legend.length !== 0){
         let new_label = metric_legend[array_index];
-        element.label = this.replaceLabel(old_label, new_label, legend_text_to_replace[array_index]);
+        element.label = this.replaceLabel(element, old_label, new_label, legend_text_to_replace[array_index]);
       }
     });
     let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw); 
