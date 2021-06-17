@@ -1,6 +1,6 @@
 {
   "name": "traffic",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host app.citypassenger.com --port 4200",
@@ -15,8 +15,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "int:extract": "ng extract-i18n --output-path src/multilingual --outFile translation.xlf",
-    "postinstall": "ngcc"
+    "int:extract": "ng extract-i18n --output-path src/multilingual --outFile translation.xlf"
   },
   "private": true,
   "dependencies": {
