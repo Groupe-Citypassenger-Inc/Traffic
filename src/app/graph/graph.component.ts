@@ -658,6 +658,9 @@ export class GraphComponent implements OnInit {
   }
 
   rewriteYAxisMaxValue(max_value_raw) {
+    if(max_value_raw == 0){
+      return 1;
+    }
     let length = Math.ceil(max_value_raw).toString().length;
     let add_or_remove_digits = 10**(length - 1)
     let max_value_rewrite = max_value_raw / add_or_remove_digits;
