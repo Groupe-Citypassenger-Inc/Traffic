@@ -767,6 +767,7 @@ export class GraphComponent implements OnInit {
           }
         },
         interaction: {
+          mode: 'index',
           intersect: false
         },
         elements: {
