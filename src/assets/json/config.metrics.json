@@ -74,7 +74,7 @@
       
       "sum_pfstats_restransmit_1h": {
         "role": ["Support", "Admin", "User"],
-        "query": "sum_over_time(pf_stats{data_type='retransmit', src_ip='0.0.0.0'}[1h])",
+        "query": "sum_over_time(pf_stats{data_type='retransmit'}[1h])",
         "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)",
         "x": {
           "unit": {
