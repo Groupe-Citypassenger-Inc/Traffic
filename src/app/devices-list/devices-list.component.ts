@@ -70,7 +70,6 @@ export class DevicesListComponent implements OnInit {
   theme_subscription : Subscription;
   metric_alternative_name: any = this.language.metric_alternative_name;
 
-  base_api_url: string = environment.city_url_api;
   prometheus_base_api_url = environment.prometheus_base_api_url;
 
   devices_informations: devices_informations = {};
@@ -127,11 +126,12 @@ export class DevicesListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let map_devices;    
+    let map_devices;
+    this.get_user_metrics();
     this.get_map_devices();
     this.datasource = new MatTableDataSource<any>(this.table_devices_informations);
   }
-  
+
   ngOnDestroy(): void {
     this.theme_subscription.unsubscribe();
   }
@@ -145,7 +145,7 @@ export class DevicesListComponent implements OnInit {
   }
 
   get_map_devices(): void {
-    let map_devices_api_url = this.base_api_url + '/ws/Map/Devices';
+    let map_devices_api_url = '/ws/Map/Devices';
     this.httpClient.request('GET', map_devices_api_url, {})
       .pipe(timeout(10000))
       .toPromise()
@@ -207,6 +207,7 @@ export class DevicesListComponent implements OnInit {
   }
 
   on_row_click(row: table_devices_info): void {
+    console.log(this.metric_alternative_name[this.user_information.role]);
     if ( this.devices_informations[row.group_name]['group_metric'] == 0 ) {
       this.devices_informations[row.group_name]['form_disabled'] = true;
     } else {
@@ -223,6 +224,25 @@ export class DevicesListComponent implements OnInit {
       }
     }
     if ( isDevMode() ) console.log(this.devices_informations);
+  }
+
+  get_user_metrics() {
+    const headers = new HttpHeaders().set("Content-Type", "application/json").set("Accept", "application/json");
+    let user_config_base_url = '/traffic/' + this._lang + '/assets/json/';
+    let user_config_url = user_config_base_url + this.user_information.username +  ".json.nousNeVoulousPlusDeConfigPerso";
+
+    this.httpClient.get<any>(user_config_url, {headers}).pipe(
+      catchError((err => {
+        console.log('Handling error locally and rethrowing it...', err);
+        return throwError(err);
+    })))
+    .subscribe(custom_config => // replace the file if the user has a custom configuration
+      { 
+        this.metrics_config = custom_config;
+      }, err => // No custom conf
+      { 
+        this.metrics_config = (metrics_config as any).default;
+      });
   }
 
   get_metric_list(row: table_devices_info): void {
@@ -280,7 +300,7 @@ export class DevicesListComponent implements OnInit {
     });
 
     prometheus_metrics.forEach(metric_name => {
-      if ( metric_name in this.metric_alternative_name[this.user_information.role] ) {
+      if (metric_name in this.metrics_config) {
         metric_list.push(metric_name);
       }
     })
@@ -292,7 +312,7 @@ export class DevicesListComponent implements OnInit {
   get_box_password(row: table_devices_info): void {
     let group_id: number = this.devices_informations[row.group_name]['group_id'];
     let group_name: string = row.group_name;
-    let group_info_api_url: string = this.base_api_url + '/ws/Group/Info/' + group_id;
+    let group_info_api_url: string = '/ws/Group/Info/' + group_id;
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.set('accept', 'application/json');

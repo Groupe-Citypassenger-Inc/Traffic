@@ -31,5 +31,9 @@ tr.element-row:not(.expanded-row):active {
   text-align: center;
 }
 .mat-form-field {
-  width: 80%;
+  width: 100%;
+}
+
+::ng-deep div.mat-select-panel {
+  max-height: 500px !important;
 }

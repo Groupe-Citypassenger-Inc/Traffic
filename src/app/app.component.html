@@ -11,8 +11,8 @@
       <mat-toolbar color='primary'>
         <mat-toolbar-row>
           <span>
-            <b>Baggage </b>
-            <mat-icon style='vertical-align: middle;'>work</mat-icon>
+            <b>Traffic </b>
+            <span style="font-size: 3rem;">🏎</span>          
           </span>
           <span class='spacer'></span>
 
@@ -34,13 +34,13 @@
             </button>
 
             <div>
-              <a href="/baggage/en/select">
+              <a href="/traffic/en/select">
                 <button mat-menu-item *ngIf='(site_locale == "fr")'>
                   <mat-icon svgIcon='gb_flag'></mat-icon>
                   <span>Basculez en anglais</span>
                 </button>
               </a>
-              <a href="/baggage/fr/select">
+              <a href="/traffic/fr/select">
                 <button mat-menu-item *ngIf='(site_locale == "en")'>
                   <mat-icon svgIcon='fr_flag'></mat-icon>
                   <span>Switch to French</span>

@@ -1,36 +1,1250 @@
 {
   "custom_metric":{
     "instant_vectors":{
-
-    },
-    "range_vectors":{
       
-    }
-  },
-  "LAN_1_+_2":{
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
+
+      "pf_stats_connection":{
+        "role": ["Support", "Admin", "User"],
+        "query":"pf_stats{data_type='count',service='CONTROLLER'}%2Fignoring(data_type)pf_stats{data_type='ccnx_count',service='CONTROLLER'}",
+        "description":"pf stats ccnx count",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connections"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": ""
+      },
+
+      "average_pfstats_latence": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne des applications supervisées",
+        "x": {
+          "unit": {
+            "fr": "ms",
+            "en": "ms"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": ""
+      },
+      
+      "average_pfstats_latence_DCS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DCS',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service DCS net",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "average_pfstats_latence_DFM": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DFM',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service DFM",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "average_pfstats_latence_RVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='RVA',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service RVA",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+      "average_pfstats_latence_MOVE": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='MOVE',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service MOVE",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+      "average_pfstats_latence_MAEVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='MAEVA',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service MAEVA",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+      "average_pfstats_latence_RBOX5": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='RBOX5',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service RBOX5",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+      "average_pfstats_latence_ARGUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='LARGUS',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service l'ARGUS",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+      "average_pfstats_latence_RPARTS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='RPARTS',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service RPARTS",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+      "average_pfstats_latence_DIALOGYS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='DIALOGYS',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service Dialogys",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "average_pfstats_latence_R_CAMPUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "avg_over_time(pf_stats{data_type='avg_latency',service='R_CAMPUS',src_ip='0.0.0.0'}[1h])",
+        "description": "Latence moyenne du service R_CAMPUS",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Latency",
+            "fr": "Latence"
+          },          
+          "unit" : "time", 
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": ""
+      },
+
+      "sum_pfstats_ccnxcount_1h": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur les applications supervisées (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_DCS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DCS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur DCS net (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_DFM": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DFM',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur DFM (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_RVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='RVA',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur RVA (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_MOVE": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='MOVE',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur MOVE (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },"sum_pfstats_ccnxcount_1h_MAEVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='MAEVA',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur MAEVA (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_RBOX5": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='RBOX5',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur RBOX5 (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_ARGUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='LARGUS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur l'Argus (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_RPARTS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='RPARTS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur RPARTS (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_DIALOGYS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DIALOGYS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur Dialogys (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_ccnxcount_1h_R_CAMPUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='R_CAMPUS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de connexions sur R_CAMPUS (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      "sum_pfstats_restransmit_1h": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_DCS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='DCS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur DCS net (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_DFM": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='DFM',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur DFM (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_RVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='RVA',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur RVA (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_MOVE": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='MOVE',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur MOVE (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_MAEVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='MAEVA',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur MAEVA (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_RBOX5": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='RBOX5',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur RBOX5 (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_ARGUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='LARGUS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur l'Argus (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_RPARTS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='RPARTS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur RPARTS (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_DIALOGYS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='DIALOGYS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur Dialogys (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "sum_pfstats_restransmit_1h_R_CAMPUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='retransmit',service='R_CAMPUS',src_ip='0.0.0.0'}[1h])",
+        "description": "Nombre de retransmissions sur R_CAMPUS (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of retransmissions",
+            "fr": "Nombre de retransmissions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+
+      
+
+      "sum_pfstats_ccnxcount_1h_DCS_all_ip": {
+        "role": ["Support", "Admin", "User"],
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count',service='DCS',src_ip%3D%7E'[%5E0].%2B'}[1h])",
+        "description": "Nombre de connexions sur DCS net (lissage 1h)",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Number of connections",
+            "fr": "Nombre de connexions"
+          },          
+          "unit" : "number",  
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      "pfstats_up": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_UP',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_down": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_DOWN',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      "pfstats_up_down_DCS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='DCS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_DFM": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='DFM',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_RVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='RVA',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_MOVE": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='MOVE',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_MAEVA": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='MAEVA',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_RBOX5": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='RBOX5',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_LARGUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='LARGUS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_RPARTS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='RPARTS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_DIALOGYS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='DIALOGYS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "pfstats_up_down_R_CAMPUS": {
+        "role": ["Support", "Admin", "User"],
+        "query": "pf_stats{data_type=~'bytes_(UP|DOWN)',service='R_CAMPUS',src_ip='0.0.0.0'}",
+        "description": "Consommation bande passante",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      
+
+      "output_wan_raw": {
+        "role": ["Support", "Admin", "User"],
+        "query": "output{wan=~'.%2B'}[10m]",
+        "description": "Wan output",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "output_wan": {
+        "role": ["Support", "Admin", "User"],
+        "query": "increase(output{wan=~'.%2B'}[10m])",
+        "description": "Wan output",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+      "input_wan_raw": {
+        "role": ["Support", "Admin", "User"],
+        "query": "input{wan=~'.%2B'}[10m]",
+        "description": "Wan input",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
+      },
+
+      
+      "input_wan": {
+        "role": ["Support", "Admin", "User"],
+        "query": "increase(input{wan=~'.%2B'}[10m])",
+        "description": "Wan input",
+        "x": {
+          "unit": {
+            "fr": "B",
+            "en": "o"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "Bandwidth consumption",
+            "fr": "Consommation bande passante"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": "",
+          "stacked": false
+        },
+        "type": "",
+        "promql": "",
+        "tension": 0.5
       }
     },
-    "y": {
-      "min": 0,
-      "step": 1
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
+    "range_vectors":{
+    }
+    
+  },  
   "example": {
     "x": {
-      "unit": "s",
+      "unit": "___",
       "min": 0
     },
     "y": {
-      "unit": "byte",
+      "title" : "___",
+      "unit": "___",
       "min": 0,
-      "step": ""
+      "step": "___"
     },
     "type": "range_vectors",
     "promql": "deriv",
@@ -44,8 +1258,14 @@
       }
     },
     "y": {
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },
+      "unit" : "bytes",  
       "min": 0,
-      "step": ""
+      "step": "",
+      "stacked": false
     },
     "type": "range_vectors",
     "promql": "deriv",
@@ -59,8 +1279,14 @@
       }
     },
     "y": {
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },      
+      "unit" : "bytes",
       "min": 0,
-      "step": ""
+      "step": "",
+      "stacked": false
     },
     "type": "range_vectors",
     "promql": "deriv",
@@ -68,13 +1294,20 @@
   },
   "output_raw": {
     "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
       }
     },
     "y": {
-      "min": 0
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },      
+      "unit" : "bytes",    
+      "min": 0,
+      "step": "",
+      "stacked": false
     },
     "type": "",
     "promql": "",
@@ -82,184 +1315,20 @@
   },
   "input_raw": {
     "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
+      "unit" : {
+        "en" : "B",
+        "fr" : "o"
       }
     },
     "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "go_goroutines": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "Devices_on_lan_gauge": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
+      "title" : {
+        "en": "Bandwidth consumption",
+        "fr": "Consommation bande passante"
+      },
+      "unit" : "bytes",
       "min": 0,
-      "step": 1
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "KVM_files_count": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0,
-      "step": 1
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "cpustats_cpu_usage_percent": {
-    "x": {
-      "unit": {
-        "fr":"%",
-        "en":"%"
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "memstats_memory_usage_percent": {
-    "x": {
-      "unit": {
-        "fr":"%",
-        "en":"%"
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "memstats_total_memory_bytes": {
-    "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "memstats_used_memory_bytes": {
-    "x": {
-      "unit": {
-        "fr":"o",
-        "en":"B"
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "scrape_duration_seconds": {
-    "x": {
-      "unit": {
-        "fr":"s",
-        "en":"s"
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "scrape_samples_post_metric_relabeling": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "scrape_samples_scraped": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "scrape_series_added": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0
-    },
-    "type": "",
-    "promql": "",
-    "tension": 0.5
-  },
-  "up": {
-    "x": {
-      "unit": {
-        "fr":"",
-        "en":""
-      }
-    },
-    "y": {
-      "min": 0,
-      "step": 1
+      "step": "",
+      "stacked": false
     },
     "type": "",
     "promql": "",
@@ -273,6 +1342,8 @@
       }
     },
     "y": {
+      "title" : "___",
+      "unit" :"___",
       "min": 0,
       "step": 1
     },

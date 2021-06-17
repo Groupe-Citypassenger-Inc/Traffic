@@ -1,4 +1,4 @@
-# Baggage
+# Traffic
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
 
@@ -16,7 +16,7 @@ You can change environnement variable in `src\environments\environment.prod.ts` 
 #### Run serve in dev mode
 Run `npm run start:fr` for development mode. If you would like to change the base href you can modify it in `/src/index.html:6`.
 
-Navigate to `http://app.citypassenger.com:4200/baggage/<fr|en>`. The app will automatically reload if you change any of the source files.
+Navigate to `http://app.citypassenger.com:4200/traffic/<fr|en>`. The app will automatically reload if you change any of the source files.
 
 #### Install in production
  ```bash
@@ -26,7 +26,7 @@ Navigate to `http://app.citypassenger.com:4200/baggage/<fr|en>`. The app will au
 #### Run serve in production mode
 Run `ng serve --host app.citypassenger.com --port 4200` for development mode. If you would like to change the base href you can modify it in `/src/index.html:6`.
 See [ng serve options](https://angular.io/cli/serve).
-Navigate to `http://app.citypassenger.com:4200/baggage/`. The app will automatically reload if you change any of the source files.
+Navigate to `http://app.citypassenger.com:4200/traffic/`. The app will automatically reload if you change any of the source files.
 
 ## Production build
 Run `ng build --prod --localize` for a dev server. 

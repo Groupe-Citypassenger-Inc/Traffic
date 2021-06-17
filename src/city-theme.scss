@@ -95,35 +95,35 @@ $custom-typography: mat-typography-config(
 @include angular-material-typography($custom-typography);
 
 /* LIGHT THEME */
-$city-baggage-light-theme-primary: mat-palette($md-cityblue);
-$city-baggage-light-theme-secondary: mat-palette($md-citygreen);
-$city-baggage-light-theme-warn: mat-palette($md-cityblue);
-$city-baggage-light-theme-accent: mat-palette($md-cityblue);
-$city-baggage-light-theme: mat-light-theme((
+$city-traffic-light-theme-primary: mat-palette($md-cityblue);
+$city-traffic-light-theme-secondary: mat-palette($md-citygreen);
+$city-traffic-light-theme-warn: mat-palette($md-cityblue);
+$city-traffic-light-theme-accent: mat-palette($md-cityblue);
+$city-traffic-light-theme: mat-light-theme((
   color: (
-    primary: $city-baggage-light-theme-primary,
-    secondary: $city-baggage-light-theme-secondary,
-    warn: $city-baggage-light-theme-warn, 
-    accent: $city-baggage-light-theme-accent
+    primary: $city-traffic-light-theme-primary,
+    secondary: $city-traffic-light-theme-secondary,
+    warn: $city-traffic-light-theme-warn, 
+    accent: $city-traffic-light-theme-accent
   )
 ));
-@include angular-material-theme($city-baggage-light-theme);
+@include angular-material-theme($city-traffic-light-theme);
 
 /* DARK THEME */
-$city-baggage-dark-theme-primary: mat-palette($md-cityblue, 500);
-$city-baggage-dark-theme-secondary: mat-palette($md-citygreen, 500);
-$city-baggage-dark-theme-warn: mat-palette($md-cityblue, 400);
-$city-baggage-dark-theme-accent: mat-palette($md-cityblue, A500);
-$city-baggage-dark-theme: mat-dark-theme((
+$city-traffic-dark-theme-primary: mat-palette($md-cityblue, 500);
+$city-traffic-dark-theme-secondary: mat-palette($md-citygreen, 500);
+$city-traffic-dark-theme-warn: mat-palette($md-cityblue, 400);
+$city-traffic-dark-theme-accent: mat-palette($md-cityblue, A500);
+$city-traffic-dark-theme: mat-dark-theme((
   color: (
-    primary: $city-baggage-dark-theme-primary,
-    secondary: $city-baggage-dark-theme-secondary,
-    warn: $city-baggage-dark-theme-warn,  
-    accent: $city-baggage-dark-theme-accent,
+    primary: $city-traffic-dark-theme-primary,
+    secondary: $city-traffic-dark-theme-secondary,
+    warn: $city-traffic-dark-theme-warn,  
+    accent: $city-traffic-dark-theme-accent,
   )
 ));
 .dark-theme-mode {
-  @include angular-material-color($city-baggage-dark-theme);
+  @include angular-material-color($city-traffic-dark-theme);
 }
 
 /* MAT CLASS */
