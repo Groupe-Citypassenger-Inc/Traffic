@@ -648,10 +648,10 @@ export class GraphComponent implements OnInit {
 
   getArrayMaxValue(array, array_max_value) {
     let reducer = (current_max, current_value) => { 
-      if (current_value >= 0) {
-        current_max = Math.max(current_max, current_value);
+      if ( isNaN(current_value) ) {
+        return current_max;
       }
-      return current_max;
+      return Math.max(current_max, current_value);
     }
     array_max_value = array.reduce(reducer, array_max_value);
     return array_max_value
