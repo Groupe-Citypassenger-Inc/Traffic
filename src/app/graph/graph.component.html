@@ -130,8 +130,16 @@
             <!-- Select a specific IP -->
             <mat-form-field appearance="fill">
               <mat-label>IP</mat-label>
-              <mat-select [formControl]='this.graphs_records[query]["m_selected_IPs"]' multiple (selectionChange)='showIPSelection(this.graphs_records[query], graph_legends.get(query), query)'>
+              <mat-select [formControl]='this.graphs_records[query]["m_selected_IPs"]' multiple (selectionChange)='showLegendSelected(this.graphs_records[query], graph_legends.get(query), query)'>
                 <mat-option *ngFor='let ip of this.graphs_records[query]["m_request_IPs"]' [value]="ip">{{ip}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Select a specific IP -->
+            <mat-form-field style="margin-left: 20px;" appearance="fill">
+              <mat-label>Service</mat-label>
+              <mat-select [formControl]='this.graphs_records[query]["m_selected_services"]' multiple (selectionChange)='showLegendSelected(this.graphs_records[query], graph_legends.get(query), query)'>
+                <mat-option *ngFor='let service of this.graphs_records[query]["m_request_services"]' [value]="service">{{service}}</mat-option>
               </mat-select>
             </mat-form-field>
 
@@ -149,13 +157,14 @@
           <canvas id={{query}} width="800" height="400"></canvas>
         </div>
         <div class="graph_legend">
-          <ul>
-            <li *ngFor='let legend of graph_legends_to_display.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
+          <ul style="flex-wrap: wrap; flex-direction: row; align-content: flex-start;">
+            <li style="flex-direction: row;" *ngFor='let legend of graph_legends_to_display.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
               <span [style.background]="legend.fillStyle" 
                 [style.borderColor]="legend.strokeStyle" 
                 [style.borderWidth]="legend.lineWidth + 'px'">
               </span>
-              <p [style.color]="legend.fontColor" 
+              <p style="display: inline-block;" 
+                [style.color]="legend.fontColor" 
                 [style.textDecoration]="legend.hidden ? 'line-through' : '' ">
                 {{legend.text}}
               </p>

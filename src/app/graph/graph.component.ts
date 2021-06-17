@@ -196,6 +196,8 @@ export class GraphComponent implements OnInit {
       m_hidden: false,
       m_request_IPs: [],
       m_selected_IPs: new FormControl(),
+      m_request_services: [],
+      m_selected_services: new FormControl(),
       m_stacked: false,
       t_value : this.default_value,
       t_unit : this.default_unit,
@@ -226,6 +228,8 @@ export class GraphComponent implements OnInit {
           m_hidden: false,
           m_request_IPs: [],
           m_selected_IPs: new FormControl(),
+          m_request_services: [],
+          m_selected_services: new FormControl(),
           m_stacked: false,
           t_value : +this.params_list['value'][index],
           t_unit : this.params_list['unit'][index],
@@ -428,7 +432,7 @@ export class GraphComponent implements OnInit {
 
         // Create legends
         this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
-        this.showIPSelection(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
+        this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
         // Apply graph options
         this.stack_lines(this.graphs_records[raw_metric_name]);
       });
@@ -490,6 +494,7 @@ export class GraphComponent implements OnInit {
     let metric_timestamp_list = [];
     let custom_metric = this.metrics_config['custom_metric'];
     let request_IPs = this.graphs_records[metric]["m_request_IPs"];
+    let request_services = this.graphs_records[metric]["m_request_services"];
     for ( const key in data_to_parse ) {
 
       let instance;
@@ -521,12 +526,16 @@ export class GraphComponent implements OnInit {
         label = metric + " [NO TRANSLATION]";
       }
 
+      let service = data_to_parse[key]['metric']["service"];
       let src_ip = data_to_parse[key]['metric']["src_ip"];
       if (false === request_IPs.includes(src_ip)) {
         request_IPs.push(src_ip);
         if(src_ip == '0.0.0.0') {
           this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
         }
+      }
+      if (false === request_services.includes(service)) {
+        request_services.push(service);
       }
 
       extra_label.forEach(element => {
@@ -539,17 +548,12 @@ export class GraphComponent implements OnInit {
         pointRadius: 1, // Graph dot size : 0 -> no dot
         borderColor : '#' + this.crc32(label), // Line color
         backgroundColor : '#' + this.crc32(label), // Legend color
+        src_ip: src_ip,
+        service: service,
       };
-      let selected_IPs = this.graphs_records[metric]["m_selected_IPs"].value;
-
-      if(selected_IPs !== null){
-        if (false === selected_IPs.includes(src_ip) ){
-          dataset.hidden = true;
-        }
-      } 
-
       datasets.push(dataset);
     }
+    this.graphs_records[metric]["m_selected_services"] = new FormControl(request_services);
     let parsed_data = {
       labels: metric_timestamp_list,
       datasets: datasets
@@ -571,25 +575,29 @@ export class GraphComponent implements OnInit {
     return crcTable;
   }
 
-  showIPSelection(grm, glm, metric){
+  showLegendSelected(grm, glm, metric){
+    let selected_services = grm["m_selected_services"].value;
     let selected_IPs = grm["m_selected_IPs"].value;
     let metric_legends_to_display = [];
-    glm.forEach(legend => {
-      if(false === legend.text.includes("src_ip")){
+    let datasets = grm['m_chart'].data.datasets;
+    glm.forEach((legend, index) => {
+      let src_ip = datasets[index]["src_ip"];
+      let service = datasets[index]["service"];
+      if(src_ip ==  undefined){ // always show legend if there is no IP
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
+      }
+      else if(false === selected_IPs.includes(src_ip)){
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
+        legend.hidden = true;
+      } else if (false === selected_services.includes(service)){
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
+        legend.hidden = true;
       } else {
-        let src_ip = legend.text.split("src_ip: ")[1];
-        src_ip = src_ip.split(" }")[0];
-        if(selected_IPs.includes(src_ip)){
-          metric_legends_to_display.push(legend);
-          grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
-          legend.hidden = false;
-        } else {
-          grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
-          legend.hidden = true;
-        }
+        metric_legends_to_display.push(legend);
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
+        legend.hidden = false;
       }
     });
     this.graph_legends_to_display.set(metric, metric_legends_to_display);
@@ -989,8 +997,6 @@ export class GraphComponent implements OnInit {
   stack_lines(grm:string): void {
     let _is_stacked: boolean 
     let name_y_axis;
-    console.log("grm['m_chart'].options.scales.y");
-    console.log(grm['m_chart'].options.scales.y);
     if(grm['m_chart'].options.scales.y !== undefined){
       name_y_axis = "y";
     }
