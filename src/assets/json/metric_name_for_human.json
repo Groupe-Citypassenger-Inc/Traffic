@@ -9,7 +9,7 @@
       "fr": "Nombre de connexions sur les applications supervisés (lissage 1h)"
     },
     "sum_pfstats_restransmit_1h": {
-      "en":" Number of retransmissions on supervised applications (smoothing 1h)",
+      "en": "Number of retransmissions on supervised applications (smoothing 1h)",
       "fr": "Nombre de retransmissions sur les applications supervisés (lissage 1h)"
     },
 
@@ -23,17 +23,17 @@
     },
 
     "output_wan":{
-      "en":"Output wan",
-      "fr":"Sortie wan"
+      "en": "Output wan",
+      "fr": "Sortie wan"
     },
     "input_wan":{
-      "en":"Input wan",
-      "fr":"Entrée wan"
+      "en": "Input wan",
+      "fr": "Entrée wan"
     },
 
     "pfstats_down_with_input_wan_15m": {
-      "en": "Bandwidth usage of supervised services compared to the total consumption",
-      "fr": "Consommation de bande passante des services supervisés par rapport à la consommation totale"
+      "en": "Bandwidth comparison, professional versus total",
+      "fr": "Consommation de bande passante des application métiers par rapport au total"
     }
   },
   "Support":{
@@ -46,7 +46,7 @@
       "fr": "Nombre de connexions sur les applications supervisés (lissage 1h)"
     },
     "sum_pfstats_restransmit_1h": {
-      "en":" Number of retransmissions on supervised applications (smoothing 1h)",
+      "en": "Number of retransmissions on supervised applications (smoothing 1h)",
       "fr": "Nombre de retransmissions sur les applications supervisés (lissage 1h)"
     },
 
@@ -60,17 +60,18 @@
     },
 
     "output_wan":{
-      "en":"Output wan",
-      "fr":"Sortie wan"
+      "en": "Output wan",
+      "fr": "Sortie wan"
     },
     "input_wan":{
-      "en":"Input wan",
-      "fr":"Entrée wan"
+      "en": "Input wan",
+      "fr": "Entrée wan"
     },
 
     "pfstats_down_with_input_wan_15m": {
-      "en": "Bandwidth usage of supervised services compared to the total consumption",
-      "fr": "Consommation de bande passante des services supervisés par rapport à la consommation totale"
+      "en": "Bandwidth comparison, professional versus total",
+      "fr": "Consommation de bande passante des application métiers par rapport au total"
+      
     }
   },
   "User":{
@@ -83,7 +84,7 @@
       "fr": "Nombre de connexions sur les applications supervisés (lissage 1h)"
     },
     "sum_pfstats_restransmit_1h": {
-      "en":" Number of retransmissions on supervised applications (smoothing 1h)",
+      "en": "Number of retransmissions on supervised applications (smoothing 1h)",
       "fr": "Nombre de retransmissions sur les applications supervisés (lissage 1h)"
     },
 
@@ -97,17 +98,17 @@
     },
 
     "output_wan":{
-      "en":"Output wan",
-      "fr":"Sortie wan"
+      "en": "Output wan",
+      "fr": "Sortie wan"
     },
     "input_wan":{
-      "en":"Input wan",
-      "fr":"Entrée wan"
+      "en": "Input wan",
+      "fr": "Entrée wan"
     },
 
     "pfstats_down_with_input_wan_15m": {
-      "en": "Bandwidth usage of supervised services compared to the total consumption",
-      "fr": "Consommation de bande passante des services supervisés par rapport à la consommation totale"
+      "en": "Bandwidth comparison, professional versus total",
+      "fr": "Consommation de bande passante des application métiers par rapport au total"
     }
   },
   "Marketing":{
