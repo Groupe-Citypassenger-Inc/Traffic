@@ -630,7 +630,7 @@ export class GraphComponent implements OnInit {
     const second_duration = ( end - start );
     let chart_width = window.innerWidth;
     let step: number;
-    step = Math.floor( second_duration / chart_width ) * 15;
+    step = Math.floor( second_duration / chart_width ) * 5;
 
     if ( step == 0 ) {
       step = 50;
@@ -991,27 +991,14 @@ export class GraphComponent implements OnInit {
 
   switch_stack_lines(grm) {
     let name_y_axis;
-    if(grm['m_chart'].options.scales.y !== undefined){
-      name_y_axis = "y";
-    }
-    else if(grm['m_chart'].options.scales.yStacked !== undefined){
-      name_y_axis = "yStacked";
-    }
-    grm['m_chart'].options.scales[name_y_axis].stacked = !grm['m_chart'].options.scales[name_y_axis].stacked
+    grm['m_chart'].options.scales.yStacked.stacked = !grm['m_chart'].options.scales.yStacked.stacked
 
     this.stack_lines(grm)
   }
 
   stack_lines(grm:string): void {
     let _is_stacked: boolean 
-    let name_y_axis;
-    if(grm['m_chart'].options.scales.y !== undefined){
-      name_y_axis = "y";
-    }
-    else if(grm['m_chart'].options.scales.yStacked !== undefined){
-      name_y_axis = "yStacked";
-    }
-    _is_stacked = grm['m_chart'].options.scales[name_y_axis].stacked
+    _is_stacked = grm['m_chart'].options.scales.yStacked.stacked
     
     grm["m_stacked"] = _is_stacked;
     grm['m_chart'].data.datasets.forEach(element => {
