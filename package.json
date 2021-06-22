@@ -1,6 +1,6 @@
 {
   "name": "traffic",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host app.citypassenger.com --port 4200",
@@ -33,6 +33,7 @@
     "@mat-datetimepicker/core": "^5.1.2",
     "chart.js": "^3.2.1",
     "chartjs-adapter-moment": "^1.0.0",
+    "city_style": "^1.1.4",
     "moment": "^2.29.1",
     "rxjs": "~6.6.7",
     "tslib": "^2.0.0",

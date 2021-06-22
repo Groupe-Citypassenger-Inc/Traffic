@@ -8,6 +8,7 @@ import { _countGroupLabelsBeforeOption } from '@angular/material/core';
 
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import Chart from 'chart.js/auto';
+import moment from "moment";
 import 'chartjs-adapter-moment';
 
 import { throwError, Subscription } from 'rxjs';
@@ -18,6 +19,7 @@ import { AuthService } from '../auth_services/auth.service';
 import { NotificationServiceService } from '../notification/notification-service.service'
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
+import { UNIT_INFORMATION } from '../../data.constants';
 
 export interface unit_conversion {
   minute : number,
@@ -93,6 +95,7 @@ export class GraphComponent implements OnInit {
 
   CRC_table:Array<number> = [];
   graph_legends = new Map();
+  graph_legends_to_display = new Map();
 
   constructor(private appRef: ChangeDetectorRef,  
               private _formBuilder: FormBuilder, 
@@ -116,6 +119,7 @@ export class GraphComponent implements OnInit {
       this.regenerate_all_graph();
     });
     this._is_dark_mode_enabled = this.theme_handler.get_theme() === 'Dark' ? true : false;
+    moment.locale(this._lang);
   }
   
   ngOnInit(): void {
@@ -190,6 +194,10 @@ export class GraphComponent implements OnInit {
     this.graphs_records[query] = {
       m_chart : "chart",
       m_hidden: false,
+      m_request_IPs: [],
+      m_selected_IPs: new FormControl(),
+      m_request_services: [],
+      m_selected_services: new FormControl(),
       m_stacked: false,
       t_value : this.default_value,
       t_unit : this.default_unit,
@@ -200,7 +208,7 @@ export class GraphComponent implements OnInit {
     }
     this.form_group.addControl(query, this.graphs_records[query]['t_date']);
     this.form_group_controls_subscription = this.form_group.controls[query].valueChanges.subscribe(date => {
-      if( isDevMode() ) {
+      if ( isDevMode() ) {
         console.log('Date changes :')
         console.log(date)
         console.log(query)
@@ -218,6 +226,10 @@ export class GraphComponent implements OnInit {
         this.graphs_records[query] = {
           m_chart : "chart",
           m_hidden: false,
+          m_request_IPs: [],
+          m_selected_IPs: new FormControl(),
+          m_request_services: [],
+          m_selected_services: new FormControl(),
           m_stacked: false,
           t_value : +this.params_list['value'][index],
           t_unit : this.params_list['unit'][index],
@@ -228,7 +240,7 @@ export class GraphComponent implements OnInit {
         }
         this.form_group.addControl(query, this.graphs_records[query]['t_date']);
         this.form_group_controls_subscription = this.form_group.controls[query].valueChanges.subscribe(date => {
-          if( isDevMode() ) {
+          if ( isDevMode() ) {
             console.log('Date changes :')
             console.log(date)
             console.log(query)
@@ -276,13 +288,13 @@ export class GraphComponent implements OnInit {
   }
 
   destroy_all(): void {
-    Chart.helpers.each(Chart.instances, function(instance){
+    Chart.helpers.each(Chart.instances, function(instance) {
       instance.chart.destroy();
     });
   }
 
   update_all(): void {
-    Chart.helpers.each(Chart.instances, function(instance){
+    Chart.helpers.each(Chart.instances, function(instance) {
       instance.chart.update();
     });
   }
@@ -312,11 +324,14 @@ export class GraphComponent implements OnInit {
 
     if ( isDevMode() ) console.log(this.metrics_config);
 
-    if (  metric_name in this.metrics_config ) {
+    if ( metric_name in this.metrics_config ) {
       if ( this.metrics_config[metric_name]['type'] == "range_vectors" ) {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + '[' + range + 'm])';
   
       } else if ( this.metrics_config[metric_name]['type'] == "instant_vectors" ) {
+        query = this.metrics_config[metric_name]['promql'] + '(' + query + ')';
+      
+      } else if ( this.metrics_config[metric_name]['type'] == "multi_query" ) {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + ')';
       }
     }
@@ -381,7 +396,7 @@ export class GraphComponent implements OnInit {
     }
 
     let url: string;
-    if( timestamp / 1000 - 3600 * 6 >= start_time || timestamp / 1000 - 3600 * 6  >= end_time) {
+    if ( timestamp / 1000 - 3600 * 6 >= start_time || timestamp / 1000 - 3600 * 6  >= end_time ) {
       if ( isDevMode() ) console.log('>= 6h');
       url = this.base_url + query;
     } else {
@@ -417,6 +432,7 @@ export class GraphComponent implements OnInit {
 
         // Create legends
         this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
+        this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
         // Apply graph options
         this.stack_lines(this.graphs_records[raw_metric_name]);
       });
@@ -438,21 +454,21 @@ export class GraphComponent implements OnInit {
 
       // Complete missing value before tab
       let firstTime = currentDataset[0][0];
-      if(firstTime > start_time){
+      if ( firstTime > start_time ) {
         let missingStepsBefore = (firstTime - start_time)/step ;
-        for(let i = missingStepsBefore; i > 0; i--){
+        for ( let i = missingStepsBefore; i > 0; i-- ) {
           let time = firstTime - (i * step);
           completedDataset.push([time, 'NaN']);
         }
       }
 
       // Complete missing value inside tab
-      for(let i = 0; i < currentDataset.length - 1; i++) {
+      for ( let i = 0; i < currentDataset.length - 1; i++ ) {
         let firstTime = currentDataset[i][0];
         let secondTime = currentDataset[i+1][0];
         let missingSteps = (secondTime - firstTime - step) / step;
         completedDataset.push(currentDataset[i]);
-        for(let j = 1; j <= missingSteps; j++){
+        for ( let j = 1; j <= missingSteps; j++ ) {
           let time = firstTime + (j * step);
           completedDataset.push([time, 'NaN']);
         }
@@ -460,9 +476,9 @@ export class GraphComponent implements OnInit {
 
       // Complete missing value after tab
       let lastTime = currentDataset[tabLength][0];
-      if(lastTime < end_time){
+      if ( lastTime < end_time ) {
         let missingStepsAfter = (end_time - lastTime)/step;
-        for(let i = 1; i <= missingStepsAfter; i++){
+        for ( let i = 1; i <= missingStepsAfter; i++ ) {
           let time = lastTime + (i * step);
           completedDataset.push([time, 'NaN']);
         }
@@ -477,13 +493,17 @@ export class GraphComponent implements OnInit {
     let datasets = [];
     let metric_timestamp_list = [];
     let custom_metric = this.metrics_config['custom_metric'];
+    let request_IPs = this.graphs_records[metric]["m_request_IPs"];
+    let request_services = this.graphs_records[metric]["m_request_services"];
     for ( const key in data_to_parse ) {
 
       let instance;
-      if ( metric in custom_metric['instant_vectors'] ){
+      if ( metric in custom_metric['instant_vectors'] ) {
         instance = custom_metric['instant_vectors'][metric]["description"]
-      } else if ( metric in custom_metric['range_vectors'] ){
+      } else if ( metric in custom_metric['range_vectors'] ) {
         instance = custom_metric['range_vectors'][metric]["description"]
+      } else if ( metric in custom_metric['multi_query'] ) {
+        instance = custom_metric['multi_query'][metric]["description"]
       } else {
         instance = data_to_parse[key]['metric']['job'];
       }
@@ -495,9 +515,9 @@ export class GraphComponent implements OnInit {
       });
       
       let extra_label: Array<string> = this.get_extra_labels(data_to_parse[key]['metric']);
-      let label: string;
-      if(this.metric_alternative_name[this.user_information.role][metric] !== undefined){
-        if (this.box_selected != null){
+      let label: string = '';
+      if ( this.metric_alternative_name[this.user_information.role][metric] !== undefined ) {
+        if ( this.box_selected != null ) {
           label = this.metric_alternative_name[this.user_information.role][metric][this._lang]
         } else {
           label = this.metric_alternative_name[this.user_information.role][metric][this._lang] + ' { instance: ' + instance + ' }';
@@ -505,6 +525,19 @@ export class GraphComponent implements OnInit {
       } else {
         label = metric + " [NO TRANSLATION]";
       }
+
+      let service = data_to_parse[key]['metric']["service"];
+      let src_ip = data_to_parse[key]['metric']["src_ip"];
+      if ( false === request_IPs.includes(src_ip) ) {
+        request_IPs.push(src_ip);
+        if ( src_ip == '0.0.0.0' ) {
+          this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
+        }
+      }
+      if ( false === request_services.includes(service) ) {
+        request_services.push(service);
+      }
+
       extra_label.forEach(element => {
         label = label + ' { ' + element + ': ' + data_to_parse[key]['metric'][element] + ' }';
       });
@@ -515,9 +548,12 @@ export class GraphComponent implements OnInit {
         pointRadius: 1, // Graph dot size : 0 -> no dot
         borderColor : '#' + this.crc32(label), // Line color
         backgroundColor : '#' + this.crc32(label), // Legend color
+        src_ip: src_ip,
+        service: service,
       };
       datasets.push(dataset);
     }
+    this.graphs_records[metric]["m_selected_services"] = new FormControl(request_services);
     let parsed_data = {
       labels: metric_timestamp_list,
       datasets: datasets
@@ -528,15 +564,44 @@ export class GraphComponent implements OnInit {
   makeCRCTable(): Array<any> {
     var c;
     var crcTable = [];
-    for(var n =0; n < 256; n++){
+    for ( var n = 0; n < 256; n++ ) {
       c = n;
-        for(var k =0; k < 8; k++){
+        for ( var k = 0; k < 8; k++ ) {
           c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
       }
       crcTable[n] = c;
     }
     this.CRC_table = crcTable;
     return crcTable;
+  }
+
+  showLegendSelected(grm, glm, metric) {
+    let selected_services = grm["m_selected_services"].value;
+    let selected_IPs = grm["m_selected_IPs"].value;
+    let metric_legends_to_display = [];
+    let datasets = grm['m_chart'].data.datasets;
+    glm.forEach((legend, index) => {
+      let src_ip = datasets[index]["src_ip"];
+      let service = datasets[index]["service"];
+      if ( src_ip ==  undefined ) { // always show legend if there is no IP
+        metric_legends_to_display.push(legend);
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
+        legend.hidden = false;
+      }
+      else if ( false === selected_IPs.includes(src_ip) ) {
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
+        legend.hidden = true;
+      } else if ( false === selected_services.includes(service) ) {
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
+        legend.hidden = true;
+      } else {
+        metric_legends_to_display.push(legend);
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
+        legend.hidden = false;
+      }
+    });
+    this.graph_legends_to_display.set(metric, metric_legends_to_display);
+    grm["m_chart"].update();
   }
 
   crc32(str: string): string {
@@ -549,11 +614,12 @@ export class GraphComponent implements OnInit {
     
     var crc = 0 ^ (-1);
 
-    for (var i = 0; i < str.length; i++ ) {
+    for ( var i = 0; i < str.length; i++ ) {
       crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
     }
-    let tmpColor = ((crc ^ (-1)) >>> 0).toString(16);
-    return tmpColor.slice(0, 6-tmpColor.length);
+    let tmpColor = Math.abs(((crc ^ (-1)) >>> 0)).toString(16); 
+    tmpColor += '000000'; // tmpColor.length has to be 6 or above
+    return tmpColor.substring(0, 6);
   }
 
   // Compute a step for range_query (interval between 2 points in second)
@@ -573,36 +639,77 @@ export class GraphComponent implements OnInit {
     return step;
   }
 
-  GetDefaultOrCurrent(value, defaultValue){
-    if (value === undefined || value === null || value === '') 
-    { 
+  GetDefaultOrCurrent(value, defaultValue) {
+    if ( value === undefined || value === null || value === '' ) { 
       return defaultValue;
     }
     return value;
+  }
+
+  getArrayMaxValue(array, array_max_value) {
+    let reducer = (current_max, current_value) => { 
+      if ( isNaN(current_value) ) {
+        return current_max;
+      }
+      return Math.max(current_max, current_value);
+    }
+    array_max_value = array.reduce(reducer, array_max_value);
+    return array_max_value
+  }
+
+  rewriteYAxisMaxValue(max_value_raw) {
+    if ( max_value_raw == 0 ) {
+      return 1;
+    }
+    let length = Math.ceil(max_value_raw).toString().length;
+    let add_or_remove_digits = 10**(length - 1)
+    let max_value_rewrite = max_value_raw / add_or_remove_digits;
+    max_value_rewrite = Math.ceil(max_value_rewrite/.5)*.5;
+    max_value_rewrite = max_value_rewrite * add_or_remove_digits;
+    return max_value_rewrite;
+  }
+
+  // for each keyword in keyword_to_replace
+  // replace the keyword of new_label by the value of old_label
+  replaceLabel(element, old_label, new_label, keyword_to_replace) {
+    for ( const [key, value] of Object.entries(keyword_to_replace) )  {
+      if ( element[value + ''] !== undefined ) {        // [value] : type unknown | [value+''] : type string
+        new_label = new_label.replaceAll(key, element[value + '']);
+        continue
+      }
+      let get_old_label_value = old_label.split(value)[1];
+      get_old_label_value = get_old_label_value.split(" }")[0];
+      new_label = new_label.replaceAll(key, get_old_label_value);
+    }
+    return new_label;
   }
 
   chart_builder(metric:string, data:Object): Chart {
     if ( isDevMode() ) {
       console.log('building : ' + metric + ' chart');
     }
+    let year_regex = /\/\d{4}/;
     let data_labels: Array<number> = data['labels'];
     let data_size = data_labels.length;
     let start: number = data_labels[0];
     let end: number = data_labels[data_size - 1];
     let delta: number = ( end - start ) / 1000;
     let x_axis_format: string;
-    let day_format: string;
-    if ( delta < 3 * 60 * 60 ) { // < 3h
+    let time_format: string;
+    if ( delta <= 3 * 60 * 60 ) { // <= 3h
+      time_format = 'LT';
       x_axis_format = 'minute';
-    } else if ( delta < 24 * 60 * 60 ) { // < 24h
+    } else if ( delta <= 24 * 60 * 60 ) { // <= 24h
+      time_format = 'LT';
       x_axis_format = 'hour';
-    } else if ( delta < 3 * 24 * 60 * 60 ) { // < 3j
-      day_format = 'DD hA';
+    } else if ( delta <= 3 * 24 * 60 * 60 ) { // <= 3j
+      time_format = 'L (LT)';
       x_axis_format = 'day';
     } else if ( delta < 15 * 24 * 60 * 60 ) { // < 15j
-      day_format = 'DD';
+      time_format = 'L';
       x_axis_format = 'day';
     } else { // > 15j
+      time_format = 'L'
       x_axis_format = 'month';
     }
     let ctx = document.getElementById(metric);
@@ -610,42 +717,21 @@ export class GraphComponent implements OnInit {
       throw new Error('An error as occured. Can\'t get id ok : ' + metric);
     }
 
-    let min = 0;
-    let unitX: string = '';
-    let unitY: string = '';
-    let yAxesTitle: string = '';
-    let stacked: boolean = false;
     let metricData = undefined;
-    if (metric in this.metrics_config ) {
+    if ( metric in this.metrics_config ) {
       metricData = this.metrics_config;
     } else if ( metric in this.metrics_config['custom_metric']['instant_vectors'] ) {
       metricData = this.metrics_config['custom_metric']['instant_vectors'];
-    }
-    if(metricData != undefined){
-      unitX = this.GetDefaultOrCurrent(metricData[metric]['x']['unit'], '');
-      unitY = this.GetDefaultOrCurrent(metricData[metric]['y']['unit'], '');
-      yAxesTitle = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
-      min = this.GetDefaultOrCurrent(metricData[metric]['y']['min'], 0);
-      stacked = this.GetDefaultOrCurrent(metricData[metric]['y']['stacked'], false);
+    } else if ( metric in this.metrics_config['custom_metric']['multi_query'] ) {
+      metricData = this.metrics_config['custom_metric']['multi_query'];
     }
     let color: string = '#000000'; //default value
-    if( this._is_dark_mode_enabled ) {
+    if ( this._is_dark_mode_enabled ) {
       color = '#e2e2e2'
     }
 
-    let unitInformation = new Map();
-    unitInformation.set('bytes', ['B', 'KB', 'MB', 'GB', 'TB', 'TB']);
-    unitInformation.set('number', ['', 'K', 'M', 'B', 'T']);
-    unitInformation.set('time', ['ms', 's']);
-    unitInformation.set('unknownName', ['wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name', 'wrong unit name']);
-    unitInformation.set('', ['', '', '', '', '', '']);
-
-    if(unitInformation.get(unitY) === undefined)
-    {
-      unitY = "unknownName";
-    }
-
-    const config = {
+    // General config
+    let config = {
       type: 'line',
       data: data,
       options: {
@@ -655,31 +741,19 @@ export class GraphComponent implements OnInit {
           x: {
             type: 'time',
             time: {
-              unit: x_axis_format,
-              displayFormats: {
-                day: day_format,
-              },
+              unit: x_axis_format
+            },
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 15,
+              callback: function(value, index, values) {
+                let moment_label = moment(values[index].value);
+                let formated_label = moment_label.format(time_format);
+                formated_label = formated_label.replace(year_regex, '');
+                return formated_label;
+              }
             }
           },
-          y: {
-            stacked: stacked,
-            suggestedMin: min,
-            suggestedMax: 1, // this will avoid y axis going from -1 to 1 if all values are 0
-            ticks: {
-              callback: function(value, index) {
-                let thousandCounter = 0;
-                while(value >= 1000){
-                  value = value / 1000;
-                  thousandCounter ++;
-                }
-                return value + ' ' + unitInformation.get(unitY)[thousandCounter];
-              }
-            },
-            title : {
-              display: true,
-              text: yAxesTitle
-            }
-          }
         },
         plugins: {
           filler: {
@@ -687,9 +761,13 @@ export class GraphComponent implements OnInit {
           },
           legend: {
             display: false,
+            labels: {
+              fontColor: color,
+            }
           }
         },
         interaction: {
+          mode: 'index',
           intersect: false
         },
         elements: {
@@ -703,20 +781,82 @@ export class GraphComponent implements OnInit {
         }
       }
     }
+
+    // Request config
+    let y_axis_unit = this.GetDefaultOrCurrent(metricData[metric]['y']['unit'], '');
+    let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
+    let y_axis_min = this.GetDefaultOrCurrent(metricData[metric]['y']['min'], 0);
+    let y_axis_scales = this.GetDefaultOrCurrent(metricData[metric]['y_axis_scales'], []);
+    let y_axis_id;
+    if ( y_axis_scales !== undefined ) {
+      y_axis_id = Object.keys(y_axis_scales);
+    }
+    let metric_separator = this.GetDefaultOrCurrent(metricData[metric]['metric_separator'], []);
+    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
+    let metric_legend = this.GetDefaultOrCurrent(metricData[metric]['metric_legend'], []);
+    let legend_text_to_replace = this.GetDefaultOrCurrent(metricData[metric]['legend_text_to_replace'], []);
+
+    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
+    {
+      y_axis_unit = "unknownName";
+    }
+
+    let request_max_value_raw = 0; // init
+    data["datasets"].forEach(element => {
+      let old_label = element.label;
+      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
+      let array_index;
+      for ( let i = 0; i < metric_separator.length; i++ ) {
+        if ( element.label.includes(metric_separator[i]) ) {
+          array_index = i
+        }
+      }
+      element.yAxisID = y_axis_id[array_index];
+      // keep old label if there is no label inside configuration
+      if ( metric_legend.length !== 0 ) {
+        let new_label = metric_legend[array_index];
+        element.label = this.replaceLabel(element, old_label, new_label, legend_text_to_replace[array_index]);
+      }
+    });
+    let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw); 
+
+    for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
+      config.options.scales[scaleKey] = {
+        title : {
+          display: true,
+          text: y_axis_title
+        },
+        min: y_axis_min,
+        max: ceiled_request_max_value_y,
+        ticks: {
+          callback: function(value, index) {
+            let thousand_counter = 0;
+            while ( value >= 1000 ) {
+              value = value / 1000;
+              thousand_counter ++;
+            }
+            return value + ' ' + unit_value_list[thousand_counter];
+          }
+        }
+      }
+      for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
+        config.options.scales[scaleKey][optionsKey] = optionsValue;
+      }
+    }
     var chart = new Chart(ctx, config);
     return chart;
   }
 
   // Show/Hide legend and curve on click
-  switch_visibility_legend(legend, metric_chart){
+  switch_visibility_legend(legend, metric_chart) {
     metric_chart.setDatasetVisibility(legend.datasetIndex, !metric_chart.isDatasetVisible(legend.datasetIndex));
     legend.hidden = !legend.hidden;
     metric_chart.update();
   }
 
-  keep_legend_visibility(metric, chart){
+  keep_legend_visibility(metric, chart) {
     let legends = this.graph_legends.get(metric);
-    if(legends !== undefined){
+    if ( legends !== undefined ) {
       legends.forEach(legend => {
         chart.setDatasetVisibility(legend.datasetIndex, !legend.hidden);
       });
@@ -837,7 +977,7 @@ export class GraphComponent implements OnInit {
     let _is_disabled: boolean = this.graphs_records[metric]["m_hidden"];
     this.graphs_records[metric]['m_chart'].data.datasets.forEach((dataSet, i) => {
       var meta = this.graphs_records[metric]['m_chart'].getDatasetMeta(i);
-      if (meta.hidden == null){
+      if ( meta.hidden == null ) {
         meta.hidden = _is_disabled;
       }
       meta.hidden = !_is_disabled;
@@ -850,16 +990,21 @@ export class GraphComponent implements OnInit {
   }
 
   switch_stack_lines(grm) {
-    grm["m_stacked"] = !grm["m_stacked"]
+    let name_y_axis;
+    grm['m_chart'].options.scales.yStacked.stacked = !grm['m_chart'].options.scales.yStacked.stacked
+
     this.stack_lines(grm)
   }
 
   stack_lines(grm:string): void {
-    let _is_stacked: boolean = grm["m_stacked"];
-    grm['m_chart'].options.scales.y.stacked = _is_stacked;
+    let _is_stacked: boolean 
+    _is_stacked = grm['m_chart'].options.scales.yStacked.stacked
+    
     grm["m_stacked"] = _is_stacked;
     grm['m_chart'].data.datasets.forEach(element => {
-      element.fill = _is_stacked ? 'origin' : false;;
+      if ( element.yAxisID === "yStacked" ) {
+        element.fill = _is_stacked ? 'origin' : false;
+      }
     });
     grm['m_chart'].update();
   }
@@ -870,7 +1015,7 @@ export class GraphComponent implements OnInit {
     } else {
       Chart.defaults.global.defaultFontColor = 'black';
     }
-    Chart.helpers.each(Chart.instances, function(instance){
+    Chart.helpers.each(Chart.instances, function(instance) {
       instance.chart.update();
     });
   }
