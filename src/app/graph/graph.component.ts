@@ -528,14 +528,18 @@ export class GraphComponent implements OnInit {
 
       let service = data_to_parse[key]['metric']["service"];
       let src_ip = data_to_parse[key]['metric']["src_ip"];
-      if ( false === request_IPs.includes(src_ip) ) {
-        request_IPs.push(src_ip);
-        if ( src_ip == '0.0.0.0' ) {
-          this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
+      if ( src_ip !== undefined ) {
+        if ( false === request_IPs.includes(src_ip) ) {
+          request_IPs.push(src_ip);
+          if ( src_ip == '0.0.0.0' ) {
+            this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
+          }
         }
       }
-      if ( false === request_services.includes(service) ) {
-        request_services.push(service);
+      if ( service !== undefined ) {
+        if ( false === request_services.includes(service) ) {
+          request_services.push(service);
+        }
       }
 
       extra_label.forEach(element => {
