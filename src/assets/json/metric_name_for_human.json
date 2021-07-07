@@ -1,5 +1,5 @@
 {
-  "Admin":{
+  "Admin": {
     "average_pfstats_latence_1h": {
       "en": "Average latency of supervised applications (1h smoothing)",
       "fr": "Latence moyenne des applications supervisés (lissage 1h)"
@@ -22,13 +22,18 @@
       "fr": "Consommation de données (download)"
     },
 
-    "output_wan":{
+    "output_wan": {
       "en": "Output wan",
       "fr": "Sortie wan"
     },
-    "input_wan":{
+    "input_wan": {
       "en": "Input wan",
       "fr": "Entrée wan"
+    },
+
+    "largest_connection": {
+      "en": "Largest bandwidth connections",
+      "fr": "Connexions les plus consommatrices"
     },
 
     "pfstats_down_with_input_wan_15m": {
@@ -36,7 +41,7 @@
       "fr": "Consommation de bande passante des application métiers par rapport au total"
     }
   },
-  "Support":{
+  "Support": {
     "average_pfstats_latence_1h": {
       "en": "Average latency of supervised applications (1h smoothing)",
       "fr": "Latence moyenne des applications supervisés (lissage 1h)"
@@ -59,22 +64,26 @@
       "fr": "Consommation de données (download)"
     },
 
-    "output_wan":{
+    "output_wan": {
       "en": "Output wan",
       "fr": "Sortie wan"
     },
-    "input_wan":{
+    "input_wan": {
       "en": "Input wan",
       "fr": "Entrée wan"
+    },
+
+    "largest_connection": {
+      "en": "Largest bandwidth connections",
+      "fr": "Connexions les plus consommatrices"
     },
 
     "pfstats_down_with_input_wan_15m": {
       "en": "Bandwidth comparison, professional versus total",
       "fr": "Consommation de bande passante des application métiers par rapport au total"
-      
     }
   },
-  "User":{
+  "User": {
     "average_pfstats_latence_1h": {
       "en": "Average latency of supervised applications (1h smoothing)",
       "fr": "Latence moyenne des applications supervisés (lissage 1h)"
@@ -97,13 +106,18 @@
       "fr": "Consommation de données (download)"
     },
 
-    "output_wan":{
+    "output_wan": {
       "en": "Output wan",
       "fr": "Sortie wan"
     },
-    "input_wan":{
+    "input_wan": {
       "en": "Input wan",
       "fr": "Entrée wan"
+    },
+
+    "largest_connection": {
+      "en": "Largest bandwidth connections",
+      "fr": "Connexions les plus consommatrices"
     },
 
     "pfstats_down_with_input_wan_15m": {
@@ -111,8 +125,6 @@
       "fr": "Consommation de bande passante des application métiers par rapport au total"
     }
   },
-  "Marketing":{
-  },
-  "Commercial ":{
-  }
+  "Marketing": {},
+  "Commercial ": {}
 }
