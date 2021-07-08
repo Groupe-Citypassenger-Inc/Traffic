@@ -688,6 +688,22 @@ export class GraphComponent implements OnInit {
     return new_label;
   }
 
+  value_modulo_thousand(value, unit_list) {
+    let thousand_counter = 0;
+    value *= 1; // turn string to int
+    while (value >= 1000) {
+      value = value / 1000;
+      thousand_counter++;
+    }
+    let decimal = 0;
+    if ( value < 10 ) {
+      decimal = 1;
+    }
+    return value.toFixed(decimal) + ' ' + unit_list[thousand_counter];
+  }
+
+    return value.toFixed(decimal) + ' ' + unit_list[thousand_counter];
+  }
   chart_builder(metric:string, data:Object): Chart {
     if ( isDevMode() ) {
       console.log('building : ' + metric + ' chart');
