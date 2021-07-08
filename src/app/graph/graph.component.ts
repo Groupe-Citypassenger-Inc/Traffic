@@ -96,7 +96,7 @@ export class GraphComponent implements OnInit {
   CRC_table:Array<number> = [];
   graph_legends = new Map();
   graph_legends_to_display = new Map();
-  selected_day = new Date();
+  selected_day: Date = new Date();
   maxDate: Date = new Date();
 
   constructor(private appRef: ChangeDetectorRef,  
@@ -701,7 +701,7 @@ export class GraphComponent implements OnInit {
     return new_label;
   }
 
-  value_modulo_thousand(value, unit_list) {
+  add_unit_to_value(value, unit_list) {
     let thousand_counter = 0;
     value *= 1; // turn string to int
     while (value >= 1000) {
@@ -837,13 +837,13 @@ export class GraphComponent implements OnInit {
         if (element.raw == undefined) {
           return;
         }
-        footer += this.value_modulo_thousand(element.raw, unit_value_list);
+        footer += this.add_unit_to_value(element.raw, unit_value_list);
       });
       return footer;
     }
 
     const x_ticks_callback = (value, index) => {  
-      return this.value_modulo_thousand(value, unit_value_list);
+      return this.add_unit_to_value(value, unit_value_list);
     }
 
     let config = {
@@ -985,7 +985,7 @@ export class GraphComponent implements OnInit {
                 if ( label ) {
                   label += ": ";
                 }
-                return label += this.value_modulo_thousand(context.raw, unit_value_list) 
+                return label += this.add_unit_to_value(context.raw, unit_value_list) 
               }
             }
           }
