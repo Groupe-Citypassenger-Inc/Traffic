@@ -242,6 +242,45 @@
           }
         },
         "type": ""
+      },
+
+      "largest_connection": {
+        "chart_type" : "bar",
+        "indexAxis": "y",
+        "chart_date_picker": "day_type",
+        "role": ["Support", "Admin", "User"],
+        "query": "outlyers_download{<box_filter>}",
+        "description": "Largest connection of the day",
+        "legend_title": "IP source",
+        "x": {
+          "unit": {
+            "fr": "",
+            "en": ""
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "IP Destination",
+            "fr": "IP Destination"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": ""
+        },
+        "metric_separator" : [""], 
+        "metric_legend": ["[-SRC_IP-] -> [-DST_IP-]"],
+        "legend_text_to_replace": [{"-SRC_IP-": "src_ip", "-DST_IP-": "dst_ip: "}],
+        "y_axis_scales": {
+          "yNotStacked" : {
+            "stacked": false,
+            "display" : false
+          },
+          "yStacked" : {
+            "stacked": true,
+            "fill" : "origin"
+          }
+        },
+        "type": ""
       }
     },
     "range_vectors":{
