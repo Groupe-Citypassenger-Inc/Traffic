@@ -702,8 +702,188 @@ export class GraphComponent implements OnInit {
     return value.toFixed(decimal) + ' ' + unit_list[thousand_counter];
   }
 
-    return value.toFixed(decimal) + ' ' + unit_list[thousand_counter];
+  horizontal_bar_chart_builder(metric:string, rawData:Object): Chart {
+    let metricData = undefined;
+    if (metric in this.metrics_config) {
+      metricData = this.metrics_config;
+    } else if (metric in this.metrics_config['custom_metric']['instant_vectors']) {
+      metricData = this.metrics_config['custom_metric']['instant_vectors'];
+    } else if (metric in this.metrics_config['custom_metric']['multi_query']) {
+      metricData = this.metrics_config['custom_metric']['multi_query'];
+    }
+    let legend_title = this.GetDefaultOrCurrent(metricData[metric]['legend_title'], '');
+    let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
+    let show_x_elements = 10;
+    let labels = [];
+    let datasets = [];
+    let src_ip_list = [];
+    let data_index = 0;
+    let dataset_index = 0;
+
+    rawData["data"]["result"].sort(function (a, b) {
+      return b.values[0][1] - a.values[0][1];
+    });
+
+    while (labels.length < show_x_elements && rawData["data"]["result"].length > data_index) {
+      let element = rawData[data_index];
+      let value = element.values[0][1]; // metric bytes volume
+      let m = element.metric;
+
+      // avoid data if under 5 Mo per 30min
+      let mega_octets_per_30_min = (value * 1800) / m.age;
+      if (mega_octets_per_30_min < 5 * 1000 * 1000) {
+        data_index++;
+        continue;
+      }
+
+      // add volume to dataset if src_ip already exist
+      if (src_ip_list.includes(m.src_ip)) {
+        let dataset = datasets.find((obj) => obj.label === m.src_ip);
+        dataset.data[dataset_index] = value;
+      }
+      // create new dataset
+      else {
+        src_ip_list.push(m.src_ip);
+        let new_dataset = {
+          label: m.src_ip,
+          data: new Array(show_x_elements),
+          backgroundColor: BACKGROUND_COLOR[datasets.length],
+          start: (m.end_time - m.age) * 1000,
+          end: m.end_time + 0,
+          duration: m.age,
+          protocole: m.proto,
+        };
+        new_dataset.data[dataset_index] = value;
+        datasets.push(new_dataset);
+      }
+      labels.push(m.dst_ip + ':' + m.dst_port);
+      data_index++;
+      dataset_index++;
+    }
+
+  
+
+    let data = { labels, datasets };
+    let ctx = document.getElementById(metric);
+    let unit_value_list = UNIT_INFORMATION.get("bytes")[this._lang]
+
+    // tooltip tile callback
+    const title = (tooltipItems) => {
+      let title = '';
+      tooltipItems.forEach((element) => {
+        if (element.raw == undefined) {
+          return;
+        }
+        title = element.dataset.label + ' -> ' + element.label;
+      });
+      return title;
+    };
+
+    // tooltip label callback
+    const label = (context) => {
+      if (context.raw == undefined) {
+        return;
+      }
+      let duration = context.dataset.duration;
+      let minutes = Math.floor(duration / 60);
+      let hours = 0;
+      if (minutes >= 60) {
+        hours = Math.floor(minutes / 60);
+        minutes = minutes % 60;
+      }
+      let secondes = duration % 60;
+      let string_secondes = secondes.toLocaleString('en-US', {
+        minimumIntegerDigits: 2,
+      });
+      let string_minutes = minutes.toLocaleString('en-US', {
+        minimumIntegerDigits: 2,
+      });
+      let formated_duration = '(';
+      if (hours != 0) {
+        formated_duration += hours + ':';
+      }
+      formated_duration += string_minutes + ':' + string_secondes + ')';
+  
+      let label = moment(new Date(context.dataset.start)).format('LLL') + ' ' + formated_duration;
+  
+      return label;
+    }
+
+    // tooltip after label callback
+    const afterLabel = (context) => {
+      if (context.raw == undefined) {
+        return;
+      }
+      return 'Protocole: ' + context.dataset.protocole;
+    }
+
+    // tooltip footer callback
+    const footer = (tooltipItems) => {
+      let footer = 'Volume: ';
+      tooltipItems.forEach((element) => {
+        if (element.raw == undefined) {
+          return;
+        }
+        footer += this.value_modulo_thousand(element.raw, unit_value_list);
+      });
+      return footer;
+    }
+
+    const x_ticks_callback = (value, index) => {  
+      return this.value_modulo_thousand(value, unit_value_list);
+    }
+
+    let config = {
+      type: 'bar',
+      data: data,
+      options: {
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        elements: {
+          bar: {
+            borderWidth: 0,
+          }
+        },
+        scales: {
+          x : {
+            ticks: {
+              callback: x_ticks_callback
+            }
+          },
+          y : {
+            stacked: true,
+            title: {
+              display : true,
+              text: y_axis_title
+            },
+          },
+        },
+        responsive: true,
+        plugins: {
+          legend: {
+            title: {
+              display : true,
+              text: legend_title
+            },
+            position: 'right',
+          },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              title : title,
+              label: label,
+              afterLabel: afterLabel,
+              footer: footer
+            }
+          }
+        }
+      }
+    };
+
+    let chart = new Chart(ctx, config);
+    return chart
   }
+
   chart_builder(metric:string, data:Object): Chart {
     if ( isDevMode() ) {
       console.log('building : ' + metric + ' chart');
