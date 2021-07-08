@@ -727,8 +727,8 @@ export class GraphComponent implements OnInit {
     let legend_title = this.GetDefaultOrCurrent(metricData[metric]['legend_title'], '');
     let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
     let show_x_elements = 10;
-    let chart_labels = [];
-    let chart_datasets = [];
+    let labels = [];
+    let datasets = [];
     let src_ip_list = [];
     let data_index = 0;
     let dataset_index = 0;
@@ -737,7 +737,7 @@ export class GraphComponent implements OnInit {
       return b.values[0][1] - a.values[0][1];
     });
 
-    while (chart_labels.length < show_x_elements && rawData["data"]["result"].length > data_index) {
+    while (labels.length < show_x_elements && rawData["data"]["result"].length > data_index) {
       let data_element = rawData["data"]["result"][data_index];
       let value = data_element.values[0][1]; // metric bytes volume
       let metric = data_element.metric;
@@ -751,7 +751,7 @@ export class GraphComponent implements OnInit {
 
       // add volume to dataset if src_ip already exist
       if (src_ip_list.includes(metric.src_ip)) {
-        let dataset = chart_datasets.find((obj) => obj.label === metric.src_ip);
+        let dataset = datasets.find((obj) => obj.label === metric.src_ip);
         dataset.data[dataset_index] = value;
       }
       // create new dataset
@@ -760,23 +760,23 @@ export class GraphComponent implements OnInit {
         let new_dataset = {
           label: metric.src_ip,
           data: new Array(show_x_elements),
-          backgroundColor: BACKGROUND_COLOR[chart_datasets.length],
+          backgroundColor: BACKGROUND_COLOR[datasets.length],
           start: (metric.end_time - metric.age) * 1000,
           end: metric.end_time + 0,
           duration: metric.age,
           protocole: metric.proto,
         };
         new_dataset.data[dataset_index] = value;
-        chart_datasets.push(new_dataset);
+        datasets.push(new_dataset);
       }
-      chart_labels.push(metric.dst_ip + ':' + metric.dst_port);
+      labels.push(metric.dst_ip + ':' + metric.dst_port);
       data_index++;
       dataset_index++;
     }
 
   
 
-    let chart_data = { chart_labels, chart_datasets };
+    let data = { labels, datasets };
     let ctx = document.getElementById(metric);
     let unit_value_list = UNIT_INFORMATION.get("bytes")[this._lang]
 
@@ -848,7 +848,7 @@ export class GraphComponent implements OnInit {
 
     let config = {
       type: 'bar',
-      data: chart_data,
+      data: data,
       options: {
         maintainAspectRatio: false,
         indexAxis: 'y',
