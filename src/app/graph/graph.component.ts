@@ -19,7 +19,7 @@ import { AuthService } from '../auth_services/auth.service';
 import { NotificationServiceService } from '../notification/notification-service.service'
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
-import { UNIT_INFORMATION } from '../../data.constants';
+import { UNIT_INFORMATION, BACKGROUND_COLOR } from '../../data.constants';
 
 export interface unit_conversion {
   minute : number,
@@ -370,11 +370,12 @@ export class GraphComponent implements OnInit {
     let raw_metric_name = metric;
     
     let query = '';
-
+    let chart_type = '';
     let custom_metric = this.metrics_config['custom_metric'];
-
     Object.keys(custom_metric).forEach(vector_type =>{
       if ( metric in custom_metric[vector_type] ) {
+        chart_type = custom_metric[vector_type][metric]['chart_type']; 
+        this.graphs_records[metric]["chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker']; 
         query =  '/query_range?query=' + custom_metric[vector_type][metric]['query'];
         if ( selected_box != null ) {
           let box_filter: string = 'job=~"'+ selected_box +'.*"';
@@ -429,6 +430,10 @@ export class GraphComponent implements OnInit {
           throw new Error ('Request to prom : not successful');
         }
         // Complete data
+        if ( chart_type === "bar" ){
+          this.graphs_records[raw_metric_name]['m_chart'] = this.horizontal_bar_chart_builder(raw_metric_name, response);
+          return
+        }
         let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
         // Parse data
         let parsed_data = this.parse_response(data_completed_to_parse, raw_metric_name);
@@ -447,7 +452,6 @@ export class GraphComponent implements OnInit {
   get_extra_labels(response:any): Array<string> {
     delete response['__name__'];
     delete response['instance'];
-    delete response['job'];
     let extra_label = Object.keys(response);
     return extra_label;
   }
@@ -597,8 +601,11 @@ export class GraphComponent implements OnInit {
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
-      }
-      else if ( false === selected_IPs.includes(src_ip) ) {
+      } else if ( service ==  undefined ) { // always show legend if there is no IP
+        metric_legends_to_display.push(legend);
+        grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
+        legend.hidden = false;
+      } else if ( false === selected_IPs.includes(src_ip) ) {
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
         legend.hidden = true;
       } else if ( false === selected_services.includes(service) ) {
@@ -720,8 +727,8 @@ export class GraphComponent implements OnInit {
     let legend_title = this.GetDefaultOrCurrent(metricData[metric]['legend_title'], '');
     let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
     let show_x_elements = 10;
-    let labels = [];
-    let datasets = [];
+    let chart_labels = [];
+    let chart_datasets = [];
     let src_ip_list = [];
     let data_index = 0;
     let dataset_index = 0;
@@ -730,46 +737,46 @@ export class GraphComponent implements OnInit {
       return b.values[0][1] - a.values[0][1];
     });
 
-    while (labels.length < show_x_elements && rawData["data"]["result"].length > data_index) {
-      let element = rawData[data_index];
-      let value = element.values[0][1]; // metric bytes volume
-      let m = element.metric;
+    while (chart_labels.length < show_x_elements && rawData["data"]["result"].length > data_index) {
+      let data_element = rawData["data"]["result"][data_index];
+      let value = data_element.values[0][1]; // metric bytes volume
+      let metric = data_element.metric;
 
       // avoid data if under 5 Mo per 30min
-      let mega_octets_per_30_min = (value * 1800) / m.age;
+      let mega_octets_per_30_min = (value * 1800) / metric.age;
       if (mega_octets_per_30_min < 5 * 1000 * 1000) {
         data_index++;
         continue;
       }
 
       // add volume to dataset if src_ip already exist
-      if (src_ip_list.includes(m.src_ip)) {
-        let dataset = datasets.find((obj) => obj.label === m.src_ip);
+      if (src_ip_list.includes(metric.src_ip)) {
+        let dataset = chart_datasets.find((obj) => obj.label === metric.src_ip);
         dataset.data[dataset_index] = value;
       }
       // create new dataset
       else {
-        src_ip_list.push(m.src_ip);
+        src_ip_list.push(metric.src_ip);
         let new_dataset = {
-          label: m.src_ip,
+          label: metric.src_ip,
           data: new Array(show_x_elements),
-          backgroundColor: BACKGROUND_COLOR[datasets.length],
-          start: (m.end_time - m.age) * 1000,
-          end: m.end_time + 0,
-          duration: m.age,
-          protocole: m.proto,
+          backgroundColor: BACKGROUND_COLOR[chart_datasets.length],
+          start: (metric.end_time - metric.age) * 1000,
+          end: metric.end_time + 0,
+          duration: metric.age,
+          protocole: metric.proto,
         };
         new_dataset.data[dataset_index] = value;
-        datasets.push(new_dataset);
+        chart_datasets.push(new_dataset);
       }
-      labels.push(m.dst_ip + ':' + m.dst_port);
+      chart_labels.push(metric.dst_ip + ':' + metric.dst_port);
       data_index++;
       dataset_index++;
     }
 
   
 
-    let data = { labels, datasets };
+    let chart_data = { chart_labels, chart_datasets };
     let ctx = document.getElementById(metric);
     let unit_value_list = UNIT_INFORMATION.get("bytes")[this._lang]
 
@@ -841,7 +848,7 @@ export class GraphComponent implements OnInit {
 
     let config = {
       type: 'bar',
-      data: data,
+      data: chart_data,
       options: {
         maintainAspectRatio: false,
         indexAxis: 'y',
