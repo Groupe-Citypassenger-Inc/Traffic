@@ -2,8 +2,9 @@
   "custom_metric":{
     "instant_vectors":{
       "average_pfstats_latence_1h": {
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "avg_over_time(pf_stats{data_type='avg_latency'}[1h])",
+        "query": "avg_over_time(pf_stats{data_type='avg_latency' ,<box_filter>}[1h])",
         "description": "Latence moyenne des applications supervisées 0000",
         "x": {
           "unit": {
@@ -21,8 +22,8 @@
           "step": ""
         },
         "metric_separator" : [""], 
-        "metric_legend": ["-SERVICE- [-SRC_IP-]"],
-        "legend_text_to_replace": [{"-SERVICE-" : "service", "-SRC_IP-": "src_ip"}],
+        "metric_legend": ["-SERVICE- [-SRC_IP-] : -JOB-"],
+        "legend_text_to_replace": [{"-SERVICE-" : "service", "-SRC_IP-": "src_ip", "-JOB-": "job"}],
         "y_axis_scales": {
           "yNotStacked" : {
             "stacked": false,
@@ -34,12 +35,12 @@
           }
         },
         "type": ""
-
       },
       
       "sum_pfstats_ccnxcount_1h": {
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "sum_over_time(pf_stats{data_type='ccnx_count'}[1h])",
+        "query": "sum_over_time(pf_stats{data_type='ccnx_count' ,<box_filter>}[1h])",
         "description": "Nombre de connexions sur les applications supervisées (lissage 1h)",
         "x": {
           "unit": {
@@ -73,8 +74,9 @@
       },
       
       "sum_pfstats_restransmit_1h": {
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "sum_over_time(pf_stats{data_type='retransmit'}[1h])",
+        "query": "sum_over_time(pf_stats{data_type='retransmit' ,<box_filter>}[1h])",
         "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)",
         "x": {
           "unit": {
@@ -108,8 +110,9 @@
       },
      
       "pfstats_up": {
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "pf_stats{data_type=~'bytes_UP'}",
+        "query": "pf_stats{data_type=~'bytes_UP' ,<box_filter>}",
         "description": "Consommation bande passante (upload)",
         "x": {
           "unit": {
@@ -142,8 +145,9 @@
         "type": ""
       },
       "pfstats_down": {
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "pf_stats{data_type=~'bytes_DOWN'}",
+        "query": "pf_stats{data_type=~'bytes_DOWN' ,<box_filter>}",
         "description": "Consommation bande passante (download)",
         "x": {
           "unit": {
@@ -176,8 +180,9 @@
         "type": ""
       },
       "output_wan": {
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "increase(output{wan=~'.%2B'}[10m])",
+        "query": "increase(output{wan=~'.%2B' ,<box_filter>}[10m])",
         "description": "Wan output",
         "x": {
           "unit": {
@@ -210,8 +215,9 @@
         "type": ""
       },      
       "input_wan": {
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "increase(input{wan=~'.%2B'}[10m])",
+        "query": "increase(input{wan=~'.%2B' ,<box_filter>}[10m])",
         "description": "Wan input",
         "x": {
           "unit": {
@@ -288,8 +294,9 @@
     },
     "multi_query" : {
       "pfstats_down_with_input_wan_15m":{
+        "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
-        "query": "pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0'}[15m] or sum(increase(input{wan=~'.%2B'}[15m]))",
+        "query": "pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0' ,<box_filter>}[15m] or sum(increase(input{wan=~'.%2B' ,<box_filter>}[15m]))",
         "description":"Consommation de bande passante des services par rapport à l'ensemble de la consommation",
         "y": {
           "title" : {

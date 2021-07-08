@@ -377,10 +377,10 @@ export class GraphComponent implements OnInit {
       if ( metric in custom_metric[vector_type] ) {
         query =  '/query_range?query=' + custom_metric[vector_type][metric]['query'];
         if ( selected_box != null ) {
-          let box_filter: string = ',job=~"'+ selected_box +'.*"';
-          query = query.replace('<box_filter>', box_filter);
+          let box_filter: string = 'job=~"'+ selected_box +'.*"';
+          query = query.split('<box_filter>').join(box_filter); // change for .replaceAll when es2021
         } else {
-          query = query.replace('<box_filter>', '');
+          query = query.split('<box_filter>').join(''); // change for .replaceAll when es2021
         }
       }
     });
