@@ -964,6 +964,17 @@ export class GraphComponent implements OnInit {
             labels: {
               fontColor: color,
             }
+          },
+          tooltip : {
+            callbacks : {
+              label : (context) => {
+                let label = context.dataset.label || '';
+                if ( label ) {
+                  label += ": ";
+                }
+                return label += this.value_modulo_thousand(context.raw, unit_value_list) 
+              }
+            }
           }
         },
         interaction: {
