@@ -96,6 +96,8 @@ export class GraphComponent implements OnInit {
   CRC_table:Array<number> = [];
   graph_legends = new Map();
   graph_legends_to_display = new Map();
+  selected_day = new Date();
+  maxDate: Date = new Date();
 
   constructor(private appRef: ChangeDetectorRef,  
               private _formBuilder: FormBuilder, 
@@ -230,6 +232,7 @@ export class GraphComponent implements OnInit {
           m_selected_IPs: new FormControl(),
           m_request_services: [],
           m_selected_services: new FormControl(),
+          chart_date_picker : "range_type",
           m_stacked: false,
           t_value : +this.params_list['value'][index],
           t_unit : this.params_list['unit'][index],
@@ -340,8 +343,8 @@ export class GraphComponent implements OnInit {
 
   get_metric_from_prometheus(metric:string): void {
     if ( isDevMode() ) console.log(this.graphs_records[metric]);
-
-    const timestamp = new Date().getTime();
+    const date = new Date(this.selected_day);
+    const timestamp = date.getTime();
     let t_value: number = this.graphs_records[metric]['t_value'];
     let t_unit: number = this.graphs_records[metric]['t_unit'];
     let start_time: number;
@@ -354,9 +357,6 @@ export class GraphComponent implements OnInit {
       let selected_date_timestamp = date.getTime();
     
       end_time = (timestamp + (current_timestamp - selected_date_timestamp) * -1) / 1000;
-
-      let t_value = this.graphs_records[metric]['t_value'];
-      let t_unit = this.graphs_records[metric]['t_unit'];
       start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
     } else {
       end_time = ( timestamp ) / 1000;
@@ -385,6 +385,12 @@ export class GraphComponent implements OnInit {
       }
     });
 
+
+    if ( chart_type === "bar" ) {
+      start_time = date.setHours(0,0,0,0)/1000;
+      end_time = date.setHours(24,0,0,0)/1000;
+      step = 200;
+    }
     if ( query === '' ) {
       metric = this.transform_metric_query(metric, selected_box);
       if ( metric.includes('_raw') ) {
