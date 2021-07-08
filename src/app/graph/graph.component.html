@@ -128,15 +128,15 @@
             </button>
 
             <!-- Select a specific IP -->
-            <mat-form-field appearance="fill">
+            <mat-form-field *ngIf='false === !this.graphs_records[query]["m_request_IPs"].length' appearance="fill">
               <mat-label>IP</mat-label>
               <mat-select [formControl]='this.graphs_records[query]["m_selected_IPs"]' multiple (selectionChange)='showLegendSelected(this.graphs_records[query], graph_legends.get(query), query)'>
                 <mat-option *ngFor='let ip of this.graphs_records[query]["m_request_IPs"]' [value]="ip">{{ip}}</mat-option>
               </mat-select>
             </mat-form-field>
 
-            <!-- Select a specific IP -->
-            <mat-form-field style="margin-left: 20px;" appearance="fill">
+            <!-- Select a specific Service -->
+            <mat-form-field *ngIf='false === !this.graphs_records[query]["m_request_services"].length' style="margin-left: 20px;" appearance="fill">
               <mat-label>Service</mat-label>
               <mat-select [formControl]='this.graphs_records[query]["m_selected_services"]' multiple (selectionChange)='showLegendSelected(this.graphs_records[query], graph_legends.get(query), query)'>
                 <mat-option *ngFor='let service of this.graphs_records[query]["m_request_services"]' [value]="service">{{service}}</mat-option>
