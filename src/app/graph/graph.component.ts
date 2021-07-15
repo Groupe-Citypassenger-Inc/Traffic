@@ -701,16 +701,15 @@ export class GraphComponent implements OnInit {
     return new_label;
   }
 
-  add_unit_to_value(value, unit_list) {
-    let thousand_counter = 0;
-    value *= 1; // turn string to int
-    while (value >= 1000) {
-      value = value / 1000;
-      thousand_counter++;
-    }
+  add_unit_to_value(string_value, unit_list) {
+    string_value = Math.trunc(string_value).toString()
+    let thousand_counter = Math.trunc((string_value.length - 1) / 3);
+    let value = string_value / (1000 ** thousand_counter);
     let decimal = 0;
-    if ( value < 10 ) {
-      decimal = 1;
+    if (value < 100) {
+      if (value % 1 !== 0) {
+        decimal = 1;
+      }
     }
     return value.toFixed(decimal) + ' ' + unit_list[thousand_counter];
   }
