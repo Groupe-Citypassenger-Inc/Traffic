@@ -19,7 +19,7 @@ import { AuthService } from '../auth_services/auth.service';
 import { NotificationServiceService } from '../notification/notification-service.service'
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
-import { UNIT_INFORMATION, BACKGROUND_COLOR } from '../../data.constants';
+import { UNIT_INFORMATION, BACKGROUND_COLOR, TEXT_TRANSLATION } from '../../data.constants';
 
 export interface unit_conversion {
   minute : number,
@@ -785,46 +785,19 @@ export class GraphComponent implements OnInit {
     let ctx = document.getElementById(metric);
     let unit_value_list = UNIT_INFORMATION.get("bytes")[this._lang]
 
+    let custom_tooltip = this.GetDefaultOrCurrent(metricData[metric]['tooltip'], '');
+
     // tooltip tile callback
     const title = (tooltipItems) => {
-      let title = '';
-      tooltipItems.forEach((element) => {
-        if (element.raw == undefined) {
-          return;
-        }
-        title = element.dataset.label + ' -> ' + element.label;
-      });
-      return title;
+      return this.applyChanges(custom_tooltip.title, tooltipItems)
     };
-
+    
     // tooltip label callback
     const label = (context) => {
       if (context.raw == undefined) {
         return;
       }
-      let duration = context.dataset.duration;
-      let minutes = Math.floor(duration / 60);
-      let hours = 0;
-      if (minutes >= 60) {
-        hours = Math.floor(minutes / 60);
-        minutes = minutes % 60;
-      }
-      let secondes = duration % 60;
-      let string_secondes = secondes.toLocaleString('en-US', {
-        minimumIntegerDigits: 2,
-      });
-      let string_minutes = minutes.toLocaleString('en-US', {
-        minimumIntegerDigits: 2,
-      });
-      let formated_duration = '(';
-      if (hours != 0) {
-        formated_duration += hours + ':';
-      }
-      formated_duration += string_minutes + ':' + string_secondes + ')';
-  
-      let label = moment(new Date(context.dataset.start)).format('LLL') + ' ' + formated_duration;
-  
-      return label;
+      return this.applyChanges(custom_tooltip.label, [context])
     }
 
     // tooltip after label callback
@@ -832,24 +805,27 @@ export class GraphComponent implements OnInit {
       if (context.raw == undefined) {
         return;
       }
-      return 'Protocole: ' + context.dataset.protocole;
+      return this.applyChanges(custom_tooltip.afterLabel, [context])
     }
 
     // tooltip footer callback
     const footer = (tooltipItems) => {
-      let footer = 'Volume: ';
-      tooltipItems.forEach((element) => {
-        if (element.raw == undefined) {
-          return;
-        }
-        footer += this.add_unit_to_value(element.raw, unit_value_list);
-      });
-      return footer;
+      return this.applyChanges(custom_tooltip.footer, tooltipItems, unit_value_list)
     }
 
     const x_ticks_callback = (value, index) => {  
       return this.add_unit_to_value(value, unit_value_list);
     }
+
+    let callbacks = {      
+      title: title,  
+      label: label,
+      afterLabel: afterLabel,
+      footer: footer
+    }
+
+    const filteredByKey = Object.fromEntries(
+      Object.entries(callbacks).filter(([key, value]) => custom_tooltip.tooltip.includes(key)) );
 
     let config = {
       type: 'bar',
@@ -887,12 +863,7 @@ export class GraphComponent implements OnInit {
           },
           tooltip: {
             enabled: true,
-            callbacks: {
-              title : title,
-              label: label,
-              afterLabel: afterLabel,
-              footer: footer
-            }
+            callbacks: filteredByKey
           }
         }
       }
@@ -1286,5 +1257,107 @@ export class GraphComponent implements OnInit {
 
   back_to_selection(): void {
     this.router.navigate(['/select'])
+  }
+
+  applyChanges(custom_tooltip, tooltipItems, unit_value_list?) {
+    let label = custom_tooltip.label;
+    let changes_todo = custom_tooltip.label_changes;
+    tooltipItems.forEach((tooltipItem) => {
+      if (tooltipItem.raw == undefined) {
+        return;
+      }
+      for (const [key, value] of Object.entries(changes_todo)) {
+        switch (key) {
+          case 'replace': 
+            label = this.replaceSubstring(value, tooltipItem, label)
+            break;
+          case 'translate':
+            label = this.translateSubstring(value, tooltipItem, label);
+            break;
+          case 'unit_adapt':
+            label = this.adaptSubstringUnit(value, tooltipItem, label, unit_value_list);
+            break;
+        }
+      }
+    });
+    return label;
+  }
+
+  replaceSubstring(replaceList, tooltipItem, label) {
+    for (let i = 0; i < replaceList.length; i++) {
+      let text_to_replace = replaceList[i][0];
+      let replace_by = tooltipItem.dataset[replaceList[i][1]];
+      switch (typeof replace_by) {
+        case 'object': {
+          replace_by = replace_by[tooltipItem.dataIndex]
+        }
+        default: {
+          label = label.replace(text_to_replace, replace_by);
+          break;
+        }
+      }
+    }
+    return label;
+  }
+
+  
+  translateSubstring(translateList, tooltipItem, label) {
+    for (let i = 0; i < translateList.length; i++) {
+      let text_to_translate = translateList[i][0];
+      let translate_by = TEXT_TRANSLATION[translateList[i][1]][this._lang];
+      label = label.replace(text_to_translate, translate_by);
+    }
+    return label;
+  }
+
+  
+  adaptSubstringUnit(adaptList, tooltipItem, label, unit_value_list) {
+    for (let i = 0; i < adaptList.length; i++) {
+      let value_to_change = adaptList[i][0];
+      let value = tooltipItem.dataset[adaptList[i][1]][tooltipItem.dataIndex];
+      let adapter = adaptList[i][2];
+      let adapt_function = Object.keys(adapter)[0];
+      let adapt_parameters = Object.values(adapter)[0];
+      let value_with_unit;
+      switch (adapt_function) {
+        case 'moment_date': 
+          let moment_format = adapt_parameters[0];
+          value_with_unit = this.moment_date(value, moment_format)
+          break;
+        case 'transform_SS_to_HH_MM_SS':
+          value_with_unit = this.transform_SS_to_HH_MM_SS(value);
+          break;
+        case 'add_unit_to_value':
+          value_with_unit = this.add_unit_to_value(value, unit_value_list)
+      }
+      label = label.replace(value_to_change, value_with_unit);
+    }
+    return label;
+  }
+
+  moment_date(timestamp, format) {
+    return moment(new Date(timestamp)).format(format)
+  }
+
+  transform_SS_to_HH_MM_SS(duration) {
+    let minutes = Math.floor(duration / 60);
+    let hours = 0;
+    if (minutes >= 60) {
+      hours = Math.floor(minutes / 60);
+      minutes = minutes % 60;
+    }
+    let secondes = duration % 60;
+    let string_secondes = secondes.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+    });
+    let string_minutes = minutes.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+    });
+    let formated_duration = '(';
+    if (hours != 0) {
+      formated_duration += hours + ':';
+    }
+    formated_duration += string_minutes + ':' + string_secondes + ')';
+    return formated_duration;
   }
 }

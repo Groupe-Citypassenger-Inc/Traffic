@@ -290,7 +290,7 @@
               "translate": [],
               "unit_adapt": [
                 ["~start~", "start", {"moment_date": ["LLL"]}],
-                ["~duration~", "duration", {"time_hour_minute_second" : []}]
+                ["~duration~", "duration", {"transform_SS_to_HH_MM_SS" : []}]
               ]
             }
           },
