@@ -232,7 +232,7 @@ export class GraphComponent implements OnInit {
           m_selected_IPs: new FormControl(),
           m_request_services: [],
           m_selected_services: new FormControl(),
-          chart_date_picker : "range_type",
+          m_chart_date_picker : "range_type",
           m_stacked: false,
           t_value : +this.params_list['value'][index],
           t_unit : this.params_list['unit'][index],
@@ -259,6 +259,9 @@ export class GraphComponent implements OnInit {
     const headers = new HttpHeaders().set("Content-Type", "application/json").set("Accept", "application/json");
     let user_config_base_url = '/traffic/' + this._lang + '/assets/json/';
     let user_config_url = user_config_base_url + this.user_information.username + ".json.nousNeVoulousPlusDeConfigPerso";
+    
+    
+    
     this.httpClient.get<any>(user_config_url, {headers}).pipe(
       catchError((err => {
         console.log('Handling error locally and rethrowing it...', err);
@@ -375,7 +378,7 @@ export class GraphComponent implements OnInit {
     Object.keys(custom_metric).forEach(vector_type =>{
       if ( metric in custom_metric[vector_type] ) {
         chart_type = custom_metric[vector_type][metric]['chart_type']; 
-        this.graphs_records[metric]["chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker']; 
+        this.graphs_records[metric]["m_chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker']; 
         query =  '/query_range?query=' + custom_metric[vector_type][metric]['query'];
         if ( selected_box != null ) {
           let box_filter: string = 'job=~"'+ selected_box +'.*"';
@@ -957,10 +960,7 @@ export class GraphComponent implements OnInit {
           tooltip : {
             callbacks : {
               label : (context) => {
-                let label = context.dataset.label || '';
-                if ( label ) {
-                  label += ": ";
-                }
+                let label = context.dataset.label + ': ';
                 return label += this.add_unit_to_value(context.raw, unit_value_list) 
               }
             }
