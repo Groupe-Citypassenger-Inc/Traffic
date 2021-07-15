@@ -752,6 +752,10 @@ export class GraphComponent implements OnInit {
       if (src_ip_list.includes(metric.src_ip)) {
         let dataset = datasets.find((obj) => obj.label === metric.src_ip);
         dataset.data[dataset_index] = value;
+        dataset.start[dataset_index] = (metric.end_time - metric.age) * 1000;
+        dataset.duration[dataset_index] =  metric.age;
+        dataset.protocol[dataset_index] =  metric.proto;
+        dataset.dest[dataset_index] =  metric.dst_ip + ":" + metric.dst_port;
       }
       // create new dataset
       else {
@@ -760,20 +764,22 @@ export class GraphComponent implements OnInit {
           label: metric.src_ip,
           data: new Array(show_x_elements),
           backgroundColor: BACKGROUND_COLOR[datasets.length],
-          start: (metric.end_time - metric.age) * 1000,
-          end: metric.end_time + 0,
-          duration: metric.age,
-          protocole: metric.proto,
+          start: new Array(show_x_elements),
+          duration: new Array(show_x_elements),
+          protocol: new Array(show_x_elements),
+          dest: new Array(show_x_elements)
         };
         new_dataset.data[dataset_index] = value;
+        new_dataset.start[dataset_index] = (metric.end_time - metric.age) * 1000;
+        new_dataset.duration[dataset_index] =  metric.age;
+        new_dataset.protocol[dataset_index] =  metric.proto;
+        new_dataset.dest[dataset_index] =  metric.dst_ip + ":" + metric.dst_port;
         datasets.push(new_dataset);
       }
-      labels.push(metric.dst_ip + ':' + metric.dst_port);
+      labels.push(metric.dst_ip);
       data_index++;
       dataset_index++;
     }
-
-  
 
     let data = { labels, datasets };
     let ctx = document.getElementById(metric);
