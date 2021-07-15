@@ -728,7 +728,7 @@ export class GraphComponent implements OnInit {
     }
     let legend_title = this.GetDefaultOrCurrent(metricData[metric]['legend_title'], '');
     let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
-    let show_x_elements = 10;
+    let number_of_element_to_show = this.GetDefaultOrCurrent(metricData[metric]['number_of_element_to_show'], 5);
     let labels = [];
     let datasets = [];
     let src_ip_list = [];
@@ -739,7 +739,7 @@ export class GraphComponent implements OnInit {
       return b.values[0][1] - a.values[0][1];
     });
 
-    while (labels.length < show_x_elements && rawData["data"]["result"].length > data_index) {
+    while (labels.length < number_of_element_to_show && rawData["data"]["result"].length > data_index) {
       let data_element = rawData["data"]["result"][data_index];
       let value = data_element.values[0][1]; // metric bytes volume
       let metric = data_element.metric;
@@ -765,12 +765,12 @@ export class GraphComponent implements OnInit {
         src_ip_list.push(metric.src_ip);
         let new_dataset = {
           label: metric.src_ip,
-          data: new Array(show_x_elements),
+          data: new Array(number_of_element_to_show),
           backgroundColor: BACKGROUND_COLOR[datasets.length],
-          start: new Array(show_x_elements),
-          duration: new Array(show_x_elements),
-          protocol: new Array(show_x_elements),
-          dest: new Array(show_x_elements)
+          start: new Array(number_of_element_to_show),
+          duration: new Array(number_of_element_to_show),
+          protocol: new Array(number_of_element_to_show),
+          dest: new Array(number_of_element_to_show)
         };
         new_dataset.data[dataset_index] = value;
         new_dataset.start[dataset_index] = (metric.end_time - metric.age) * 1000;
@@ -788,7 +788,15 @@ export class GraphComponent implements OnInit {
     let ctx = document.getElementById(metric);
     let unit_value_list = UNIT_INFORMATION.get("bytes")[this._lang]
 
-    let custom_tooltip = this.GetDefaultOrCurrent(metricData[metric]['tooltip'], '');
+    let custom_tooltip = this.GetDefaultOrCurrent(metricData[metric]['custom_tooltip'], '');
+
+    const tooltipPlugin = Chart.registry.getPlugin('tooltip');
+      tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
+      return {
+        x: eventPosition.x,
+        y: eventPosition.y
+      };
+    };
 
     // tooltip tile callback
     const title = (tooltipItems) => {
@@ -827,7 +835,8 @@ export class GraphComponent implements OnInit {
       footer: footer
     }
 
-    const filteredByKey = Object.fromEntries(
+    // Remove callbacks that aren't part of the config custom_tooltip
+    const callbacks_filtered_by_key = Object.fromEntries(
       Object.entries(callbacks).filter(([key, value]) => custom_tooltip.tooltip.includes(key)) );
 
     let config = {
@@ -866,7 +875,8 @@ export class GraphComponent implements OnInit {
           },
           tooltip: {
             enabled: true,
-            callbacks: filteredByKey
+            callbacks: callbacks_filtered_by_key,
+            position: 'followCursor'
           }
         }
       }
@@ -1261,12 +1271,12 @@ export class GraphComponent implements OnInit {
 
   applyChanges(custom_tooltip, tooltipItems, unit_value_list?) {
     let label = custom_tooltip.label;
-    let changes_todo = custom_tooltip.label_changes;
+    let label_changes = custom_tooltip.label_changes;
     tooltipItems.forEach((tooltipItem) => {
       if (tooltipItem.raw == undefined) {
         return;
       }
-      for (const [key, value] of Object.entries(changes_todo)) {
+      for (const [key, value] of Object.entries(label_changes)) {
         switch (key) {
           case 'replace': 
             label = this.replaceSubstring(value, tooltipItem, label)
@@ -1320,9 +1330,9 @@ export class GraphComponent implements OnInit {
       let adapt_parameters = Object.values(adapter)[0];
       let value_with_unit;
       switch (adapt_function) {
-        case 'moment_date': 
+        case 'moment_date_with_format': 
           let moment_format = adapt_parameters[0];
-          value_with_unit = this.moment_date(value, moment_format)
+          value_with_unit = this.moment_date_with_format(value, moment_format)
           break;
         case 'transform_SS_to_HH_MM_SS':
           value_with_unit = this.transform_SS_to_HH_MM_SS(value);
@@ -1335,7 +1345,7 @@ export class GraphComponent implements OnInit {
     return label;
   }
 
-  moment_date(timestamp, format) {
+  moment_date_with_format(timestamp, format) {
     return moment(new Date(timestamp)).format(format)
   }
 
