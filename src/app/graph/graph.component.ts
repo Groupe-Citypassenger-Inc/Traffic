@@ -260,8 +260,6 @@ export class GraphComponent implements OnInit {
     let user_config_base_url = '/traffic/' + this._lang + '/assets/json/';
     let user_config_url = user_config_base_url + this.user_information.username + ".json.nousNeVoulousPlusDeConfigPerso";
     
-    
-    
     this.httpClient.get<any>(user_config_url, {headers}).pipe(
       catchError((err => {
         console.log('Handling error locally and rethrowing it...', err);
@@ -1332,10 +1330,14 @@ export class GraphComponent implements OnInit {
       switch (adapt_function) {
         case 'moment_date_with_format': 
           let moment_format = adapt_parameters[0];
-          value_with_unit = this.moment_date_with_format(value, moment_format)
+          value_with_unit = moment(new Date(value)).format(moment_format)
           break;
-        case 'transform_SS_to_HH_MM_SS':
-          value_with_unit = this.transform_SS_to_HH_MM_SS(value);
+        case 'transform_seconds':
+          let format = "mm:ss";
+          if (value > 3600) {
+            format = "HH:mm:ss"
+          }
+          value_with_unit =  moment.utc(value*1000).format(format);
           break;
         case 'add_unit_to_value':
           value_with_unit = this.add_unit_to_value(value, unit_value_list)
@@ -1343,31 +1345,5 @@ export class GraphComponent implements OnInit {
       label = label.replace(value_to_change, value_with_unit);
     }
     return label;
-  }
-
-  moment_date_with_format(timestamp, format) {
-    return moment(new Date(timestamp)).format(format)
-  }
-
-  transform_SS_to_HH_MM_SS(duration) {
-    let minutes = Math.floor(duration / 60);
-    let hours = 0;
-    if (minutes >= 60) {
-      hours = Math.floor(minutes / 60);
-      minutes = minutes % 60;
-    }
-    let secondes = duration % 60;
-    let string_secondes = secondes.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-    });
-    let string_minutes = minutes.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-    });
-    let formated_duration = '(';
-    if (hours != 0) {
-      formated_duration += hours + ':';
-    }
-    formated_duration += string_minutes + ':' + string_secondes + ')';
-    return formated_duration;
   }
 }

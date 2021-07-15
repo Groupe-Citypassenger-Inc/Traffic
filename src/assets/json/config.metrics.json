@@ -287,7 +287,7 @@
             "label_changes": {
               "unit_adapt": [
                 ["~start~", "start", {"moment_date_with_format": ["LLL"]}],
-                ["~duration~", "duration", {"transform_SS_to_HH_MM_SS" : []}]
+                ["~duration~", "duration", {"transform_seconds" : []}]
               ]
             }
           },
