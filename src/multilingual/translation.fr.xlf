@@ -165,6 +165,18 @@
         <source>Log out</source>
         <target>Déconnexion</target>
       </trans-unit>
+
+      <trans-unit id="text_volume_tooltip">
+        <target>Volume</target>
+      </trans-unit>
+
+      <trans-unit id="text_protocol_tooltip">
+        <target>Protocole</target>
+      </trans-unit>
+
+      <trans-unit id="text_port_tooltip">
+        <target>Port</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
