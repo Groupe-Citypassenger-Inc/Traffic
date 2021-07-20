@@ -275,35 +275,20 @@
         "type": "",
         "number_of_element_to_show" : 10,
         "custom_tooltip": {
-          "tooltip": ["title", "label", "afterLabel", "footer"],
           "title": {
-            "label": "_src_ -> _dst : port_",
-            "label_changes": {
-              "replace": [["_src_", "label"], ["_dst : port_", "dest"]]
-            }
+            "function" : "getSrcAndDestForTooltip"
+          },
+          "beforeLabel" : {
+            "function" : "getPortForTooltip"
           },
           "label": {
-            "label": "~start~ : ~duration~",
-            "label_changes": {
-              "unit_adapt": [
-                ["~start~", "start", {"moment_date_with_format": ["LLL"]}],
-                ["~duration~", "duration", {"transform_seconds" : []}]
-              ]
-            }
+            "function" : "getStartAndDurationForTooltip"
           },
           "afterLabel": {
-            "label": "-Protocol- : _protocol_",
-            "label_changes": {
-              "replace": [["_protocol_", "protocol"]],
-              "translate": [["-Protocol-", "protocol"]]
-            }
+            "function" : "getProtocolForTooltip"
           },
           "footer": {
-            "label": "-Volume- : ~volume~",
-            "label_changes": {
-              "translate": [["-Volume-", "volume"]],
-              "unit_adapt": [["~volume~", "data", {"add_unit_to_value": []}]]
-            }
+            "function" : "getVolumeForTooltip"
           }
         }
       }
