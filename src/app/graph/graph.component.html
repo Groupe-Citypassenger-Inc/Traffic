@@ -164,6 +164,75 @@
         </div>
         <div style="min-width: 100%; min-height: 100%; margin-bottom: 2%;">
           <canvas id={{query}} width="800" height="400"></canvas>
+
+          <div style="background: rgba(0, 0, 0, 0.7); border-radius: 3px; color: white; opacity: 0; pointer-events: none; position: absolute; transform: translate(-50%, 0px); transition: all 0.1s ease 0s; left: 1232.33px; top: 454.742px; padding: 6px;">
+            <table style="margin: 0px;" *ngIf='this.graphs_records[query]["m_tooltip"] as tooltip'>
+              <thead>
+                <tr style="border-width: 0px;" *ngFor="let title of tooltip.title">
+                  <th style="border-width: 0px;" [ngSwitch]="title.switchCase">
+                    <span *ngSwitchCase="'Src_To_Dest'">
+                      {{title.src}} -> {{title.dest}}
+                    </span>
+                    <span *ngSwitchDefault>No Match</span>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody *ngFor="let dataset of tooltip.body">
+                <tr style="background-color: inherit; border-width: 0px;" *ngFor="let beforeLine of dataset.before">
+                  <td style="border-width: 0px;" [ngSwitch]="beforeLine.switchCase">
+                    <div *ngSwitchCase="'Port'">
+                      <span i18n='"port" text|"port" text in chart beforeLabel tooltip@@text_port_tooltip'>
+                        Port</span> : {{beforeLine.port}}
+                    </div>
+                    <span *ngSwitchDefault>No match</span>
+                  </td>
+                </tr>
+
+                <tr style="background-color: inherit; border-width: 0px;" *ngFor="let line of dataset.lines">
+                  <td style="border-width: 0px;" [ngSwitch]="line.switchCase">
+                    <!-- [ngStyle]="labelTooltip(tooltip)" -->
+                    <div *ngSwitchCase="'Start_Duration'">
+                      <span [ngStyle]="{'background-color' : line.color}" 
+                      style="
+                        border-color: white; 
+                        border-width: 2px; 
+                        border-style: solid;
+                        margin-right: 10px; 
+                        height: 10px; 
+                        width: 10px; 
+                        display: inline-block;
+                      ">
+                      </span>{{line.start | timestampToDate : line.format}} ({{line.duration | transformSeconds}})
+                    </div>
+                    <span *ngSwitchDefault>No match</span>
+                  </td>
+                </tr>
+
+                <tr style="background-color: inherit; border-width: 0px;" *ngFor="let afterLine of dataset.after">
+                  <td style="border-width: 0px;" [ngSwitch]="afterLine.switchCase">
+                    <div *ngSwitchCase="'Protocol'">
+                      <span i18n='"protocol" text|"protocol" text in chart afterLabel tooltip@@text_protocol_tooltip'>
+                        Protocol</span> : {{afterLine.protocol}}
+                    </div>
+                    <span *ngSwitchDefault>No match</span>
+                  </td>
+                </tr>
+              </tbody>
+
+              <tfoot *ngFor="let footer of tooltip.footer">
+                <tr style="border-width: 0px;">
+                  <th style="border-width: 0px;" [ngSwitch]="footer.switchCase">
+                    <div *ngSwitchCase="'Volume'">
+                      <span i18n='"volume" text|"volume" text in chart footer tooltip@@text_volume_tooltip'>
+                        Volume</span> : {{footer.volume | addUnitToValue : footer.unit : _lang}}
+                    </div>
+                    <span *ngSwitchDefault>No match</span>
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
         <div class="graph_legend">
           <ul style="flex-wrap: wrap; flex-direction: row; align-content: flex-start;">
