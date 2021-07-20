@@ -1356,4 +1356,79 @@ export class GraphComponent implements OnInit {
     }
     return label;
   }
+
+  getSrcAndDestForTooltip(tooltipItems) {
+    let tooltip_section = [];
+    tooltipItems.forEach(tooltipItem => {
+      if (tooltipItem.raw === undefined) {
+        return
+      }
+      let current_metric = tooltipItem.dataset.metric[tooltipItem.dataIndex];
+
+      tooltip_section.push({
+        switchCase: 'Src_To_Dest',
+        src: current_metric.src_ip,
+        dest: current_metric.dst_ip
+      })
+    });
+    return tooltip_section;
+  }
+
+  getPortForTooltip(tooltipItems) {
+    let res = [];
+    tooltipItems.forEach(element => {
+      let current_metric = element.dataset.metric[element.dataIndex];
+      res.push({
+        switchCase: 'Port',
+        port: current_metric.dst_port
+      });
+    });
+
+    return res;
+  }
+
+  getStartAndDurationForTooltip(tooltipItems) {
+    let tooltip_section = [];
+    tooltipItems.forEach(element => {
+      let current_metric = element.dataset.metric[element.dataIndex];
+      tooltip_section.push({
+        switchCase: 'Start_Duration',
+        start: (current_metric.end_time - current_metric.age) * 1000,
+        duration: current_metric.age,
+        format: 'LLL',
+        color: element.dataset.backgroundColor[element.dataIndex]
+      });
+    });
+
+    return tooltip_section;
+  }
+
+  getProtocolForTooltip(tooltipItems) {
+    let tooltip_section = [];
+    tooltipItems.forEach(element => {
+      let current_metric = element.dataset.metric[element.dataIndex];
+      console.log(current_metric)
+      tooltip_section.push({
+        switchCase: 'Protocol',
+        protocol : current_metric.proto
+      })
+    });
+    return tooltip_section
+  }
+
+  getVolumeForTooltip(tooltipItems) {
+    let tooltip_section = [];
+    tooltipItems.forEach(tooltipItem => {
+      if (tooltipItem.raw === undefined) {
+        return
+      }
+      tooltip_section.push({
+        switchCase: 'Volume',
+        volume: tooltipItem.raw,
+        unit: 'bytes'
+      });
+    });
+    return tooltip_section;
+  }
 }
+
