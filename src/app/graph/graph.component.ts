@@ -729,13 +729,28 @@ export class GraphComponent implements OnInit {
     let number_of_element_to_show = this.GetDefaultOrCurrent(metricData[metric]['number_of_element_to_show'], 5);
     let labels = [];
     let datasets = [];
+    let dataset = {
+      label: 'Dataset',
+      legend: [],
+      unique_src_ips: [],
+      data: [],
+      backgroundColor: [],
+      metric: []
+    };
     let src_ip_list = [];
     let data_index = 0;
     let dataset_index = 0;
 
     rawData["data"]["result"].sort(function (a, b) {
-      return b.values[0][1] - a.values[0][1];
+      let result_a = a.values[0];
+      let value_a = result_a[1];
+
+      let result_b = b.values[0];
+      let value_b = result_b[1];
+
+      return value_b - value_a;
     });
+
 
     while (labels.length < number_of_element_to_show && rawData["data"]["result"].length > data_index) {
       let data_element = rawData["data"]["result"][data_index];
@@ -748,40 +763,35 @@ export class GraphComponent implements OnInit {
         data_index++;
         continue;
       }
-
+      let backgroundColor;
+      let current_src = metric.src_ip
       // add volume to dataset if src_ip already exist
       if (src_ip_list.includes(metric.src_ip)) {
-        let dataset = datasets.find((obj) => obj.label === metric.src_ip);
-        dataset.data[dataset_index] = value;
-        dataset.start[dataset_index] = (metric.end_time - metric.age) * 1000;
-        dataset.duration[dataset_index] =  metric.age;
-        dataset.protocol[dataset_index] =  metric.proto;
-        dataset.dest[dataset_index] =  metric.dst_ip + ":" + metric.dst_port;
+        let index = src_ip_list.indexOf(current_src)
+        backgroundColor = dataset.legend[index].fillStyle;
       }
       // create new dataset
       else {
-        src_ip_list.push(metric.src_ip);
-        let new_dataset = {
-          label: metric.src_ip,
-          data: new Array(number_of_element_to_show),
-          backgroundColor: BACKGROUND_COLOR[datasets.length],
-          start: new Array(number_of_element_to_show),
-          duration: new Array(number_of_element_to_show),
-          protocol: new Array(number_of_element_to_show),
-          dest: new Array(number_of_element_to_show)
-        };
-        new_dataset.data[dataset_index] = value;
-        new_dataset.start[dataset_index] = (metric.end_time - metric.age) * 1000;
-        new_dataset.duration[dataset_index] =  metric.age;
-        new_dataset.protocol[dataset_index] =  metric.proto;
-        new_dataset.dest[dataset_index] =  metric.dst_ip + ":" + metric.dst_port;
-        datasets.push(new_dataset);
+        src_ip_list.push(current_src)
+        let index = dataset.legend.length;
+        backgroundColor = BACKGROUND_COLOR[index]
+        let new_legend = {
+          text: current_src,
+          fillStyle: backgroundColor,
+          cursor: "unset"
+        }
+        dataset.legend.push(new_legend);
       }
-      labels.push(metric.dst_ip);
+      dataset.data.push(value);
+      dataset.backgroundColor.push(backgroundColor);
+      dataset.metric.push(metric);
+
+      labels.push(metric.dst_ip)
       data_index++;
       dataset_index++;
     }
-
+    datasets.push(dataset)
+    this.graphs_records[metric]["m_legend"] = dataset.legend;
     let data = { labels, datasets };
     let ctx = document.getElementById(metric);
     let unit_value_list = UNIT_INFORMATION.get("bytes")[this._lang]
