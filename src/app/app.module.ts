@@ -43,7 +43,9 @@ import { GuardService } from './auth_services/guard.service';
 import { LogOutDialogComponent } from './dialog/log-out-dialog/log-out-dialog.component';
 import { NotificationComponent } from './notification/notification.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
-
+import { TransformSecondsPipe } from './pipes/transform-seconds.pipe'
+import { AddUnitToValuePipe } from './pipes/add-unit-to-value.pipe'
+import { TimestampToDatePipe } from './pipes/timestamp-to-date.pipe'
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,6 +56,9 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
     LogOutDialogComponent,
     NotificationComponent,
     DevicesListComponent,
+    TransformSecondsPipe,
+    AddUnitToValuePipe,
+    TimestampToDatePipe,
   ],
   imports: [
     BrowserModule,
