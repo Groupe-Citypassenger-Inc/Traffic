@@ -236,14 +236,15 @@
         </div>
         <div class="graph_legend">
           <ul style="flex-wrap: wrap; flex-direction: row; align-content: flex-start;">
-            <li style="flex-direction: row;" *ngFor='let legend of graph_legends_to_display.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
-              <span [style.background]="legend.fillStyle" 
-                [style.borderColor]="legend.strokeStyle" 
-                [style.borderWidth]="legend.lineWidth + 'px'">
+            <li *ngFor='let legend of this.graphs_records[query]["m_legend"]' 
+                style="flex-direction: row; margin-right: 10px;" 
+                [ngStyle]="{'cursor' : legend.cursor}" 
+                (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
+              <span [ngStyle]="{'background' : legend.fillStyle}" 
+                    style="height: 20px; width: 20px; margin-right: 10px; display: inline-block;">
               </span>
-              <p style="display: inline-block;" 
-                [style.color]="legend.fontColor" 
-                [style.textDecoration]="legend.hidden ? 'line-through' : '' ">
+              <p style="display: inline-block;"
+                  [ngStyle]="{'textDecoration': (legend.hidden && legend.cursor == 'pointer' ) ? 'line-through' : ''}">
                 {{legend.text}}
               </p>
             </li>
