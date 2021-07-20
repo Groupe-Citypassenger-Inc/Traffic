@@ -808,28 +808,27 @@ export class GraphComponent implements OnInit {
 
     // tooltip tile callback
     const title = (tooltipItems) => {
-      return this.applyChanges(custom_tooltip.title, tooltipItems)
+      return this[custom_tooltip.title.function](tooltipItems);
     };
     
+    // tooltip after label callback
+    const beforeLabel = (context) => {
+      return this[custom_tooltip.beforeLabel.function]([context]);
+    }
+
     // tooltip label callback
     const label = (context) => {
-      if (context.raw == undefined) {
-        return;
-      }
-      return this.applyChanges(custom_tooltip.label, [context])
+      return this[custom_tooltip.label.function]([context]);
     }
 
     // tooltip after label callback
     const afterLabel = (context) => {
-      if (context.raw == undefined) {
-        return;
-      }
-      return this.applyChanges(custom_tooltip.afterLabel, [context])
+      return this[custom_tooltip.afterLabel.function]([context]);
     }
 
     // tooltip footer callback
     const footer = (tooltipItems) => {
-      return this.applyChanges(custom_tooltip.footer, tooltipItems, unit_value_list)
+      return this[custom_tooltip.footer.function](tooltipItems);
     }
 
     const x_ticks_callback = (value, index) => {  
@@ -837,7 +836,8 @@ export class GraphComponent implements OnInit {
     }
 
     let callbacks = {      
-      title: title,  
+      title: title,
+      beforeLabel: beforeLabel,
       label: label,
       afterLabel: afterLabel,
       footer: footer
@@ -845,7 +845,7 @@ export class GraphComponent implements OnInit {
 
     // Remove callbacks that aren't part of the config custom_tooltip
     const callbacks_filtered_by_key = Object.fromEntries(
-      Object.entries(callbacks).filter(([key, value]) => custom_tooltip.tooltip.includes(key)) );
+      Object.entries(callbacks).filter(([key, value]) => Object.keys(custom_tooltip).includes(key)) );
 
     let config = {
       type: 'bar',
