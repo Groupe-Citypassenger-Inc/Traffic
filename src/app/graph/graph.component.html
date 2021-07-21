@@ -165,11 +165,27 @@
         <div style="min-width: 100%; min-height: 100%; margin-bottom: 2%;">
           <canvas id={{query}} width="800" height="400"></canvas>
 
-          <div style="background: rgba(0, 0, 0, 0.7); border-radius: 3px; color: white; opacity: 0; pointer-events: none; position: absolute; transform: translate(-50%, 0px); transition: all 0.1s ease 0s; left: 1232.33px; top: 454.742px; padding: 6px;">
-            <table style="margin: 0px;" *ngIf='this.graphs_records[query]["m_tooltip"] as tooltip'>
+          <div *ngIf='this.graphs_records[query]["m_tooltip"] as tooltip' 
+                style="background: rgba(0, 0, 0, 0.8); 
+                      border-radius: 3px; 
+                      color: white; 
+                      opacity: 0;
+                      pointer-events: none; 
+                      position: absolute; 
+                      transform: translate(-50%, 0px); 
+                      transition: all 0.1s ease 0s; 
+                      left: 1232.33px; 
+                      top: 454.742px; 
+                      padding: 6px;"
+            [ngStyle]='{"opacity" : tooltip.opacity,
+                        "left" : this.graphs_records[query]["m_chart"].canvas.offsetLeft + tooltip.caretX + "px",
+                        "top":  this.graphs_records[query]["m_chart"].canvas.offsetTop + tooltip.caretY + "px",
+                        "font":  tooltip.options.bodyFont.string}'
+          >
+            <table>
               <thead>
-                <tr style="border-width: 0px;" *ngFor="let title of tooltip.title">
-                  <th style="border-width: 0px;" [ngSwitch]="title.switchCase">
+                <tr *ngFor="let title of tooltip.title">
+                  <th [ngSwitch]="title.switchCase">
                     <span *ngSwitchCase="'Src_To_Dest'">
                       {{title.src}} -> {{title.dest}}
                     </span>
@@ -179,8 +195,8 @@
               </thead>
 
               <tbody *ngFor="let dataset of tooltip.body">
-                <tr style="background-color: inherit; border-width: 0px;" *ngFor="let beforeLine of dataset.before">
-                  <td style="border-width: 0px;" [ngSwitch]="beforeLine.switchCase">
+                <tr *ngFor="let beforeLine of dataset.before">
+                  <td [ngSwitch]="beforeLine.switchCase">
                     <div *ngSwitchCase="'Port'">
                       <span i18n='"port" text|"port" text in chart beforeLabel tooltip@@text_port_tooltip'>
                         Port</span> : {{beforeLine.port}}
@@ -189,9 +205,8 @@
                   </td>
                 </tr>
 
-                <tr style="background-color: inherit; border-width: 0px;" *ngFor="let line of dataset.lines">
-                  <td style="border-width: 0px;" [ngSwitch]="line.switchCase">
-                    <!-- [ngStyle]="labelTooltip(tooltip)" -->
+                <tr *ngFor="let line of dataset.lines">
+                  <td [ngSwitch]="line.switchCase">
                     <div *ngSwitchCase="'Start_Duration'">
                       <span [ngStyle]="{'background-color' : line.color}" 
                       style="
@@ -209,8 +224,8 @@
                   </td>
                 </tr>
 
-                <tr style="background-color: inherit; border-width: 0px;" *ngFor="let afterLine of dataset.after">
-                  <td style="border-width: 0px;" [ngSwitch]="afterLine.switchCase">
+                <tr *ngFor="let afterLine of dataset.after">
+                  <td [ngSwitch]="afterLine.switchCase">
                     <div *ngSwitchCase="'Protocol'">
                       <span i18n='"protocol" text|"protocol" text in chart afterLabel tooltip@@text_protocol_tooltip'>
                         Protocol</span> : {{afterLine.protocol}}
@@ -221,8 +236,8 @@
               </tbody>
 
               <tfoot *ngFor="let footer of tooltip.footer">
-                <tr style="border-width: 0px;">
-                  <th style="border-width: 0px;" [ngSwitch]="footer.switchCase">
+                <tr>
+                  <th [ngSwitch]="footer.switchCase">
                     <div *ngSwitchCase="'Volume'">
                       <span i18n='"volume" text|"volume" text in chart footer tooltip@@text_volume_tooltip'>
                         Volume</span> : {{footer.volume | addUnitToValue : footer.unit : _lang}}

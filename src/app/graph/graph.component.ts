@@ -806,29 +806,6 @@ export class GraphComponent implements OnInit {
       };
     };
 
-    const getHtmlTooltip = (chart) => {
-      let tooltipEl = chart.canvas.parentNode.querySelector('div')
-      return tooltipEl;
-    }
-
-    const externalTooltipHandler = (context) => {
-      const {chart, tooltip} = context;
-      const tooltipEl = getHtmlTooltip(chart);
-      if (tooltip.opacity === 0) {
-        tooltipEl.style.opacity = 0;
-        return;
-      }
-
-      this.graphs_records[metric]["m_tooltip"] = tooltip || [];
-
-      const {offsetLeft: positionX, offsetTop: positionY} = chart.canvas;
-      tooltipEl.style.opacity = 1;
-      tooltipEl.style.left = positionX + tooltip.caretX + 'px';
-      tooltipEl.style.top = positionY + tooltip.caretY + 'px';
-      tooltipEl.style.font = tooltip.options.bodyFont.string;
-      tooltipEl.style.padding = tooltip.options.padding + 'px ' + tooltip.options.padding + 'px';
-    }
-
     // tooltip tile callback
     const title = (tooltipItems) => {
       return this[custom_tooltip.title.function](tooltipItems);
@@ -898,16 +875,14 @@ export class GraphComponent implements OnInit {
         responsive: true,
         plugins: {
           legend: {
-            title: {
-              display : true,
-              text: legend_title
-            },
-            position: 'right',
+            display: false,
           },
           tooltip: {
             enabled: false,
             callbacks: callbacks_filtered_by_key,
-            external: externalTooltipHandler,
+            external: (context) => {
+              this.graphs_records[metric]["m_tooltip"] = context.tooltip 
+            },
             position: 'followCursor'
           }
         }
