@@ -499,6 +499,28 @@ export class GraphComponent implements OnInit {
     return data_to_complete;
   }
 
+  addSrcIpToRequestedIps(request_IPs, src_ip, metric) {
+    if (src_ip === undefined) {
+      return
+    }
+    if (request_IPs.includes(src_ip)) {
+      return
+    }
+    request_IPs.push(src_ip);
+    if (src_ip === '0.0.0.0') {
+      this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
+    }
+  }
+
+  addServiceToRequestedServices(request_services, service) {
+    if (service === undefined) {
+      return
+    }
+    if (false === request_services.includes(service)) {
+      request_services.push(service);
+    }
+  }
+
   parse_response(data_to_parse : any, metric:string): Object {
     if ( isDevMode() ) console.log(data_to_parse);
     let datasets = [];
@@ -537,22 +559,12 @@ export class GraphComponent implements OnInit {
         label = metric + " [NO TRANSLATION]";
       }
 
-      let service = data_to_parse[key]['metric']["service"];
       let src_ip = data_to_parse[key]['metric']["src_ip"];
-      if ( src_ip !== undefined ) {
-        if ( false === request_IPs.includes(src_ip) ) {
-          request_IPs.push(src_ip);
-          if ( src_ip == '0.0.0.0' ) {
-            this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
-          }
-        }
-      }
-      if ( service !== undefined ) {
-        if ( false === request_services.includes(service) ) {
-          request_services.push(service);
-        }
-      }
-
+      this.addSrcIpToRequestedIps(request_IPs, src_ip, metric)
+      
+      let service = data_to_parse[key]['metric']["service"];
+      this.addServiceToRequestedServices(request_services, service)
+      
       extra_label.forEach(element => {
         label = label + ' { ' + element + ': ' + data_to_parse[key]['metric'][element] + ' }';
       });
