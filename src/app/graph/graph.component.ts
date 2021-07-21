@@ -598,6 +598,7 @@ export class GraphComponent implements OnInit {
     glm.forEach((legend, index) => {
       let src_ip = datasets[index]["src_ip"];
       let service = datasets[index]["service"];
+      legend.cursor = "pointer";
       if ( src_ip ==  undefined ) { // always show legend if there is no IP
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
@@ -619,6 +620,7 @@ export class GraphComponent implements OnInit {
       }
     });
     this.graph_legends_to_display.set(metric, metric_legends_to_display);
+    this.graphs_records[metric]["m_legend"] = metric_legends_to_display;
     grm["m_chart"].update();
   }
 
@@ -702,17 +704,19 @@ export class GraphComponent implements OnInit {
     return new_label;
   }
 
-  add_unit_to_value(string_value, unit_list) {
-    string_value = Math.trunc(string_value).toString()
-    let thousand_counter = Math.trunc((string_value.length - 1) / 3);
-    let value = string_value / (1000 ** thousand_counter);
-    let decimal = 0;
-    if (value < 100) {
-      if (value % 1 !== 0) {
-        decimal = 1;
-      }
+  add_unit_to_value(value:any, unit_list) {
+    value = Math.trunc(value).toString()
+    let thousand_counter = Math.trunc((value.length - 1) / 3);
+    value = value / (1000 ** thousand_counter);
+    value = value.toFixed(1);
+    // remove decimal if value over 100 or decimal is 0
+    if (value >= 100) {
+      value = Math.trunc(value);
     }
-    return value.toFixed(decimal) + ' ' + unit_list[thousand_counter];
+    else if (value == Math.trunc(value)) {
+      value = Math.trunc(value);
+    }
+    return value + ' ' + unit_list[thousand_counter];
   }
 
   horizontal_bar_chart_builder(metric:string, rawData:Object): Chart {
