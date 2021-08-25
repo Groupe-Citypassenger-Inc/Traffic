@@ -40,6 +40,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { InterceptorService } from './loader/interceptor.service';
 import { AuthService } from './auth_services/auth.service';
 import { GuardService } from './auth_services/guard.service';
+import { GraphMethodsService } from './graph/graph-methods.service';
 import { LogOutDialogComponent } from './dialog/log-out-dialog/log-out-dialog.component';
 import { NotificationComponent } from './notification/notification.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
@@ -101,6 +102,7 @@ import { TimestampToDatePipe } from './pipes/timestamp-to-date.pipe'
     { provide:HTTP_INTERCEPTORS, useClass:InterceptorService, multi:true },
     AuthService,
     GuardService,
+    GraphMethodsService
   ],
   bootstrap: [AppComponent]
 })
