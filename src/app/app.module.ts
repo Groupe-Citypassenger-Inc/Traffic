@@ -40,10 +40,14 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { InterceptorService } from './loader/interceptor.service';
 import { AuthService } from './auth_services/auth.service';
 import { GuardService } from './auth_services/guard.service';
+import { GraphMethodsService } from './graph/graph-methods.service';
 import { LogOutDialogComponent } from './dialog/log-out-dialog/log-out-dialog.component';
 import { NotificationComponent } from './notification/notification.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
-
+import { TransformSecondsPipe } from './pipes/transform-seconds.pipe'
+import { AddUnitToValuePipe } from './pipes/add-unit-to-value.pipe'
+import { TimestampToDatePipe } from './pipes/timestamp-to-date.pipe'
+import { ShowDetailsPipe } from './pipes/show-details.pipe'
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,6 +58,10 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
     LogOutDialogComponent,
     NotificationComponent,
     DevicesListComponent,
+    TransformSecondsPipe,
+    AddUnitToValuePipe,
+    TimestampToDatePipe,
+    ShowDetailsPipe
   ],
   imports: [
     BrowserModule,
@@ -96,6 +104,7 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
     { provide:HTTP_INTERCEPTORS, useClass:InterceptorService, multi:true },
     AuthService,
     GuardService,
+    GraphMethodsService
   ],
   bootstrap: [AppComponent]
 })

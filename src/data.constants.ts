@@ -10,3 +10,16 @@ export const UNIT_INFORMATION = new Map([
   ['unknownName',  {'en' :['unknown unit', 'unknown unit', 'unknown unit', 'unknown unit', 'unknown unit', 'unknown unit'], 
                     'fr' :['unknown unit', 'unknown unit', 'unknown unit', 'unknown unit', 'unknown unit', 'unknown unit']}]
 ]);
+
+export const BACKGROUND_COLOR = ['#CB4335', '#1F618D', '#F1C40F', '#884EA0', '#27AE60', '#d04a80', '#4ac3d0', '#8f6425','#D35400', '#1f7a29']
+
+export const TEXT_TRANSLATION = {
+  protocol : {
+    en: "Protocol",
+    fr: "Protocole"
+  },
+  volume: {
+    en: "Volume",
+    fr: "Volume"
+  }
+}

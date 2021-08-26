@@ -82,14 +82,6 @@ export class AppComponent implements OnInit {
     });
     this.site_locale = this.language.get_language();
 
-    this._theme = localStorage.getItem('theme');
-    this.is_dark_mode_enabled = this._theme === 'Dark' ? true : false;
-    this.theme_handler.update_theme(this._theme);
-    if ( !this.is_dark_mode_enabled ) {
-      this.overlayContainer.getContainerElement().classList.remove('dark-theme-mode');
-    } else {
-      this.overlayContainer.getContainerElement().classList.add('dark-theme-mode');
-    }
   }
 
   ngOnDestroy(): void {
