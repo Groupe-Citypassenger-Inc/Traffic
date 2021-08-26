@@ -521,7 +521,7 @@ export class GraphComponent implements OnInit {
     }
   }
 
-  parse_response(data_to_parse : any, metric:string): Object {
+  parse_response_line(data_to_parse : any, metric:string): Object {
     if ( isDevMode() ) console.log(data_to_parse);
     let datasets = [];
     let metric_timestamp_list = [];
@@ -542,7 +542,7 @@ export class GraphComponent implements OnInit {
       }
 
       let metric_value_list = [];
-      data_to_parse[key]['values'].forEach(value=>{
+      data_to_parse[key]['values'].forEach(value => {
         metric_timestamp_list.push(value[0] * 1000); //Chartjs need ms timestamp to work correctly
         metric_value_list.push(value[1]);
       });
@@ -568,8 +568,7 @@ export class GraphComponent implements OnInit {
       extra_label.forEach(element => {
         label = label + ' { ' + element + ': ' + data_to_parse[key]['metric'][element] + ' }';
       });
-      let dataset;
-      dataset = {
+      let dataset= {
         label: label,
         data: metric_value_list,
         pointRadius: 1, // Graph dot size : 0 -> no dot
@@ -585,6 +584,87 @@ export class GraphComponent implements OnInit {
       labels: metric_timestamp_list,
       datasets: datasets
     };
+    return parsed_data;
+  }
+
+  parse_response_bar(data_to_parse, metric) {
+    let custom_metric = this.metrics_config['custom_metric'];
+    let metric_data;
+    if ( metric in custom_metric['instant_vectors'] ) {
+      metric_data = custom_metric['instant_vectors'][metric]
+    } else if ( metric in custom_metric['range_vectors'] ) {
+      metric_data = custom_metric['range_vectors'][metric]
+    } else if ( metric in custom_metric['multi_query'] ) {
+      metric_data = custom_metric['multi_query'][metric]
+    }
+
+    let legend_title = this.GetDefaultOrCurrent(metric_data['legend_title'], '');
+    let number_of_element_to_show = this.GetDefaultOrCurrent(metric_data['number_of_element_to_show'], 5);
+
+    data_to_parse["data"]["result"].sort(function (a, b) {
+      let result_a = a.values[0];
+      let value_a = result_a[1];
+
+      let result_b = b.values[0];
+      let value_b = result_b[1];
+      return value_b - value_a;
+    });
+
+    let datasets = [];
+    let labels = [];
+    let dataset = {
+      label: 'Dataset',
+      legend: [],
+      unique_src_ips: [],
+      data: [],
+      backgroundColor: [],
+      metric: []
+    };
+    let src_ip_list = [];
+    let data_index = 0;
+
+    while (labels.length < number_of_element_to_show && data_to_parse["data"]["result"].length > data_index) {
+      let data_element = data_to_parse["data"]["result"][data_index];
+      let value = data_element.values[0][1]; // metric bytes volume
+      let metric = data_element.metric;
+
+      // reduce of 5 000 000 / (30 * 60) as number of stuff in 30 mn < 5Mo
+      if (value < metric.age * 2_777) {
+        data_index++;
+        continue;
+      }
+      let backgroundColor;
+      let current_src = metric.src_ip
+      // add volume to dataset if src_ip already exist
+      if (src_ip_list.includes(metric.src_ip)) {
+        let index = src_ip_list.indexOf(current_src)
+        backgroundColor = dataset.legend[index].fillStyle;
+      }
+      // create new dataset
+      else {
+        src_ip_list.push(current_src)
+        let index = dataset.legend.length;
+        backgroundColor = BACKGROUND_COLOR[index]
+        let new_legend = {
+          text: current_src,
+          fillStyle: backgroundColor,
+          cursor: "unset"
+        }
+        dataset.legend.push(new_legend);
+      }
+      dataset.data.push(value);
+      dataset.backgroundColor.push(backgroundColor);
+      dataset.metric.push(metric);
+
+      labels.push(metric.dst_ip)
+      data_index++;
+    }
+    datasets.push(dataset)
+
+    this.graphs_records[metric]["m_legend"].title = legend_title;
+    this.graphs_records[metric]["m_legend"].legends = dataset.legend;
+
+    let parsed_data = {labels, datasets};
     return parsed_data;
   }
 
