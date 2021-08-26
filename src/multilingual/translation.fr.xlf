@@ -74,6 +74,10 @@
         <source>Until</source>
         <target>jusqu'au</target>
       </trans-unit>
+      
+      <trans-unit id="text_choose_a_date_graph">
+        <target>Choisir un jour</target>
+      </trans-unit>
 
       <trans-unit id="tip_text_description_devices_table">
         <target>Pour consulter les données collectées, sélectionnez les données que vous souhaitez consulter, puis cliquez sur le bouton Visualiser</target>
@@ -164,6 +168,22 @@
       <trans-unit id="log_out_button" datatype="html">
         <source>Log out</source>
         <target>Déconnexion</target>
+      </trans-unit>
+
+      <trans-unit id="text_volume_tooltip">
+        <target>Volume</target>
+      </trans-unit>
+
+      <trans-unit id="text_protocol_tooltip">
+        <target>Protocole</target>
+      </trans-unit>
+
+      <trans-unit id="text_port_tooltip">
+        <target>Port</target>
+      </trans-unit>
+
+      <trans-unit id="text_no_match_tooltip">
+        <target>Aucun résultat : erreur dans le traitement de la pop up</target>
       </trans-unit>
     </body>
   </file>
