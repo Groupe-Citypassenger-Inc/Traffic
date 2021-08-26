@@ -387,8 +387,7 @@ export class GraphComponent implements OnInit {
       }
     });
 
-
-    if ( chart_type === "bar" ) {
+    if ( chart_type === "horizontal_bar" ) {
       start_time = date.setHours(0,0,0,0)/1000;
       end_time = date.setHours(24,0,0,0)/1000;
       step = 200;
@@ -430,23 +429,21 @@ export class GraphComponent implements OnInit {
           }
           throw new Error ('Request to prom : not successful');
         }
-        // Complete data
-        if ( chart_type === "bar" ){
-          this.graphs_records[raw_metric_name]['m_chart'] = this.horizontal_bar_chart_builder(raw_metric_name, response);
-          return
-        }
-        let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
-        // Parse data
-        let parsed_data = this.parse_response(data_completed_to_parse, raw_metric_name);
-        // Build chart
-        let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
-        this.keep_legend_visibility(raw_metric_name, chart);
+        if (chart_type === "horizontal_bar") {
+          let parsed_data = this.parse_response_bar(response, raw_metric_name);
+          this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
+        } else if (chart_type === 'line') {
+          let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
+          let parsed_data = this.parse_response_line(data_completed_to_parse, raw_metric_name);
+          
+          let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
 
-        // Create legends
-        this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
-        this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
-        // Apply graph options
-        this.stack_lines(this.graphs_records[raw_metric_name]);
+          this.keep_legend_visibility(raw_metric_name, chart);
+          this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
+          this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
+
+          this.stack_lines(this.graphs_records[raw_metric_name]);
+        }
       });
   }
 
@@ -457,13 +454,13 @@ export class GraphComponent implements OnInit {
     return extra_label;
   }
 
+  // Add NaN value where no value exist inside data_to_complete
   completeResponse(data_to_complete, start_time, end_time, step) {
     data_to_complete.forEach(dataset => {
       let currentDataset = dataset['values'];
       let tabLength = currentDataset.length - 1
       let completedDataset = []
 
-      // Complete missing value before tab
       let firstTime = currentDataset[0][0];
       if ( firstTime > start_time ) {
         let missingStepsBefore = (firstTime - start_time)/step ;
@@ -473,7 +470,6 @@ export class GraphComponent implements OnInit {
         }
       }
 
-      // Complete missing value inside tab
       for ( let i = 0; i < currentDataset.length - 1; i++ ) {
         let firstTime = currentDataset[i][0];
         let secondTime = currentDataset[i+1][0];
@@ -485,7 +481,6 @@ export class GraphComponent implements OnInit {
         }
       }
 
-      // Complete missing value after tab
       let lastTime = currentDataset[tabLength][0];
       if ( lastTime < end_time ) {
         let missingStepsAfter = (end_time - lastTime)/step;
