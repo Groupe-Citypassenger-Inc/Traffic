@@ -81,7 +81,7 @@
                         
             <!-- Date time section - Day selector -->
             <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] == "day_type"' appearance="fill">
-              <mat-label>Choose a date</mat-label>
+              <mat-label i18n='"Choose a date" text|"Choose a date" text in day selector@@text_choose_a_date_graph'>Choose a date</mat-label>
               <input matInput [matDatepicker]="picker" [max]="maxDate" [(ngModel)]="selected_day" (dateInput)="time_value_changes(query);">
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
@@ -294,12 +294,13 @@
           </div>
         </div>
         <div class="graph_legend">
+          <p *ngIf='this.graphs_records[query]["m_legend"]["title"] as legend_title' style="margin: auto;">{{legend_title}} :</p>
           <ul style="flex-wrap: wrap; flex-direction: row; align-content: flex-start;">
-            <li *ngFor='let legend of this.graphs_records[query]["m_legend"]' 
+            <li *ngFor='let legend of this.graphs_records[query]["m_legend"].legends' 
                 style="flex-direction: row; margin-right: 10px;" 
                 [ngStyle]="{'cursor' : legend.cursor}" 
                 (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
-              <span [ngStyle]="{'background' : legend.fillStyle}" 
+              <span [ngStyle]="{'background': legend.fillStyle}" 
                     style="height: 20px; width: 20px; margin-right: 10px; display: inline-block;">
               </span>
               <p style="display: inline-block;"
