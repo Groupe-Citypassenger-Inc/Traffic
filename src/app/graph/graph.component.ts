@@ -1393,51 +1393,139 @@ export class GraphComponent implements OnInit {
     }
   }
 
-    return res;
-  }
+  createBarChartScales(config, metric_data) {
+    let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
+    let x_axis_title = this.GetDefaultOrCurrent(metric_data['x']['title'][this._lang], '');
+    const x_ticks_callback = (value, index) => {  
+      return this.graphMethodsService.add_unit_to_value(value, "bytes", this._lang)
+    }
 
-  getStartAndDurationForTooltip(tooltipItems) {
-    let tooltip_section = [];
-    tooltipItems.forEach(element => {
-      let current_metric = element.dataset.metric[element.dataIndex];
-      tooltip_section.push({
-        switchCase: 'Start_Duration',
-        start: (current_metric.end_time - current_metric.age) * 1000,
-        duration: current_metric.age,
-        format: 'LLL',
-        color: element.dataset.backgroundColor[element.dataIndex]
-      });
-    });
-
-    return tooltip_section;
-  }
-
-  getProtocolForTooltip(tooltipItems) {
-    let tooltip_section = [];
-    tooltipItems.forEach(element => {
-      let current_metric = element.dataset.metric[element.dataIndex];
-      console.log(current_metric)
-      tooltip_section.push({
-        switchCase: 'Protocol',
-        protocol : current_metric.proto
-      })
-    });
-    return tooltip_section
-  }
-
-  getVolumeForTooltip(tooltipItems) {
-    let tooltip_section = [];
-    tooltipItems.forEach(tooltipItem => {
-      if (tooltipItem.raw === undefined) {
-        return
+    config.options["scales"] = {
+      x : {
+        ticks: {
+          callback: x_ticks_callback
+        },
+        title: {
+          display: true,
+          text: x_axis_title
+        }
+      },
+      y : {
+        stacked: true,
+        title: {
+          display : true,
+          text: y_axis_title
+        }
       }
-      tooltip_section.push({
-        switchCase: 'Volume',
-        volume: tooltipItem.raw,
-        unit: 'bytes'
-      });
-    });
-    return tooltip_section;
+    }
+    return config;
   }
-}
+
+  createLineChartScales(config, metric_data, data) {
+    let y_axis_unit = this.GetDefaultOrCurrent(metric_data['y']['unit'], '');
+    let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
+    let y_axis_min = this.GetDefaultOrCurrent(metric_data['y']['min'], 0);
+    let y_axis_scales = this.GetDefaultOrCurrent(metric_data['y_axis_scales'], []);
+    let y_axis_id;
+    if ( y_axis_scales !== undefined ) {
+      y_axis_id = Object.keys(y_axis_scales);
+    }
+    let metric_separator = this.GetDefaultOrCurrent(metric_data['metric_separator'], []);
+    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
+    let metric_legend = this.GetDefaultOrCurrent(metric_data['metric_legend'], []);
+    let legend_text_to_replace = this.GetDefaultOrCurrent(metric_data['legend_text_to_replace'], []);
+
+    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
+    {
+      y_axis_unit = "unknownName";
+    }
+
+    let year_regex = /\/\d{4}/;
+    let data_labels: Array<number> = data['labels'];
+    let data_size = data_labels.length;
+    let start: number = data_labels[0];
+    let end: number = data_labels[data_size - 1];
+    let delta: number = ( end - start ) / 1000;
+    let x_axis_format: string;
+    let time_format: string;
+    if ( delta <= 10_800 ) { // <= 3h
+      time_format = 'LT';
+      x_axis_format = 'minute';
+    } else if ( delta <= 86_400 ) { // <= 24h
+      time_format = 'LT';
+      x_axis_format = 'hour';
+    } else if ( delta <= 259_200 ) { // <= 3j
+      time_format = 'L (LT)';
+      x_axis_format = 'day';
+    } else if ( delta < 1_296_000 ) { // < 15j
+      time_format = 'L';
+      x_axis_format = 'day';
+    } else { // > 15j
+      time_format = 'L'
+      x_axis_format = 'month';
+    }
+
+    config.options["scales"] = {
+      x: {
+        type: 'time',
+        time: {
+          unit: x_axis_format
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 15,
+          callback: function(value, index, values) {
+            let moment_label = moment(values[index].value);
+            let formated_label = moment_label.format(time_format);
+            formated_label = formated_label.replace(year_regex, '');
+            return formated_label;
+          }
+        }
+      }
+    }
+
+    let request_max_value_raw = 0;
+    data["datasets"].forEach(element => {
+      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
+      let array_index;
+      for ( let i = 0; i < metric_separator.length; i++ ) {
+        if ( element.label.includes(metric_separator[i]) ) {
+          array_index = i
+        }
+      }
+      element.yAxisID = y_axis_id[array_index];
+      // keep old label if there is no label inside configuration
+      if ( metric_legend.length !== 0 ) {
+        let new_label = metric_legend[array_index];
+        element.label = this.replaceLabel(element, new_label, legend_text_to_replace[array_index]);
+      }
+    });
+    let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw);
+
+    // create y Axis scales : y & y_stackable
+    for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
+      config.options["scales"][scaleKey] = {
+        title : {
+          display: true,
+          text: y_axis_title
+        },
+        min: y_axis_min,
+        max: ceiled_request_max_value_y,
+        ticks: {
+          callback: function(value, index) {
+            let thousand_counter = 0;
+            while ( value >= 1000 ) {
+              value = value / 1000;
+              thousand_counter ++;
+            }
+            return value + ' ' + unit_value_list[thousand_counter];
+          }
+        }
+      }
+      for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
+        config.options["scales"][scaleKey][optionsKey] = optionsValue;
+      }
+    }
+    return config;
+  }
 
