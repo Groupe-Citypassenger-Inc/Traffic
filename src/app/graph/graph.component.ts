@@ -1292,32 +1292,106 @@ export class GraphComponent implements OnInit {
     this.router.navigate(['/select'])
   }
 
-  getSrcAndDestForTooltip(tooltipItems) {
+  // Create object for view rendering
+  addLineToTooltipField(line_type, current_metric, element) {
+    let tooltipLine = {
+      switchCase: line_type
+    }
+    switch(line_type) {
+      case 'Port':
+        tooltipLine["port"] = current_metric.dst_port;
+        break;
+      case 'Protocol':
+        tooltipLine["protocol"] = current_metric.proto;
+        break;
+      case 'Src_To_Dest':
+        tooltipLine["src"] = current_metric.src_ip;
+        tooltipLine["dest"] = current_metric.dst_ip;
+        break;
+      case 'Start_Duration':
+        tooltipLine["start"] = (current_metric.end_time - current_metric.age) * 1000;
+        tooltipLine["duration"] = current_metric.age;
+        tooltipLine["format"] = 'LLL',
+        tooltipLine["color"] = element.dataset.backgroundColor[element.dataIndex];
+        break;
+      case 'Volume':
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'bytes';
+        break;
+      case 'Time':
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'time';
+        break;
+      case "Number":
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'number';
+        break;
+      default:
+        break;
+    }
+    return tooltipLine;
+  }
+
+  createCustomTooltipField(tooltipItems, labels_to_show){
     let tooltip_section = [];
-    tooltipItems.forEach(tooltipItem => {
-      if (tooltipItem.raw === undefined) {
+    tooltipItems.forEach(element => {
+      if (element.raw === undefined) {
         return
       }
-      let current_metric = tooltipItem.dataset.metric[tooltipItem.dataIndex];
-
-      tooltip_section.push({
-        switchCase: 'Src_To_Dest',
-        src: current_metric.src_ip,
-        dest: current_metric.dst_ip
-      })
+      let current_metric;
+      if (element.dataset.metric !== undefined) {
+        current_metric = element.dataset.metric[element.dataIndex];
+      }
+      labels_to_show.forEach(label => {
+        tooltip_section.push(this.addLineToTooltipField(label, current_metric, element))
+      });
     });
     return tooltip_section;
   }
 
-  getPortForTooltip(tooltipItems) {
-    let res = [];
-    tooltipItems.forEach(element => {
-      let current_metric = element.dataset.metric[element.dataIndex];
-      res.push({
-        switchCase: 'Port',
-        port: current_metric.dst_port
-      });
-    });
+  createTooltipCallbacks(custom_tooltip) {
+    const beforeTitle = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.beforeTitle);
+    };    
+    const title = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.title);
+    };
+    const afterTitle = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.afterTitle);
+    };
+    const beforeLabel = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.beforeLabel);
+    }
+    const label = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.label);
+    }
+    const afterLabel = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.afterLabel);
+    }
+    const beforeFooter = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.beforeFooter);
+    }
+    const footer = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.footer);
+    }
+    const afterFooter = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.afterFooter);
+    }
+    return {
+      beforeTitle: beforeTitle,
+      title: title,
+      afterTitle: afterTitle,
+      beforeLabel: beforeLabel,
+      label: label,
+      afterLabel: afterLabel,
+      beforeFooter: beforeFooter,
+      footer: footer,
+      afterFooter: afterFooter
+    }
+  }
 
     return res;
   }
