@@ -2,10 +2,11 @@
   "custom_metric":{
     "instant_vectors":{
       "average_pfstats_latence_1h": {
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency' ,<box_filter>}[1h])",
-        "description": "Latence moyenne des applications supervisées 0000",
+        "description": "Latence moyenne des applications supervisées",
         "x": {
           "unit": {
             "fr": "ms",
@@ -34,10 +35,14 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Time"]
+        }
       },
       
       "sum_pfstats_ccnxcount_1h": {
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count' ,<box_filter>}[1h])",
@@ -70,10 +75,14 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Number"]
+        }
       },
       
       "sum_pfstats_restransmit_1h": {
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='retransmit' ,<box_filter>}[1h])",
@@ -106,10 +115,14 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Number"]
+        }
       },
      
       "pfstats_up": {
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_UP' ,<box_filter>}",
@@ -142,9 +155,13 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Volume"]
+        }
       },
       "pfstats_down": {
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_DOWN' ,<box_filter>}",
@@ -177,9 +194,13 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Volume"]
+        }
       },
       "output_wan": {
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "increase(output{wan=~'.%2B' ,<box_filter>}[10m])",
@@ -212,9 +233,13 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Volume"]
+        }
       },      
       "input_wan": {
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "increase(input{wan=~'.%2B' ,<box_filter>}[10m])",
@@ -247,20 +272,23 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Volume"]
+        }
       },
 
       "largest_connection": {
-        "chart_type" : "bar",
+        "chart_type" : "horizontal_bar",
         "chart_date_picker": "day_type",
         "role": ["Support", "Admin", "User"],
         "query": "outlyers_download{<box_filter>}",
         "description": "Largest connection of the day",
         "legend_title": "IP source",
         "x": {
-          "unit": {
-            "fr": "",
-            "en": ""
+          "title": {
+            "fr": "Volume de données",
+            "en": "Data volume"
           }
         },
         "y": {
@@ -275,21 +303,10 @@
         "type": "",
         "number_of_element_to_show" : 10,
         "custom_tooltip": {
-          "title": {
-            "function" : "getSrcAndDestForTooltip"
-          },
-          "beforeLabel" : {
-            "function" : "getPortForTooltip"
-          },
-          "label": {
-            "function" : "getStartAndDurationForTooltip"
-          },
-          "afterLabel": {
-            "function" : "getProtocolForTooltip"
-          },
-          "footer": {
-            "function" : "getVolumeForTooltip"
-          }
+          "title": ["Src_To_Dest"],
+          "label": ["Start_Duration"],
+          "afterLabel": ["Protocol", "Port"],
+          "footer": ["Volume"]
         }
       }
     },
@@ -298,6 +315,7 @@
     },
     "multi_query" : {
       "pfstats_down_with_input_wan_15m":{
+        "chart_type" : "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0' ,<box_filter>}[15m] or sum(increase(input{wan=~'.%2B' ,<box_filter>}[15m]))",
@@ -324,7 +342,10 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+        "type": "",
+        "custom_tooltip": {
+          "label": ["Volume"]
+        }
       }
     }
   },  
