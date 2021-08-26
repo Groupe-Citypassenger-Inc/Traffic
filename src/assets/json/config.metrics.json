@@ -241,7 +241,36 @@
             "fill" : "origin"
           }
         },
-        "type": ""
+      "largest_connection": {
+        "chart_type" : "horizontal_bar",
+        "chart_date_picker": "day_type",
+        "role": ["Support", "Admin", "User"],
+        "query": "outlyers_download{<box_filter>}",
+        "description": "Largest connection of the day",
+        "legend_title": "IP source",
+        "x": {
+          "title": {
+            "fr": "Volume de données",
+            "en": "Data volume"
+          }
+        },
+        "y": {
+          "title" : {
+            "en": "IP Destination",
+            "fr": "IP Destination"
+          },   
+          "unit" : "bytes",
+          "min": 0,
+          "step": ""
+        },
+        "type": "",
+        "number_of_element_to_show" : 10,
+        "custom_tooltip": {
+          "title": ["Src_To_Dest"],
+          "label": ["Start_Duration"],
+          "afterLabel": ["Protocol", "Port"],
+          "footer": ["Volume"]
+        }
       }
     },
     "range_vectors":{
