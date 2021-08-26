@@ -796,180 +796,51 @@ export class GraphComponent implements OnInit {
     return new_label;
   }
 
-  add_unit_to_value(value:any, unit_list) {
-    value = Math.trunc(value).toString()
-    let thousand_counter = Math.trunc((value.length - 1) / 3);
-    value = value / (1000 ** thousand_counter);
-    value = value.toFixed(1);
-    // remove decimal if value over 100 or decimal is 0
-    if (value >= 100) {
-      value = Math.trunc(value);
-    }
-    else if (value == Math.trunc(value)) {
-      value = Math.trunc(value);
-    }
-    return value + ' ' + unit_list[thousand_counter];
-  }
-
-  horizontal_bar_chart_builder(metric:string, rawData:Object): Chart {
-    let metricData = undefined;
+  chart_builder(metric:string, data:Object): Chart {
+    // get metric config
+    let metric_data = undefined;
     if (metric in this.metrics_config) {
-      metricData = this.metrics_config;
+      metric_data = this.metrics_config[metric];
     } else if (metric in this.metrics_config['custom_metric']['instant_vectors']) {
-      metricData = this.metrics_config['custom_metric']['instant_vectors'];
+      metric_data = this.metrics_config['custom_metric']['instant_vectors'][metric];
     } else if (metric in this.metrics_config['custom_metric']['multi_query']) {
-      metricData = this.metrics_config['custom_metric']['multi_query'];
-    }
-    let legend_title = this.GetDefaultOrCurrent(metricData[metric]['legend_title'], '');
-    let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
-    let number_of_element_to_show = this.GetDefaultOrCurrent(metricData[metric]['number_of_element_to_show'], 5);
-    let labels = [];
-    let datasets = [];
-    let dataset = {
-      label: 'Dataset',
-      legend: [],
-      unique_src_ips: [],
-      data: [],
-      backgroundColor: [],
-      metric: []
-    };
-    let src_ip_list = [];
-    let data_index = 0;
-    let dataset_index = 0;
-
-    rawData["data"]["result"].sort(function (a, b) {
-      let result_a = a.values[0];
-      let value_a = result_a[1];
-
-      let result_b = b.values[0];
-      let value_b = result_b[1];
-
-      return value_b - value_a;
-    });
-
-
-    while (labels.length < number_of_element_to_show && rawData["data"]["result"].length > data_index) {
-      let data_element = rawData["data"]["result"][data_index];
-      let value = data_element.values[0][1]; // metric bytes volume
-      let metric = data_element.metric;
-
-      // avoid data if under 5 Mo per 30min
-      let mega_octets_per_30_min = (value * 1800) / metric.age;
-      if (mega_octets_per_30_min < 5 * 1000 * 1000) {
-        data_index++;
-        continue;
-      }
-      let backgroundColor;
-      let current_src = metric.src_ip
-      // add volume to dataset if src_ip already exist
-      if (src_ip_list.includes(metric.src_ip)) {
-        let index = src_ip_list.indexOf(current_src)
-        backgroundColor = dataset.legend[index].fillStyle;
-      }
-      // create new dataset
-      else {
-        src_ip_list.push(current_src)
-        let index = dataset.legend.length;
-        backgroundColor = BACKGROUND_COLOR[index]
-        let new_legend = {
-          text: current_src,
-          fillStyle: backgroundColor,
-          cursor: "unset"
-        }
-        dataset.legend.push(new_legend);
-      }
-      dataset.data.push(value);
-      dataset.backgroundColor.push(backgroundColor);
-      dataset.metric.push(metric);
-
-      labels.push(metric.dst_ip)
-      data_index++;
-      dataset_index++;
-    }
-    datasets.push(dataset)
-    this.graphs_records[metric]["m_legend"] = dataset.legend;
-    let data = { labels, datasets };
-    let ctx = document.getElementById(metric);
-    let unit_value_list = UNIT_INFORMATION.get("bytes")[this._lang]
-
-    let custom_tooltip = this.GetDefaultOrCurrent(metricData[metric]['custom_tooltip'], '');
-
-    const tooltipPlugin = Chart.registry.getPlugin('tooltip');
-      tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
-      return {
-        x: eventPosition.x,
-        y: eventPosition.y
-      };
-    };
-
-    // tooltip tile callback
-    const title = (tooltipItems) => {
-      return this[custom_tooltip.title.function](tooltipItems);
-    };
-    
-    // tooltip after label callback
-    const beforeLabel = (context) => {
-      return this[custom_tooltip.beforeLabel.function]([context]);
+      metric_data = this.metrics_config['custom_metric']['multi_query'][metric];
     }
 
-    // tooltip label callback
-    const label = (context) => {
-      return this[custom_tooltip.label.function]([context]);
+    let type = 'line'
+    let indexAxis = 'x';
+    let interaction_mode = 'index';
+    let interaction_intersect = false;
+
+    let chart_type = this.GetDefaultOrCurrent(metric_data['chart_type'], '');
+    if (chart_type === "horizontal_bar") {
+      type = 'bar';
+      indexAxis = 'y';
+      interaction_mode = "nearest";
+      interaction_intersect = true;
     }
 
-    // tooltip after label callback
-    const afterLabel = (context) => {
-      return this[custom_tooltip.afterLabel.function]([context]);
-    }
+    this.createFollowCursorTooltipPositioner();
 
-    // tooltip footer callback
-    const footer = (tooltipItems) => {
-      return this[custom_tooltip.footer.function](tooltipItems);
-    }
-
-    const x_ticks_callback = (value, index) => {  
-      return this.add_unit_to_value(value, unit_value_list);
-    }
-
-    let callbacks = {      
-      title: title,
-      beforeLabel: beforeLabel,
-      label: label,
-      afterLabel: afterLabel,
-      footer: footer
-    }
-
+    let custom_tooltip = this.GetDefaultOrCurrent(metric_data['custom_tooltip'], '');
+    let tooltip_callbacks = this.createTooltipCallbacks(custom_tooltip);
     // Remove callbacks that aren't part of the config custom_tooltip
     const callbacks_filtered_by_key = Object.fromEntries(
-      Object.entries(callbacks).filter(([key, value]) => Object.keys(custom_tooltip).includes(key)) );
+      Object.entries(tooltip_callbacks).filter(([key, value]) => Object.keys(custom_tooltip).includes(key))
+    );
 
+    // Create basic chart config
     let config = {
-      type: 'bar',
+      type: type,
       data: data,
       options: {
         maintainAspectRatio: false,
-        indexAxis: 'y',
-        elements: {
-          bar: {
-            borderWidth: 0,
-          }
-        },
-        scales: {
-          x : {
-            ticks: {
-              callback: x_ticks_callback
-            }
-          },
-          y : {
-            stacked: true,
-            title: {
-              display : true,
-              text: y_axis_title
-            },
-          },
-        },
         responsive: true,
+        indexAxis: indexAxis,  
         plugins: {
+          filler: {
+            propagate: false
+          },
           legend: {
             display: false,
           },
@@ -981,181 +852,38 @@ export class GraphComponent implements OnInit {
             },
             position: 'followCursor'
           }
-        }
-      }
-    };
-
-    let chart = new Chart(ctx, config);
-    return chart
-  }
-
-  chart_builder(metric:string, data:Object): Chart {
-    if ( isDevMode() ) {
-      console.log('building : ' + metric + ' chart');
-    }
-    let year_regex = /\/\d{4}/;
-    let data_labels: Array<number> = data['labels'];
-    let data_size = data_labels.length;
-    let start: number = data_labels[0];
-    let end: number = data_labels[data_size - 1];
-    let delta: number = ( end - start ) / 1000;
-    let x_axis_format: string;
-    let time_format: string;
-    if ( delta <= 3 * 60 * 60 ) { // <= 3h
-      time_format = 'LT';
-      x_axis_format = 'minute';
-    } else if ( delta <= 24 * 60 * 60 ) { // <= 24h
-      time_format = 'LT';
-      x_axis_format = 'hour';
-    } else if ( delta <= 3 * 24 * 60 * 60 ) { // <= 3j
-      time_format = 'L (LT)';
-      x_axis_format = 'day';
-    } else if ( delta < 15 * 24 * 60 * 60 ) { // < 15j
-      time_format = 'L';
-      x_axis_format = 'day';
-    } else { // > 15j
-      time_format = 'L'
-      x_axis_format = 'month';
-    }
-    let ctx = document.getElementById(metric);
-    if ( ctx === null ) {
-      throw new Error('An error as occured. Can\'t get id ok : ' + metric);
-    }
-
-    let metricData = undefined;
-    if ( metric in this.metrics_config ) {
-      metricData = this.metrics_config;
-    } else if ( metric in this.metrics_config['custom_metric']['instant_vectors'] ) {
-      metricData = this.metrics_config['custom_metric']['instant_vectors'];
-    } else if ( metric in this.metrics_config['custom_metric']['multi_query'] ) {
-      metricData = this.metrics_config['custom_metric']['multi_query'];
-    }
-    let color: string = '#000000'; //default value
-    if ( this._is_dark_mode_enabled ) {
-      color = '#e2e2e2'
-    }
-
-    // General config
-    let config = {
-      type: 'line',
-      data: data,
-      options: {
-        maintainAspectRatio: false,
-        responsive : true,
-        scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: x_axis_format
-            },
-            ticks: {
-              autoSkip: true,
-              maxTicksLimit: 15,
-              callback: function(value, index, values) {
-                let moment_label = moment(values[index].value);
-                let formated_label = moment_label.format(time_format);
-                formated_label = formated_label.replace(year_regex, '');
-                return formated_label;
-              }
-            }
-          },
-        },
-        plugins: {
-          filler: {
-            propagate: false
-          },
-          legend: {
-            display: false,
-            labels: {
-              fontColor: color,
-            }
-          },
-          tooltip : {
-            callbacks : {
-              label : (context) => {
-                let label = context.dataset.label + ': ';
-                return label += this.add_unit_to_value(context.raw, unit_value_list) 
-              }
-            }
-          }
         },
         interaction: {
-          mode: 'index',
-          intersect: false
+          mode: interaction_mode,
+          intersect: interaction_intersect
         },
         elements: {
           line: {
             borderWidth: 2,
             tension: 0 // Use this to curve the lines, 0 means straight line
+          },
+          bar: {
+            borderWidth: 0,
           }
         },
         font: {
           family: 'Ubuntu, sans-serif'
         }
       }
+    };
+    
+    if (type === "bar") {
+      config = this.createBarChartScales(config, metric_data);
+    } else if (type === 'line') {
+      config = this.createLineChartScales(config, metric_data, data);
     }
 
-    // Request config
-    let y_axis_unit = this.GetDefaultOrCurrent(metricData[metric]['y']['unit'], '');
-    let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
-    let y_axis_min = this.GetDefaultOrCurrent(metricData[metric]['y']['min'], 0);
-    let y_axis_scales = this.GetDefaultOrCurrent(metricData[metric]['y_axis_scales'], []);
-    let y_axis_id;
-    if ( y_axis_scales !== undefined ) {
-      y_axis_id = Object.keys(y_axis_scales);
+    let ctx = document.getElementById(metric);
+    if ( ctx === null ) {
+      throw new Error('An error as occured. Can\'t get id ok : ' + metric);
     }
-    let metric_separator = this.GetDefaultOrCurrent(metricData[metric]['metric_separator'], []);
-    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
-    let metric_legend = this.GetDefaultOrCurrent(metricData[metric]['metric_legend'], []);
-    let legend_text_to_replace = this.GetDefaultOrCurrent(metricData[metric]['legend_text_to_replace'], []);
-
-    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
-    {
-      y_axis_unit = "unknownName";
-    }
-
-    let request_max_value_raw = 0; // init
-    data["datasets"].forEach(element => {
-      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
-      let array_index;
-      for ( let i = 0; i < metric_separator.length; i++ ) {
-        if ( element.label.includes(metric_separator[i]) ) {
-          array_index = i
-        }
-      }
-      element.yAxisID = y_axis_id[array_index];
-      // keep old label if there is no label inside configuration
-      if ( metric_legend.length !== 0 ) {
-        let new_label = metric_legend[array_index];
-        element.label = this.replaceLabel(element, new_label, legend_text_to_replace[array_index]);
-      }
-    });
-    let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw); 
-    for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
-      config.options.scales[scaleKey] = {
-        title : {
-          display: true,
-          text: y_axis_title
-        },
-        min: y_axis_min,
-        max: ceiled_request_max_value_y,
-        ticks: {
-          callback: function(value, index) {
-            let thousand_counter = 0;
-            while ( value >= 1000 ) {
-              value = value / 1000;
-              thousand_counter ++;
-            }
-            return value + ' ' + unit_value_list[thousand_counter];
-          }
-        }
-      }
-      for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
-        config.options.scales[scaleKey][optionsKey] = optionsValue;
-      }
-    }
-    var chart = new Chart(ctx, config);
-    return chart;
+    let chart = new Chart(ctx, config);
+    return chart
   }
 
   // Show/Hide legend and curve on click
