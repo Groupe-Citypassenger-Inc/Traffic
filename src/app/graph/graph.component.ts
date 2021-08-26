@@ -20,6 +20,7 @@ import { NotificationServiceService } from '../notification/notification-service
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
 import { UNIT_INFORMATION, BACKGROUND_COLOR, TEXT_TRANSLATION } from '../../data.constants';
+import { GraphMethodsService } from './graph-methods.service';
 
 export interface unit_conversion {
   minute : number,
@@ -95,7 +96,6 @@ export class GraphComponent implements OnInit {
 
   CRC_table:Array<number> = [];
   graph_legends = new Map();
-  graph_legends_to_display = new Map();
   selected_day: Date = new Date();
   maxDate: Date = new Date();
 
@@ -107,6 +107,7 @@ export class GraphComponent implements OnInit {
               private notification: NotificationServiceService,
               public theme_handler: ThemeHandlerService,
               private router: Router,
+              private graphMethodsService: GraphMethodsService,
               private route: ActivatedRoute,
               private location:Location) {
     this.form_group = this._formBuilder.group({
@@ -195,6 +196,11 @@ export class GraphComponent implements OnInit {
   add_records(query: string): void{
     this.graphs_records[query] = {
       m_chart : "chart",
+      m_legend : {
+        title: '',
+        legends: [],
+        position : 'bottom'
+      },
       m_hidden: false,
       m_request_IPs: [],
       m_selected_IPs: new FormControl(),
@@ -227,6 +233,11 @@ export class GraphComponent implements OnInit {
         let date = new Date(this.params_list['date'][index])
         this.graphs_records[query] = {
           m_chart : "chart",
+          m_legend : {
+            title: '',
+            legends: [],
+            position : 'bottom'
+          },
           m_hidden: false,
           m_request_IPs: [],
           m_selected_IPs: new FormControl(),
@@ -364,7 +375,7 @@ export class GraphComponent implements OnInit {
       start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
     }
 
-    if ( isDevMode() ) console.log(end_time + ' ' + start_time);
+    if (isDevMode()) console.log(end_time + ' ' + start_time);
     let step = this.set_prometheus_step(start_time, end_time);
     
     let selected_box = this.box_selected
@@ -380,9 +391,9 @@ export class GraphComponent implements OnInit {
         query =  '/query_range?query=' + custom_metric[vector_type][metric]['query'];
         if ( selected_box != null ) {
           let box_filter: string = 'job=~"'+ selected_box +'.*"';
-          query = query.split('<box_filter>').join(box_filter); // change for .replaceAll when es2021
+          query = query.split('<box_filter>').join(box_filter);
         } else {
-          query = query.split('<box_filter>').join(''); // change for .replaceAll when es2021
+          query = query.split('<box_filter>').join('');
         }
       }
     });
@@ -417,12 +428,11 @@ export class GraphComponent implements OnInit {
     headers = headers.set('accept', 'application/json');
     this.httpClient.request('GET', url, {headers})
       .pipe(timeout(10000))
-      
       .toPromise()
       .then(response => {
-        if ( isDevMode() ) console.log(response);
-        if ( response['status'] != 'success' ) {
-          if ( this._lang == 'fr' ) {
+        if (isDevMode()) console.log(response);
+        if (response['status'] != 'success') {
+          if (this._lang == 'fr') {
             this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus','Fermer','error');
           } else {
             this.notification.show_notification('An error occurred while communicating with prometheus.','Close','error');
@@ -690,7 +700,7 @@ export class GraphComponent implements OnInit {
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
-      } else if ( service ==  undefined ) { // always show legend if there is no IP
+      } else if ( service ==  undefined ) { // always show legend if there is no service
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
@@ -706,8 +716,8 @@ export class GraphComponent implements OnInit {
         legend.hidden = false;
       }
     });
-    this.graph_legends_to_display.set(metric, metric_legends_to_display);
-    this.graphs_records[metric]["m_legend"] = metric_legends_to_display;
+    // this.graph_legends_to_display.set(metric, metric_legends_to_display);
+    this.graphs_records[metric]["m_legend"].legends = metric_legends_to_display;
     grm["m_chart"].update();
   }
 
@@ -907,10 +917,6 @@ export class GraphComponent implements OnInit {
     this.time_value_changes(query);
   }
 
-  setColor(color: string): void {
-    this.color = color;
-  }
-
   private wrappedValue(inputValue): number {
     if ( inputValue > this._max ) {
       return this._min + inputValue - this._max;
@@ -1024,15 +1030,12 @@ export class GraphComponent implements OnInit {
   }
 
   switch_stack_lines(grm) {
-    let name_y_axis;
     grm['m_chart'].options.scales.yStacked.stacked = !grm['m_chart'].options.scales.yStacked.stacked
-
     this.stack_lines(grm)
   }
 
-  stack_lines(grm:string): void {
-    let _is_stacked: boolean 
-    _is_stacked = grm['m_chart'].options.scales.yStacked.stacked
+  stack_lines(grm: string): void {
+    let _is_stacked: boolean = grm['m_chart'].options.scales.yStacked.stacked
     
     grm["m_stacked"] = _is_stacked;
     grm['m_chart'].data.datasets.forEach(element => {
@@ -1093,6 +1096,12 @@ export class GraphComponent implements OnInit {
 
   back_to_selection(): void {
     this.router.navigate(['/select'])
+  }
+
+  
+  isString(value){
+    console.log(value);
+    return typeof value === "string"
   }
 
   // Create object for view rendering
