@@ -166,42 +166,49 @@
           <canvas id={{query}} width="800" height="400"></canvas>
 
           <div *ngIf='this.graphs_records[query]["m_tooltip"] as tooltip' 
-                style="background: rgba(0, 0, 0, 0.8); 
-                      border-radius: 3px; 
-                      color: white; 
+                style="background: rgba(0, 0, 0, 0.8);
+                      border-radius: 3px;
+                      color: white;
                       opacity: 0;
-                      pointer-events: none; 
-                      position: absolute; 
-                      transform: translate(-50%, 0px); 
-                      transition: all 0.1s ease 0s; 
-                      left: 1232.33px; 
-                      top: 454.742px; 
-                      padding: 6px;"
-            [ngStyle]='{"opacity" : tooltip.opacity,
-                        "left" : this.graphs_records[query]["m_chart"].canvas.offsetLeft + tooltip.caretX + "px",
-                        "top":  this.graphs_records[query]["m_chart"].canvas.offsetTop + tooltip.caretY + "px",
-                        "font":  tooltip.options.bodyFont.string}'
+                      pointer-events: none;
+                      position: absolute;
+                      font: 400 14px / 20px Ubuntu, sans-serif;
+                      transform: translate(-50%, 0px);
+                      transition: all 0.1s ease 0s;
+                      left: 0px;
+                      top: 0px;
+                      padding: 10px;
+                      display: inline-flex;"
+                [ngStyle]='{"opacity": tooltip.opacity,
+                      "left": this.graphs_records[query]["m_chart"].canvas.offsetLeft + tooltip.caretX + "px",
+                      "top": this.graphs_records[query]["m_chart"].canvas.offsetTop + tooltip.caretY + "px"}'    
           >
-            <table>
+            <table style="display: inline-table;">
               <thead>
                 <tr *ngFor="let title of tooltip.title">
                   <th [ngSwitch]="title.switchCase">
                     <span *ngSwitchCase="'Src_To_Dest'">
                       {{title.src}} -> {{title.dest}}
                     </span>
-                    <span *ngSwitchDefault>No Match</span>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(title); else no_match">{{title}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
                   </th>
                 </tr>
               </thead>
 
-              <tbody *ngFor="let dataset of tooltip.body">
+              <tbody *ngFor="let dataset of tooltip.body; let i = index">
                 <tr *ngFor="let beforeLine of dataset.before">
                   <td [ngSwitch]="beforeLine.switchCase">
                     <div *ngSwitchCase="'Port'">
                       <span i18n='"port" text|"port" text in chart beforeLabel tooltip@@text_port_tooltip'>
                         Port</span> : {{beforeLine.port}}
                     </div>
-                    <span *ngSwitchDefault>No match</span>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(beforeLine); else no_match">{{beforeLine}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
                   </td>
                 </tr>
 
@@ -220,7 +227,34 @@
                       ">
                       </span>{{line.start | timestampToDate : line.format}} ({{line.duration | transformSeconds}})
                     </div>
-                    <span *ngSwitchDefault>No match</span>
+                    <div *ngSwitchCase="['Volume', 'Time', 'Number'].includes(line.switchCase) ? line.switchCase : !line.switchCase">
+                      <span [ngStyle]="{'background-color' : tooltip.labelColors[i].backgroundColor}" 
+                      style="
+                        border-color: white; 
+                        border-width: 2px; 
+                        border-style: solid;
+                        margin-right: 10px; 
+                        height: 10px; 
+                        width: 10px; 
+                        display: inline-block;
+                      ">
+                      </span>{{line.label}}: {{line.value | addUnitToValue : line.unit : _lang}}
+                    </div>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(line); else no_match">
+                        <span [ngStyle]="{'background-color' : tooltip.labelColors[i].backgroundColor}" 
+                          style="
+                            border-color: white; 
+                            border-width: 2px; 
+                            border-style: solid;
+                            margin-right: 10px; 
+                            height: 10px; 
+                            width: 10px; 
+                            display: inline-block;
+                          "></span>{{line}}
+                        </div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
                   </td>
                 </tr>
 
@@ -230,7 +264,14 @@
                       <span i18n='"protocol" text|"protocol" text in chart afterLabel tooltip@@text_protocol_tooltip'>
                         Protocol</span> : {{afterLine.protocol}}
                     </div>
-                    <span *ngSwitchDefault>No match</span>
+                    <div *ngSwitchCase="'Port'">
+                      <span i18n='"port" text|"port" text in chart beforeLabel tooltip@@text_port_tooltip'>
+                        Port</span> : {{afterLine.port}}
+                    </div>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(afterLine); else no_match">{{afterLine}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -240,9 +281,12 @@
                   <th [ngSwitch]="footer.switchCase">
                     <div *ngSwitchCase="'Volume'">
                       <span i18n='"volume" text|"volume" text in chart footer tooltip@@text_volume_tooltip'>
-                        Volume</span> : {{footer.volume | addUnitToValue : footer.unit : _lang}}
+                        Volume</span> : {{footer.value | addUnitToValue : footer.unit : _lang}}
                     </div>
-                    <span *ngSwitchDefault>No match</span>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(footer); else no_match">{{footer}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
                   </th>
                 </tr>
               </tfoot>
