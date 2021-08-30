@@ -675,13 +675,13 @@ export class GraphComponent implements OnInit {
 
   // for each keyword in keyword_to_replace
   // replace the keyword of new_label by the value of old_label
-  replaceLabel(element, old_label, new_label, keyword_to_replace) {
+  replaceLabel(element, new_label, keyword_to_replace) {
     for ( const [key, value] of Object.entries(keyword_to_replace) )  {
       if ( element[value + ''] !== undefined ) {        // [value] : type unknown | [value+''] : type string
         new_label = new_label.replaceAll(key, element[value + '']);
         continue
       }
-      let get_old_label_value = old_label.split(value)[1];
+      let get_old_label_value = element.label.split(value)[1];
       get_old_label_value = get_old_label_value.split(" }")[0];
       new_label = new_label.replaceAll(key, get_old_label_value);
     }
@@ -819,7 +819,7 @@ export class GraphComponent implements OnInit {
       // keep old label if there is no label inside configuration
       if ( metric_legend.length !== 0 ) {
         let new_label = metric_legend[array_index];
-        element.label = this.replaceLabel(element, old_label, new_label, legend_text_to_replace[array_index]);
+        element.label = this.replaceLabel(element, new_label, legend_text_to_replace[array_index]);
       }
     });
     let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw); 
@@ -1063,5 +1063,258 @@ export class GraphComponent implements OnInit {
 
   back_to_selection(): void {
     this.router.navigate(['/select'])
+  }
+
+  // Create object for view rendering
+  createCustomTooltipObjectPerLine(line_type, current_metric, element) {
+    let tooltipLine = {
+      switchCase: line_type
+    }
+    switch(line_type) {
+      case 'Port':
+        tooltipLine["port"] = current_metric.dst_port;
+        break;
+      case 'Protocol':
+        tooltipLine["protocol"] = current_metric.proto;
+        break;
+      case 'Src_To_Dest':
+        tooltipLine["src"] = current_metric.src_ip;
+        tooltipLine["dest"] = current_metric.dst_ip;
+        break;
+      case 'Start_Duration':
+        tooltipLine["start"] = (current_metric.end_time - current_metric.age) * 1000;
+        tooltipLine["duration"] = current_metric.age;
+        tooltipLine["format"] = 'LLL',
+        tooltipLine["color"] = element.dataset.backgroundColor[element.dataIndex];
+        break;
+      case 'Volume':
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'bytes';
+        break;
+      case 'Time':
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'time';
+        break;
+      case "Number":
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'number';
+        break;
+      default:
+        break;
+    }
+    return tooltipLine;
+  }
+
+  createCustomTooltipField(tooltipItems, labels_to_show){
+    let tooltip_section = [];
+    tooltipItems.forEach(element => {
+      if (element.raw === undefined) {
+        return
+      }
+      let current_metric;
+      if (element.dataset.metric !== undefined) {
+        current_metric = element.dataset.metric[element.dataIndex];
+      }
+      labels_to_show.forEach(label => {
+        tooltip_section.push(this.createCustomTooltipObjectPerLine(label, current_metric, element))
+      });
+    });
+    return tooltip_section;
+  }
+
+  createTooltipCallbacks(custom_tooltip) {
+    const beforeTitle = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.beforeTitle);
+    };    
+    const title = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.title);
+    };
+    const afterTitle = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.afterTitle);
+    };
+    const beforeLabel = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.beforeLabel);
+    }
+    const label = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.label);
+    }
+    const afterLabel = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.afterLabel);
+    }
+    const beforeFooter = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.beforeFooter);
+    }
+    const footer = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.footer);
+    }
+    const afterFooter = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.afterFooter);
+    }
+    return {
+      beforeTitle: beforeTitle,
+      title: title,
+      afterTitle: afterTitle,
+      beforeLabel: beforeLabel,
+      label: label,
+      afterLabel: afterLabel,
+      beforeFooter: beforeFooter,
+      footer: footer,
+      afterFooter: afterFooter
+    }
+  }
+  
+  createFollowCursorTooltipPositioner() {
+    const tooltipPlugin = Chart.registry.getPlugin('tooltip');
+    tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
+      let x_pos = 0;
+      if (eventPosition.x > window.screen.width / 2) {
+        x_pos = eventPosition.x - (this.width / 2);
+      } else {
+        x_pos = eventPosition.x + (this.width / 2);
+      }
+      return {
+        x: x_pos,
+        y: eventPosition.y
+      };
+    };
+  }
+
+  createBarChartScales(config, metric_data) {
+    let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
+    let x_axis_title = this.GetDefaultOrCurrent(metric_data['x']['title'][this._lang], '');
+    const x_ticks_callback = (value, index) => {  
+      return this.graphMethodsService.add_unit_to_value(value, "bytes", this._lang)
+    }
+
+    config.options["scales"] = {
+      x : {
+        ticks: {
+          callback: x_ticks_callback
+        },
+        title: {
+          display: true,
+          text: x_axis_title
+        }
+      },
+      y : {
+        stacked: true,
+        title: {
+          display : true,
+          text: y_axis_title
+        }
+      }
+    }
+    return config;
+  }
+
+  createLineChartScales(config, metric_data, data) {
+    let y_axis_unit = this.GetDefaultOrCurrent(metric_data['y']['unit'], '');
+    let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
+    let y_axis_min = this.GetDefaultOrCurrent(metric_data['y']['min'], 0);
+    let y_axis_scales = this.GetDefaultOrCurrent(metric_data['y_axis_scales'], []);
+    let y_axis_id;
+    if ( y_axis_scales !== undefined ) {
+      y_axis_id = Object.keys(y_axis_scales);
+    }
+    let metric_separator = this.GetDefaultOrCurrent(metric_data['metric_separator'], []);
+    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
+    let metric_legend = this.GetDefaultOrCurrent(metric_data['metric_legend'], []);
+    let legend_text_to_replace = this.GetDefaultOrCurrent(metric_data['legend_text_to_replace'], []);
+
+    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
+    {
+      y_axis_unit = "unknownName";
+    }
+
+    let year_regex = /\/\d{4}/;
+    let data_labels: Array<number> = data['labels'];
+    let data_size = data_labels.length;
+    let start: number = data_labels[0];
+    let end: number = data_labels[data_size - 1];
+    let delta: number = ( end - start ) / 1000;
+    let x_axis_format: string;
+    let time_format: string;
+    if ( delta <= 10_800 ) { // <= 3h
+      time_format = 'LT';
+      x_axis_format = 'minute';
+    } else if ( delta <= 86_400 ) { // <= 24h
+      time_format = 'LT';
+      x_axis_format = 'hour';
+    } else if ( delta <= 259_200 ) { // <= 3j
+      time_format = 'L (LT)';
+      x_axis_format = 'day';
+    } else if ( delta < 1_296_000 ) { // < 15j
+      time_format = 'L';
+      x_axis_format = 'day';
+    } else { // > 15j
+      time_format = 'L'
+      x_axis_format = 'month';
+    }
+
+    config.options["scales"] = {
+      x: {
+        type: 'time',
+        time: {
+          unit: x_axis_format
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 15,
+          callback: function(value, index, values) {
+            let moment_label = moment(values[index].value);
+            let formated_label = moment_label.format(time_format);
+            formated_label = formated_label.replace(year_regex, '');
+            return formated_label;
+          }
+        }
+      }
+    }
+
+    let request_max_value_raw = 0;
+    data["datasets"].forEach(element => {
+      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
+      let array_index;
+      for ( let i = 0; i < metric_separator.length; i++ ) {
+        if ( element.label.includes(metric_separator[i]) ) {
+          array_index = i
+        }
+      }
+      element.yAxisID = y_axis_id[array_index];
+      // keep old label if there is no label inside configuration
+      if ( metric_legend.length !== 0 ) {
+        let new_label = metric_legend[array_index];
+        element.label = this.replaceLabel(element, new_label, legend_text_to_replace[array_index]);
+      }
+    });
+    let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw);
+
+    // create y Axis scales : y & y_stackable
+    for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
+      config.options["scales"][scaleKey] = {
+        title : {
+          display: true,
+          text: y_axis_title
+        },
+        min: y_axis_min,
+        max: ceiled_request_max_value_y,
+        ticks: {
+          callback: function(value, index) {
+            let thousand_counter = 0;
+            while ( value >= 1000 ) {
+              value = value / 1000;
+              thousand_counter ++;
+            }
+            return value + ' ' + unit_value_list[thousand_counter];
+          }
+        }
+      }
+      for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
+        config.options["scales"][scaleKey][optionsKey] = optionsValue;
+      }
+    }
+    return config;
   }
 }
