@@ -47,6 +47,7 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
 import { TransformSecondsPipe } from './pipes/transform-seconds.pipe'
 import { AddUnitToValuePipe } from './pipes/add-unit-to-value.pipe'
 import { TimestampToDatePipe } from './pipes/timestamp-to-date.pipe'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,7 +60,7 @@ import { TimestampToDatePipe } from './pipes/timestamp-to-date.pipe'
     DevicesListComponent,
     TransformSecondsPipe,
     AddUnitToValuePipe,
-    TimestampToDatePipe,
+    TimestampToDatePipe
   ],
   imports: [
     BrowserModule,
