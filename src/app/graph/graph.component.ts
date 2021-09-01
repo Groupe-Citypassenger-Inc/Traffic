@@ -1204,6 +1204,22 @@ export class GraphComponent implements OnInit {
       afterFooter: afterFooter
     }
   }
+  
+  createFollowCursorTooltipPositioner() {
+    const tooltipPlugin = Chart.registry.getPlugin('tooltip');
+    tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
+      let x_pos = 0;
+      if (eventPosition.x > window.screen.width / 2) {
+        x_pos = eventPosition.x - (this.width / 2);
+      } else {
+        x_pos = eventPosition.x + (this.width / 2);
+      }
+      return {
+        x: x_pos,
+        y: eventPosition.y
+      };
+    };
+  }
 
   createBarChartScales(config, metric_data) {
     let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
@@ -1339,21 +1355,5 @@ export class GraphComponent implements OnInit {
       }
     }
     return config;
-  }
-
-  createFollowCursorTooltipPositioner() {
-    const tooltipPlugin = Chart.registry.getPlugin('tooltip');
-    tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
-      let x_pos = 0;
-      if (eventPosition.x > window.screen.width / 2) {
-        x_pos = eventPosition.x - (this.width / 2);
-      } else {
-        x_pos = eventPosition.x + (this.width / 2);
-      }
-      return {
-        x: x_pos,
-        y: eventPosition.y
-      };
-    };
   }
 }
