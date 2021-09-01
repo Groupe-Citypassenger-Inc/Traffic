@@ -1065,7 +1065,7 @@ export class GraphComponent implements OnInit {
     this.router.navigate(['/select'])
   }
 
-  // Create object for view rendering
+  // Initialize model for tooltip view
   createCustomTooltipObjectPerLine(line_type, current_metric, element) {
     let tooltipLine = {
       switchCase: line_type
