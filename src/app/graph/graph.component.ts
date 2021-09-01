@@ -1244,7 +1244,7 @@ export class GraphComponent implements OnInit {
       time_format = 'LT';
       x_axis_format = 'hour';
     } else if ( delta <= 259_200 ) { // <= 3j
-      time_format = 'L (LT)';
+      time_format = 'MM/DD (LT)';
       x_axis_format = 'day';
     } else if ( delta < 1_296_000 ) { // < 15j
       time_format = 'MM/DD';
