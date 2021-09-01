@@ -165,6 +165,7 @@
         <div style="min-width: 100%; min-height: 100%; margin-bottom: 2%;">
           <canvas id={{query}} width="800" height="400"></canvas>
 
+          <!-- Not using DOM binding, this way is the lib's methdology -->
           <div *ngIf='this.graphs_records[query]["m_tooltip"] as tooltip' 
                 style="background: rgba(0, 0, 0, 0.8);
                       border-radius: 3px;
