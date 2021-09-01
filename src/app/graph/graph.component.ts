@@ -1229,7 +1229,6 @@ export class GraphComponent implements OnInit {
       y_axis_unit = "unknownName";
     }
 
-    let year_regex = /\/\d{4}/;
     let data_labels: Array<number> = data['labels'];
     let data_size = data_labels.length;
     let start: number = data_labels[0];
@@ -1247,10 +1246,10 @@ export class GraphComponent implements OnInit {
       time_format = 'L (LT)';
       x_axis_format = 'day';
     } else if ( delta < 1_296_000 ) { // < 15j
-      time_format = 'L';
+      time_format = 'MM/DD';
       x_axis_format = 'day';
     } else { // > 15j
-      time_format = 'L'
+      time_format = 'MM/DD'
       x_axis_format = 'month';
     }
 
@@ -1266,7 +1265,6 @@ export class GraphComponent implements OnInit {
           callback: function(value, index, values) {
             let moment_label = moment(values[index].value);
             let formated_label = moment_label.format(time_format);
-            formated_label = formated_label.replace(year_regex, '');
             return formated_label;
           }
         }
