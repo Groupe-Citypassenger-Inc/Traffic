@@ -1066,6 +1066,7 @@ export class GraphComponent implements OnInit {
   }
 
   // Initialize model for tooltip view
+  // ref div.graph_tooltip in graph.component.html
   createCustomTooltipObjectPerLine(line_type, current_metric, element) {
     let tooltipLine = {
       switchCase: line_type
