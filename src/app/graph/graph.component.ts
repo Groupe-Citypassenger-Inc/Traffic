@@ -1103,28 +1103,36 @@ export class GraphComponent implements OnInit {
         tooltipLine["label"] = element.dataset.label;
         tooltipLine["unit"] = 'number';
         break;
-      default:
-        break;
+        case "FullDate":
+          tooltipLine["date"] = element.label
+        default:
+          break;
+      }
+      return tooltipLine;
     }
-    return tooltipLine;
-  }
+  
+    createCustomTooltipField(tooltipItems, labels_config){
+      if (labels_config === undefined) return
+  
+      let tooltip_section = [];
+      for (let i = 0; i < tooltipItems.length; i++) {
+        let element = tooltipItems[i];
+        let current_metric;
 
-  createCustomTooltipField(tooltipItems, labels_to_show){
-    let tooltip_section = [];
-    tooltipItems.forEach(element => {
-      if (element.raw === undefined) {
-        return
+        if (element.dataset.metric !== undefined) {
+          current_metric = element.dataset.metric[element.dataIndex];
+        }
+
+        labels_config.to_show.forEach(label => {
+          tooltip_section.push(this.createCustomTooltipObjectPerLine(label, current_metric, element))
+        });
+        
+        if (labels_config.do_once) {
+          break
+        }
       }
-      let current_metric;
-      if (element.dataset.metric !== undefined) {
-        current_metric = element.dataset.metric[element.dataIndex];
-      }
-      labels_to_show.forEach(label => {
-        tooltip_section.push(this.createCustomTooltipObjectPerLine(label, current_metric, element))
-      });
-    });
-    return tooltip_section;
-  }
+      return tooltip_section;
+    }
 
   createTooltipCallbacks(custom_tooltip) {
     const beforeTitle = (tooltipItems) => {
