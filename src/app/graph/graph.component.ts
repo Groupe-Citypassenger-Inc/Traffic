@@ -1111,7 +1111,7 @@ export class GraphComponent implements OnInit {
     return tooltipLine;
   }
   
-  createCustomTooltipField(tooltipItems, labels_config){
+  createCustomTooltipField(tooltipItems, labels_config) {
     if (labels_config === undefined) return
 
     let tooltip_section = [];
@@ -1175,6 +1175,7 @@ export class GraphComponent implements OnInit {
     }
   }
   
+  // track tooltip to keep it fully visible on screen regardless size and position
   createFollowCursorTooltipPositioner() {
     const tooltipPlugin = Chart.registry.getPlugin('tooltip');
     tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
@@ -1228,15 +1229,18 @@ export class GraphComponent implements OnInit {
     if ( y_axis_scales !== undefined ) {
       y_axis_id = Object.keys(y_axis_scales);
     }
+
+    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
+    {
+      console.log(y_axis_unit + " has no match in " + UNIT_INFORMATION)
+      console.log("Either the unit is misspelled or you need to add the unit in 'data.constants.ts'.")
+      y_axis_unit = "unknownName";
+    }
+
     let metric_separator = this.GetDefaultOrCurrent(metric_data['metric_separator'], []);
     let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
     let metric_legend = this.GetDefaultOrCurrent(metric_data['metric_legend'], []);
     let legend_text_to_replace = this.GetDefaultOrCurrent(metric_data['legend_text_to_replace'], []);
-
-    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
-    {
-      y_axis_unit = "unknownName";
-    }
 
     let data_labels: Array<number> = data['labels'];
     let data_size = data_labels.length;
