@@ -829,10 +829,6 @@ export class GraphComponent implements OnInit {
 
     let custom_tooltip = this.GetDefaultOrCurrent(metric_data['custom_tooltip'], '');
     let tooltip_callbacks = this.createTooltipCallbacks(custom_tooltip);
-    // Remove callbacks that aren't part of the config custom_tooltip
-    const callbacks_filtered_by_key = Object.fromEntries(
-      Object.entries(tooltip_callbacks).filter(([key, value]) => Object.keys(custom_tooltip).includes(key))
-    );
 
     // Create basic chart config
     let config = {
@@ -851,7 +847,7 @@ export class GraphComponent implements OnInit {
           },
           tooltip: {
             enabled: false,
-            callbacks: callbacks_filtered_by_key,
+            callbacks: tooltip_callbacks,
             external: (context) => {
               this.graphs_records[metric]["m_tooltip"] = context.tooltip 
             },
@@ -1100,7 +1096,6 @@ export class GraphComponent implements OnInit {
 
   
   isString(value){
-    console.log(value);
     return typeof value === "string"
   }
 
@@ -1141,26 +1136,32 @@ export class GraphComponent implements OnInit {
         tooltipLine["label"] = element.dataset.label;
         tooltipLine["unit"] = 'number';
         break;
+      case "FullDate":
+        tooltipLine["date"] = element.label
       default:
         break;
     }
     return tooltipLine;
   }
 
-  createCustomTooltipField(tooltipItems, labels_to_show){
+  createCustomTooltipField(tooltipItems, labels_config){
+    if (labels_config === undefined) return
+
     let tooltip_section = [];
-    tooltipItems.forEach(element => {
-      if (element.raw === undefined) {
-        return
-      }
+    for (let i = 0; i < tooltipItems.length; i++) {
+      let element = tooltipItems[i];
       let current_metric;
+2485
       if (element.dataset.metric !== undefined) {
         current_metric = element.dataset.metric[element.dataIndex];
       }
-      labels_to_show.forEach(label => {
+      labels_config.to_show.forEach(label => {
         tooltip_section.push(this.addLineToTooltipField(label, current_metric, element))
       });
-    });
+      if (labels_config.do_once) {
+        break
+      }
+    }
     return tooltip_section;
   }
 

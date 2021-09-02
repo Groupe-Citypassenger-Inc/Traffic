@@ -191,6 +191,9 @@
                     <span *ngSwitchCase="'Src_To_Dest'">
                       {{title.src}} -> {{title.dest}}
                     </span>
+                    <div *ngSwitchCase="'FullDate'">
+                      {{title.date}}
+                    </div>
                     <div *ngSwitchDefault>
                       <div *ngIf="isString(title); else no_match">{{title}}</div>
                         <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
