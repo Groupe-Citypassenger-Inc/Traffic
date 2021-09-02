@@ -1323,11 +1323,13 @@ export class GraphComponent implements OnInit {
         }
       }
       element.yAxisID = y_axis_id[array_index];
-      // keep old label if there is no label inside configuration
-      if ( metric_legend.length !== 0 ) {
-        let new_label = metric_legend[array_index];
-        element.label = this.replaceLabel(element, new_label, legend_text_to_replace[array_index]);
-      }
+      
+      if (metric_legend.length === 0) {
+        console.log("You need to add values to metric_legend in metric config at 'config.metrics.json'")
+        console.log("Current label to custom: " + element.label)
+      } 
+      let new_label = metric_legend[array_index];
+      element.label = this.replaceLabel(element, new_label, legend_text_to_replace[array_index]);
     });
     let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw);
 
