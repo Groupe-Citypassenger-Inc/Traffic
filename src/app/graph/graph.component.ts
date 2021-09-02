@@ -716,10 +716,6 @@ export class GraphComponent implements OnInit {
 
     let custom_tooltip = this.GetDefaultOrCurrent(metric_data['custom_tooltip'], '');
     let tooltip_callbacks = this.createTooltipCallbacks(custom_tooltip);
-    // Remove callbacks that aren't part of the config custom_tooltip
-    const callbacks_filtered_by_key = Object.fromEntries(
-      Object.entries(tooltip_callbacks).filter(([key, value]) => Object.keys(custom_tooltip).includes(key))
-    );
 
     // Create basic chart config
     let config = {
@@ -738,7 +734,7 @@ export class GraphComponent implements OnInit {
           },
           tooltip: {
             enabled: false,
-            callbacks: callbacks_filtered_by_key,
+            callbacks: tooltip_callbacks,
             external: (context) => {
               this.graphs_records[metric]["m_tooltip"] = context.tooltip 
             },
