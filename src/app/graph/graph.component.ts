@@ -1151,7 +1151,7 @@ export class GraphComponent implements OnInit {
     for (let i = 0; i < tooltipItems.length; i++) {
       let element = tooltipItems[i];
       let current_metric;
-2485
+
       if (element.dataset.metric !== undefined) {
         current_metric = element.dataset.metric[element.dataIndex];
       }
