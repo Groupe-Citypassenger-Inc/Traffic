@@ -1225,11 +1225,6 @@ export class GraphComponent implements OnInit {
     let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
     let y_axis_min = this.GetDefaultOrCurrent(metric_data['y']['min'], 0);
     let y_axis_scales = this.GetDefaultOrCurrent(metric_data['y_axis_scales'], []);
-    let y_axis_id;
-    if ( y_axis_scales !== undefined ) {
-      y_axis_id = Object.keys(y_axis_scales);
-    }
-
     if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
     {
       console.log(y_axis_unit + " has no match in " + UNIT_INFORMATION)
@@ -1237,10 +1232,7 @@ export class GraphComponent implements OnInit {
       y_axis_unit = "unknownName";
     }
 
-    let metric_separator = this.GetDefaultOrCurrent(metric_data['metric_separator'], []);
     let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
-    let metric_legend = this.GetDefaultOrCurrent(metric_data['metric_legend'], []);
-    let legend_text_to_replace = this.GetDefaultOrCurrent(metric_data['legend_text_to_replace'], []);
 
     let data_labels: Array<number> = data['labels'];
     let data_size = data_labels.length;
@@ -1287,18 +1279,6 @@ export class GraphComponent implements OnInit {
     let request_max_value_raw = 0;
     data["datasets"].forEach(element => {
       request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
-      let array_index;
-      for ( let i = 0; i < metric_separator.length; i++ ) {
-        if ( element.label.includes(metric_separator[i]) ) {
-          array_index = i
-        }
-      }
-      element.yAxisID = y_axis_id[array_index];
-      // keep old label if there is no label inside configuration
-      if ( metric_legend.length !== 0 ) {
-        let new_label = metric_legend[array_index];
-        element.label = this.replaceLabel(element, new_label, legend_text_to_replace[array_index]);
-      }
     });
     let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw);
 
