@@ -262,7 +262,7 @@
         },
         "metric_separator": [""],
         "metric_legend": ["-PORT- [-WAN-]"],
-        "legend_text_to_replace": [{ "-PORT-": "port: ", "-WAN-": "wan: " }],
+        "legend_text_to_replace": [{ "-PORT-": "port", "-WAN-": "wan" }],
         "y_axis_scales": {
           "yNotStacked": {
             "stacked": false,
@@ -307,7 +307,7 @@
         },
         "metric_separator": [""],
         "metric_legend": ["-PORT- [-WAN-]"],
-        "legend_text_to_replace": [{ "-PORT-": "port: ", "-WAN-": "wan: " }],
+        "legend_text_to_replace": [{ "-PORT-": "port", "-WAN-": "wan" }],
         "y_axis_scales": {
           "yNotStacked": {
             "stacked": false,
