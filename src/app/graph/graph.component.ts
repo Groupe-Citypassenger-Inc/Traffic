@@ -519,49 +519,51 @@ export class GraphComponent implements OnInit {
     let custom_metric = this.metrics_config['custom_metric'];
     let request_IPs = this.graphs_records[metric]["m_request_IPs"];
     let request_services = this.graphs_records[metric]["m_request_services"];
-    for ( const key in data_to_parse ) {
+    for (const data_key in data_to_parse) {
 
-      let instance;
-      if ( metric in custom_metric['instant_vectors'] ) {
-        instance = custom_metric['instant_vectors'][metric]["description"]
-      } else if ( metric in custom_metric['range_vectors'] ) {
-        instance = custom_metric['range_vectors'][metric]["description"]
-      } else if ( metric in custom_metric['multi_query'] ) {
-        instance = custom_metric['multi_query'][metric]["description"]
-      } else {
-        instance = data_to_parse[key]['metric']['job'];
+      let metric_data;
+      if (metric in custom_metric['instant_vectors']) {
+        metric_data = custom_metric['instant_vectors'][metric];
+      } else if (metric in custom_metric['range_vectors']) {
+        metric_data = custom_metric['range_vectors'][metric];
+      } else if (metric in custom_metric['multi_query']) {
+        metric_data = custom_metric['multi_query'][metric];
       }
 
       let metric_value_list = [];
-      data_to_parse[key]['values'].forEach(value => {
+      data_to_parse[data_key]['values'].forEach(value => {
         metric_timestamp_list.push(value[0] * 1000); //Chartjs need ms timestamp to work correctly
         metric_value_list.push(value[1]);
       });
-      
-      let extra_label: Array<string> = this.get_extra_labels(data_to_parse[key]['metric']);
-      let label: string = '';
-      if ( this.metric_alternative_name[this.user_information.role][metric] !== undefined ) {
-        if ( this.box_selected != null ) {
-          label = this.metric_alternative_name[this.user_information.role][metric][this._lang]
-        } else {
-          label = this.metric_alternative_name[this.user_information.role][metric][this._lang] + ' { instance: ' + instance + ' }';
-        }
-      } else {
-        label = metric + " [NO TRANSLATION]";
-      }
 
-      let src_ip = data_to_parse[key]['metric']["src_ip"];
+      let src_ip = data_to_parse[data_key]['metric']["src_ip"];
       this.addSrcIpToRequestedIps(request_IPs, src_ip, metric)
-      
-      let service = data_to_parse[key]['metric']["service"];
+
+      let service = data_to_parse[data_key]['metric']["service"];
       this.addServiceToRequestedServices(request_services, service)
-      
-      extra_label.forEach(element => {
-        label = label + ' { ' + element + ': ' + data_to_parse[key]['metric'][element] + ' }';
+
+      // Match data values with separator and select proper label template
+      // Then replace template with metric values
+      let separator_index = 0; 
+      metric_data.metric_separator.forEach((element, index_x) => {
+        if (Object.values(data_to_parse[data_key]['metric']).includes(element)) {
+          separator_index = index_x
+        }
       });
-      let dataset= {
+      let label_part_to_replace = metric_data.legend_text_to_replace[separator_index];
+      let label = metric_data.metric_legend[separator_index];
+      for (let label_key of Object.keys(label_part_to_replace)) {
+        let value = label_part_to_replace[label_key];
+        let replace_by = data_to_parse[data_key]['metric'][value]
+        label = label.replace(label_key, replace_by)
+      }
+      let y_axis_id = Object.keys(metric_data.y_axis_scales);
+      let yAxisID =  y_axis_id[separator_index];
+
+      let dataset = {
         label: label,
         data: metric_value_list,
+        yAxisID: yAxisID,
         pointRadius: 1, // Graph dot size : 0 -> no dot
         borderColor : '#' + this.crc32(label), // Line color
         backgroundColor : '#' + this.crc32(label), // Legend color
