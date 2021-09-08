@@ -1269,7 +1269,9 @@ export class GraphComponent implements OnInit {
         ticks: {
           autoSkip: true,
           maxTicksLimit: 15,
-          callback: function(value, index, values) {
+          // Whe're using values[index] because it's a timestamp
+          // time only has hour:minutes
+          callback: function(time, index, values) {
             let moment_label = moment(values[index].value);
             let formated_label = moment_label.format(time_format);
             return formated_label;
