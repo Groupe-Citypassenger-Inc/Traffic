@@ -1103,16 +1103,18 @@ export class GraphComponent implements OnInit {
         tooltipLine["label"] = element.dataset.label;
         tooltipLine["unit"] = 'number';
         break;
-        case "FullDate":
-          tooltipLine["date"] = element.label
-        default:
-          break;
+      case "FullDate":
+        tooltipLine["date"] = element.label;
+        break;
+      default:
+        console.log(line_type + " doesn't match any case, you can visit ")
+        break;
     }
     return tooltipLine;
   }
   
   createCustomTooltipField(tooltipItems, labels_config) {
-    if (labels_config === undefined) return
+    if (labels_config === undefined || labels_config.to_show === undefined) return
 
     let tooltip_section = [];
     for (let i = 0; i < tooltipItems.length; i++) {
