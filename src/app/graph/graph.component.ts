@@ -1284,6 +1284,10 @@ export class GraphComponent implements OnInit {
     });
     let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw);
 
+    const y_ticks_callback = (value, index) => {
+      return this.graphMethodsService.add_unit_to_value(value, y_axis_unit, this._lang)
+    }
+
     // create y Axis scales : y & y_stackable
     for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
       config.options["scales"][scaleKey] = {
@@ -1294,14 +1298,7 @@ export class GraphComponent implements OnInit {
         min: y_axis_min,
         max: ceiled_request_max_value_y,
         ticks: {
-          callback: function(value, index) {
-            let thousand_counter = 0;
-            while ( value >= 1000 ) {
-              value = value / 1000;
-              thousand_counter ++;
-            }
-            return value + ' ' + unit_value_list[thousand_counter];
-          }
+          callback: y_ticks_callback
         }
       }
       for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
