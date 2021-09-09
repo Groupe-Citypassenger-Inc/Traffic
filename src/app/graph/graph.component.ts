@@ -766,12 +766,12 @@ export class GraphComponent implements OnInit {
     let canvas = <HTMLCanvasElement> document.getElementById(metric)
     if (canvas === null) {
       console.warn("No canvas with id : '" + metric + "' found on the page!");
-      console.warn("Have you changed the value of metric?")
-      return
+      console.warn("Have you changed the value of metric?");
+      return;
     }
     let ctx = canvas.getContext('2d');
     let chart = new Chart(ctx, config);
-    return chart
+    return chart;
   }
 
   // Show/Hide legend and curve on click
