@@ -697,13 +697,13 @@ export class GraphComponent implements OnInit {
       metric_data = this.metrics_config['custom_metric']['instant_vectors'][metric];
     } else if (metric in this.metrics_config['custom_metric']['multi_query']) {
       metric_data = this.metrics_config['custom_metric']['multi_query'][metric];
-    }
+    };
 
+    // Set chart interface & interaction according to type
     let type = 'line'
     let indexAxis = 'x';
     let interaction_mode = 'index';
     let interaction_intersect = false;
-
     let chart_type = this.GetDefaultOrCurrent(metric_data['chart_type'], '');
     if (chart_type === "horizontal_bar") {
       type = 'bar';
@@ -768,10 +768,10 @@ export class GraphComponent implements OnInit {
 
     let ctx = document.getElementById(metric);
     if ( ctx === null ) {
-      throw new Error('An error as occured. Can\'t get id ok : ' + metric);
+      throw new Error('An error as occured. Can\'t get id of : ' + metric);
     }
     let chart = new Chart(ctx, config);
-    return chart
+    return chart;
   }
 
   // Show/Hide legend and curve on click
