@@ -753,9 +753,6 @@ export class GraphComponent implements OnInit {
           bar: {
             borderWidth: 0,
           }
-        },
-        font: {
-          family: 'Ubuntu, sans-serif'
         }
       }
     };
@@ -766,12 +763,15 @@ export class GraphComponent implements OnInit {
       config = this.createLineChartScales(config, metric_data, data);
     }
 
-    let ctx = document.getElementById(metric);
-    if ( ctx === null ) {
-      throw new Error('An error as occured. Can\'t get id of : ' + metric);
+    let canvas = <HTMLCanvasElement> document.getElementById(metric)
+    if (canvas === null) {
+      console.warn("No canvas with id : '" + metric + "' found on the page!");
+      console.warn("Have you changed the value of metric?")
+      return
     }
+    let ctx = canvas.getContext('2d');
     let chart = new Chart(ctx, config);
-    return chart;
+    return chart
   }
 
   // Show/Hide legend and curve on click
