@@ -340,24 +340,24 @@ export class GraphComponent implements OnInit {
   }
 
   get_metric_from_prometheus(metric:string): void {
-    if ( isDevMode() ) console.log(this.graphs_records[metric]);
-    const date = new Date(this.selected_day);
-    const timestamp = date.getTime();
+    if (isDevMode()) console.log(this.graphs_records[metric]);
+
+    let timestamp = this.selected_day.getTime();
     let t_value: number = this.graphs_records[metric]['t_value'];
     let t_unit: number = this.graphs_records[metric]['t_unit'];
     let start_time: number;
     let end_time : number;
 
-    if ( this.graphs_records[metric]['t_now'] == false ) {
+    if (this.graphs_records[metric]['t_now'] == false) {
       let current_timestamp = this.default_date.getTime();
 
       let date: Date =  this.graphs_records[metric]['t_date'].value;
       let selected_date_timestamp = date.getTime();
-    
+
       end_time = (timestamp + (current_timestamp - selected_date_timestamp) * -1) / 1000;
       start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
     } else {
-      end_time = ( timestamp ) / 1000;
+      end_time = timestamp / 1000;
       start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
     }
 
@@ -366,16 +366,17 @@ export class GraphComponent implements OnInit {
     
     let selected_box = this.box_selected
     let raw_metric_name = metric;
-    
+
     let query = '';
     let chart_type = '';
     let custom_metric = this.metrics_config['custom_metric'];
+
     Object.keys(custom_metric).forEach(vector_type =>{
-      if ( metric in custom_metric[vector_type] ) {
+      if (metric in custom_metric[vector_type]) {
         chart_type = custom_metric[vector_type][metric]['chart_type']; 
-        this.graphs_records[metric]["m_chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker']; 
+        this.graphs_records[metric]["m_chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker'];
         query =  '/query_range?query=' + custom_metric[vector_type][metric]['query'];
-        if ( selected_box != null ) {
+        if (selected_box != null) {
           let box_filter: string = 'job=~"'+ selected_box +'.*"';
           query = query.split('<box_filter>').join(box_filter);
         } else {
@@ -384,14 +385,14 @@ export class GraphComponent implements OnInit {
       }
     });
 
-    if ( chart_type === "horizontal_bar" ) {
-      start_time = date.setHours(0,0,0,0)/1000;
-      end_time = date.setHours(24,0,0,0)/1000;
+    if (chart_type === "horizontal_bar") {
+      start_time = this.selected_day.setHours(0,0,0,0)/1000;
+      end_time = this.selected_day.setHours(24,0,0,0)/1000;
       step = 200;
     }
-    if ( query === '' ) {
+    if (query === '') {
       metric = this.transform_metric_query(metric, selected_box);
-      if ( metric.includes('_raw') ) {
+      if (metric.includes('_raw')) {
         metric = metric.replace('_raw','');
       }
       query = '/query_range?query=' + metric + '&start=' + start_time + '&end=' + end_time + '&step=' + step;
@@ -400,11 +401,11 @@ export class GraphComponent implements OnInit {
     }
 
     let url: string;
-    if ( timestamp / 1000 - 3600 * 6 >= start_time || timestamp / 1000 - 3600 * 6  >= end_time ) {
-      if ( isDevMode() ) console.log('>= 6h');
+    if (timestamp / 1000 - 3600 * 6 >= start_time || timestamp / 1000 - 3600 * 6  >= end_time) {
+      if (isDevMode()) console.log('>= 6h');
       url = this.base_url + query;
     } else {
-      if ( isDevMode() ) console.log('< 6h');
+      if (isDevMode()) console.log('< 6h');
       url = this.base_url_buffer + query;
     }
 
@@ -416,7 +417,6 @@ export class GraphComponent implements OnInit {
       .pipe(timeout(10000))
       .toPromise()
       .then(response => {
-        if (isDevMode()) console.log(response);
         if (response['status'] != 'success') {
           if (this._lang == 'fr') {
             this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus','Fermer','error');
@@ -431,7 +431,7 @@ export class GraphComponent implements OnInit {
         } else if (chart_type === 'line') {
           let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
           let parsed_data = this.parse_response_line(data_completed_to_parse, raw_metric_name);
-          
+
           let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
 
           this.keep_legend_visibility(raw_metric_name, chart);
@@ -450,7 +450,7 @@ export class GraphComponent implements OnInit {
     return extra_label;
   }
 
-  // Add NaN value where no value exist inside data_to_complete
+  // Add NaN value when no value exist inside data_to_complete
   completeResponse(data_to_complete, start_time, end_time, step) {
     data_to_complete.forEach(dataset => {
       let currentDataset = dataset['values'];
@@ -629,7 +629,7 @@ export class GraphComponent implements OnInit {
       let backgroundColor;
       let current_src = metric.src_ip
       // add volume to dataset if src_ip already exist
-      if (src_ip_list.includes(metric.src_ip)) {
+      if (src_ip_list.includes(current_src)) {
         let index = src_ip_list.indexOf(current_src)
         backgroundColor = dataset.legend[index].fillStyle;
       }
