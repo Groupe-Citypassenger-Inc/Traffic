@@ -400,16 +400,16 @@ export class GraphComponent implements OnInit {
       query = query + '&start=' + start_time + '&end=' + end_time + '&step=' + step;
     }
 
-    let url: string;
-    if (timestamp / 1000 - 3600 * 6 >= start_time || timestamp / 1000 - 3600 * 6  >= end_time) {
+    let url = this.prometheus_api_url;
+    let $t = timestamp / 1000 - 3600 * 6;
+
+    if ($t >= start_time) {
       if (isDevMode()) console.log('>= 6h');
-      url = this.base_url + query;
+      url += this.base_url + query;
     } else {
       if (isDevMode()) console.log('< 6h');
-      url = this.base_url_buffer + query;
+      url += this.base_url_buffer + query;
     }
-
-    url = this.prometheus_api_url + this.base_url + query;
 
     let headers = new HttpHeaders();
     headers = headers.set('accept', 'application/json');
