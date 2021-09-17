@@ -734,13 +734,13 @@ export class GraphComponent implements OnInit {
 
   // for each keyword in keyword_to_replace
   // replace the keyword of new_label by the value of old_label
-  replaceLabel(element, old_label, new_label, keyword_to_replace) {
+  replaceLabel(element, new_label, keyword_to_replace) {
     for ( const [key, value] of Object.entries(keyword_to_replace) )  {
       if ( element[value + ''] !== undefined ) {        // [value] : type unknown | [value+''] : type string
         new_label = new_label.replaceAll(key, element[value + '']);
         continue
       }
-      let get_old_label_value = old_label.split(value)[1];
+      let get_old_label_value = element.label.split(value)[1];
       get_old_label_value = get_old_label_value.split(" }")[0];
       new_label = new_label.replaceAll(key, get_old_label_value);
     }
@@ -748,165 +748,88 @@ export class GraphComponent implements OnInit {
   }
 
   chart_builder(metric:string, data:Object): Chart {
-    if ( isDevMode() ) {
-      console.log('building : ' + metric + ' chart');
-    }
-    let year_regex = /\/\d{4}/;
-    let data_labels: Array<number> = data['labels'];
-    let data_size = data_labels.length;
-    let start: number = data_labels[0];
-    let end: number = data_labels[data_size - 1];
-    let delta: number = ( end - start ) / 1000;
-    let x_axis_format: string;
-    let time_format: string;
-    if ( delta <= 3 * 60 * 60 ) { // <= 3h
-      time_format = 'LT';
-      x_axis_format = 'minute';
-    } else if ( delta <= 24 * 60 * 60 ) { // <= 24h
-      time_format = 'LT';
-      x_axis_format = 'hour';
-    } else if ( delta <= 3 * 24 * 60 * 60 ) { // <= 3j
-      time_format = 'L (LT)';
-      x_axis_format = 'day';
-    } else if ( delta < 15 * 24 * 60 * 60 ) { // < 15j
-      time_format = 'L';
-      x_axis_format = 'day';
-    } else { // > 15j
-      time_format = 'L'
-      x_axis_format = 'month';
-    }
-    let ctx = document.getElementById(metric);
-    if ( ctx === null ) {
-      throw new Error('An error as occured. Can\'t get id ok : ' + metric);
+    // get metric config
+    let metric_data = undefined;
+    if (metric in this.metrics_config) {
+      metric_data = this.metrics_config[metric];
+    } else if (metric in this.metrics_config['custom_metric']['instant_vectors']) {
+      metric_data = this.metrics_config['custom_metric']['instant_vectors'][metric];
+    } else if (metric in this.metrics_config['custom_metric']['multi_query']) {
+      metric_data = this.metrics_config['custom_metric']['multi_query'][metric];
+    };
+
+    // Set chart interface & interaction according to type
+    let type = 'line'
+    let indexAxis = 'x';
+    let interaction_mode = 'index';
+    let interaction_intersect = false;
+    let chart_type = this.GetDefaultOrCurrent(metric_data['chart_type'], '');
+    if (chart_type === "horizontal_bar") {
+      type = 'bar';
+      indexAxis = 'y';
+      interaction_mode = "nearest";
+      interaction_intersect = true;
     }
 
-    let metricData = undefined;
-    if ( metric in this.metrics_config ) {
-      metricData = this.metrics_config;
-    } else if ( metric in this.metrics_config['custom_metric']['instant_vectors'] ) {
-      metricData = this.metrics_config['custom_metric']['instant_vectors'];
-    } else if ( metric in this.metrics_config['custom_metric']['multi_query'] ) {
-      metricData = this.metrics_config['custom_metric']['multi_query'];
-    }
-    let color: string = '#000000'; //default value
-    if ( this._is_dark_mode_enabled ) {
-      color = '#e2e2e2'
-    }
+    this.createFollowCursorTooltipPositioner();
 
-    // General config
+    let custom_tooltip = this.GetDefaultOrCurrent(metric_data['custom_tooltip'], '');
+    let tooltip_callbacks = this.createTooltipCallbacks(custom_tooltip);
+
+    // Create basic chart config
     let config = {
-      type: 'line',
+      type: type,
       data: data,
       options: {
         maintainAspectRatio: false,
-        responsive : true,
-        scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: x_axis_format
-            },
-            ticks: {
-              autoSkip: true,
-              maxTicksLimit: 15,
-              callback: function(value, index, values) {
-                let moment_label = moment(values[index].value);
-                let formated_label = moment_label.format(time_format);
-                formated_label = formated_label.replace(year_regex, '');
-                return formated_label;
-              }
-            }
-          },
-        },
+        responsive: true,
+        indexAxis: indexAxis,  
         plugins: {
           filler: {
             propagate: false
           },
           legend: {
             display: false,
-            labels: {
-              fontColor: color,
-            }
+          },
+          tooltip: {
+            enabled: false,
+            callbacks: tooltip_callbacks,
+            external: (context) => {
+              this.graphs_records[metric]["m_tooltip"] = context.tooltip 
+            },
+            position: 'followCursor'
           }
         },
         interaction: {
-          mode: 'index',
-          intersect: false
+          mode: interaction_mode,
+          intersect: interaction_intersect
         },
         elements: {
           line: {
             borderWidth: 2,
             tension: 0 // Use this to curve the lines, 0 means straight line
-          }
-        },
-        font: {
-          family: 'Ubuntu, sans-serif'
-        }
-      }
-    }
-
-    // Request config
-    let y_axis_unit = this.GetDefaultOrCurrent(metricData[metric]['y']['unit'], '');
-    let y_axis_title = this.GetDefaultOrCurrent(metricData[metric]['y']['title'][this._lang], '');
-    let y_axis_min = this.GetDefaultOrCurrent(metricData[metric]['y']['min'], 0);
-    let y_axis_scales = this.GetDefaultOrCurrent(metricData[metric]['y_axis_scales'], []);
-    let y_axis_id;
-    if ( y_axis_scales !== undefined ) {
-      y_axis_id = Object.keys(y_axis_scales);
-    }
-    let metric_separator = this.GetDefaultOrCurrent(metricData[metric]['metric_separator'], []);
-    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
-    let metric_legend = this.GetDefaultOrCurrent(metricData[metric]['metric_legend'], []);
-    let legend_text_to_replace = this.GetDefaultOrCurrent(metricData[metric]['legend_text_to_replace'], []);
-
-    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
-    {
-      y_axis_unit = "unknownName";
-    }
-
-    let request_max_value_raw = 0; // init
-    data["datasets"].forEach(element => {
-      let old_label = element.label;
-      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
-      let array_index;
-      for ( let i = 0; i < metric_separator.length; i++ ) {
-        if ( element.label.includes(metric_separator[i]) ) {
-          array_index = i
-        }
-      }
-      element.yAxisID = y_axis_id[array_index];
-      // keep old label if there is no label inside configuration
-      if ( metric_legend.length !== 0 ) {
-        let new_label = metric_legend[array_index];
-        element.label = this.replaceLabel(element, old_label, new_label, legend_text_to_replace[array_index]);
-      }
-    });
-    let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw); 
-
-    for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
-      config.options.scales[scaleKey] = {
-        title : {
-          display: true,
-          text: y_axis_title
-        },
-        min: y_axis_min,
-        max: ceiled_request_max_value_y,
-        ticks: {
-          callback: function(value, index) {
-            let thousand_counter = 0;
-            while ( value >= 1000 ) {
-              value = value / 1000;
-              thousand_counter ++;
-            }
-            return value + ' ' + unit_value_list[thousand_counter];
+          },
+          bar: {
+            borderWidth: 0,
           }
         }
       }
-      for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
-        config.options.scales[scaleKey][optionsKey] = optionsValue;
-      }
+    };
+    
+    if (type === "bar") {
+      config = this.createBarChartScales(config, metric_data);
+    } else if (type === 'line') {
+      config = this.createLineChartScales(config, metric_data, data);
     }
-    var chart = new Chart(ctx, config);
+
+    let canvas = <HTMLCanvasElement> document.getElementById(metric)
+    if (canvas === null) {
+      console.warn("No canvas with id : '" + metric + "' found on the page!");
+      console.warn("Have you changed the value of metric?");
+      return;
+    }
+    let ctx = canvas.getContext('2d');
+    let chart = new Chart(ctx, config);
     return chart;
   }
 
@@ -1124,6 +1047,251 @@ export class GraphComponent implements OnInit {
     this.router.navigate(['/select'])
   }
 
+  // Initialize model for tooltip view
+  // ref div.graph_tooltip in graph.component.html
+  createCustomTooltipObjectPerLine(line_type, current_metric, element) {
+    let tooltipLine = {
+      switchCase: line_type
+    }
+    switch(line_type) {
+      case 'Port':
+        tooltipLine["port"] = current_metric.dst_port;
+        break;
+      case 'Protocol':
+        tooltipLine["protocol"] = current_metric.proto;
+        break;
+      case 'Src_To_Dest':
+        tooltipLine["src"] = current_metric.src_ip;
+        tooltipLine["dest"] = current_metric.dst_ip;
+        break;
+      case 'Start_Duration':
+        tooltipLine["start"] = (current_metric.end_time - current_metric.age) * 1000;
+        tooltipLine["duration"] = current_metric.age;
+        tooltipLine["format"] = 'LLL',
+        tooltipLine["color"] = element.dataset.backgroundColor[element.dataIndex];
+        break;
+      case 'Volume':
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'bytes';
+        break;
+      case 'Time':
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'time';
+        break;
+      case "Number":
+        tooltipLine["value"] = element.raw;
+        tooltipLine["label"] = element.dataset.label;
+        tooltipLine["unit"] = 'number';
+        break;
+      case "FullDate":
+        tooltipLine["date"] = element.label;
+        break;
+      default:
+        console.log(line_type + " doesn't match any case, you can visit ")
+        break;
+    }
+    return tooltipLine;
+  }
+  
+  createCustomTooltipField(tooltipItems, labels_config) {
+    if (labels_config === undefined || labels_config.to_show === undefined) return
+
+    let tooltip_section = [];
+    for (let i = 0; i < tooltipItems.length; i++) {
+      let element = tooltipItems[i];
+      let current_metric;
+
+      if (element.dataset.metric !== undefined) {
+        current_metric = element.dataset.metric[element.dataIndex];
+      }
+
+      labels_config.to_show.forEach(label => {
+        tooltip_section.push(this.createCustomTooltipObjectPerLine(label, current_metric, element))
+      });
+      
+      if (labels_config.do_once) {
+        break
+      }
+    }
+    return tooltip_section;
+  }
+
+  createTooltipCallbacks(custom_tooltip) {
+    const beforeTitle = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.beforeTitle);
+    };    
+    const title = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.title);
+    };
+    const afterTitle = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.afterTitle);
+    };
+    const beforeLabel = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.beforeLabel);
+    }
+    const label = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.label);
+    }
+    const afterLabel = (context) => {
+      return this.createCustomTooltipField([context], custom_tooltip.afterLabel);
+    }
+    const beforeFooter = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.beforeFooter);
+    }
+    const footer = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.footer);
+    }
+    const afterFooter = (tooltipItems) => {
+      return this.createCustomTooltipField(tooltipItems, custom_tooltip.afterFooter);
+    }
+    return {
+      beforeTitle: beforeTitle,
+      title: title,
+      afterTitle: afterTitle,
+      beforeLabel: beforeLabel,
+      label: label,
+      afterLabel: afterLabel,
+      beforeFooter: beforeFooter,
+      footer: footer,
+      afterFooter: afterFooter
+    }
+  }
+  
+  // track tooltip to keep it fully visible on screen regardless size and position
+  createFollowCursorTooltipPositioner() {
+    const tooltipPlugin = Chart.registry.getPlugin('tooltip');
+    tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
+      let x_pos = 0;
+      if (eventPosition.x > window.screen.width / 2) {
+        x_pos = eventPosition.x - (this.width / 2);
+      } else {
+        x_pos = eventPosition.x + (this.width / 2);
+      }
+      return {
+        x: x_pos,
+        y: eventPosition.y
+      };
+    };
+  }
+
+  createBarChartScales(config, metric_data) {
+    let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
+    let x_axis_title = this.GetDefaultOrCurrent(metric_data['x']['title'][this._lang], '');
+    const x_ticks_callback = (value, index) => {  
+      return this.graphMethodsService.add_unit_to_value(value, "bytes", this._lang)
+    }
+
+    config.options["scales"] = {
+      x : {
+        ticks: {
+          callback: x_ticks_callback
+        },
+        title: {
+          display: true,
+          text: x_axis_title
+        }
+      },
+      y : {
+        stacked: true,
+        title: {
+          display : true,
+          text: y_axis_title
+        }
+      }
+    }
+    return config;
+  }
+
+  createLineChartScales(config, metric_data, data) {
+    let y_axis_unit = this.GetDefaultOrCurrent(metric_data['y']['unit'], '');
+    let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
+    let y_axis_min = this.GetDefaultOrCurrent(metric_data['y']['min'], 0);
+    let y_axis_scales = this.GetDefaultOrCurrent(metric_data['y_axis_scales'], []);
+    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
+    {
+      console.log(y_axis_unit + " has no match in " + UNIT_INFORMATION)
+      console.log("Either the unit is misspelled or you need to add the unit in 'data.constants.ts'.")
+      y_axis_unit = "unknownName";
+    }
+
+    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
+
+    let data_labels: Array<number> = data['labels'];
+    let data_size = data_labels.length;
+    let start: number = data_labels[0];
+    let end: number = data_labels[data_size - 1];
+    let delta: number = ( end - start ) / 1000;
+    let x_axis_format: string;
+    let time_format: string;
+    if ( delta <= 10_800 ) { // <= 3h
+      time_format = 'LT';
+      x_axis_format = 'minute';
+    } else if ( delta <= 86_400 ) { // <= 24h
+      time_format = 'LT';
+      x_axis_format = 'hour';
+    } else if ( delta <= 259_200 ) { // <= 3j
+      time_format = 'MM/DD (LT)';
+      x_axis_format = 'day';
+    } else if ( delta < 1_296_000 ) { // < 15j
+      time_format = 'MM/DD';
+      x_axis_format = 'day';
+    } else { // > 15j
+      time_format = 'MM/DD'
+      x_axis_format = 'month';
+    }
+
+    config.options["scales"] = {
+      x: {
+        type: 'time',
+        time: {
+          unit: x_axis_format
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 15,
+          // Whe're using times[index].value because it's a timestamp
+          // time only has hour:minutes
+          callback: function(time, index, times) {
+            let moment_label = moment(times[index].value);
+            let formated_label = moment_label.format(time_format);
+            return formated_label;
+          }
+        }
+      }
+    }
+
+    let request_max_value_raw = 0;
+    data["datasets"].forEach(element => {
+      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
+    });
+    let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw);
+
+    const y_ticks_callback = (value, index) => {
+      return this.graphMethodsService.add_unit_to_value(value, y_axis_unit, this._lang)
+    }
+
+    // create y Axis scales : y & y_stackable
+    for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
+      config.options["scales"][scaleKey] = {
+        title : {
+          display: true,
+          text: y_axis_title
+        },
+        min: y_axis_min,
+        max: ceiled_request_max_value_y,
+        ticks: {
+          callback: y_ticks_callback
+        }
+      }
+      for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
+        config.options["scales"][scaleKey][optionsKey] = optionsValue;
+      }
+    }
+    return config;
+  }
+    
   sort_bandwidth_connection_volume(datas) {
     datas.sort(function (a, b) {
       let result_a = a.values[0];
