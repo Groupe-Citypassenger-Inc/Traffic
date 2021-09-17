@@ -95,7 +95,8 @@ export class GraphComponent implements OnInit {
 
   CRC_table:Array<number> = [];
   graph_legends = new Map();
-  graph_legends_to_display = new Map();
+  selected_day: Date = new Date();
+  maxDate: Date = new Date();
 
   constructor(private appRef: ChangeDetectorRef,  
               private _formBuilder: FormBuilder, 
@@ -339,55 +340,59 @@ export class GraphComponent implements OnInit {
   }
 
   get_metric_from_prometheus(metric:string): void {
-    if ( isDevMode() ) console.log(this.graphs_records[metric]);
+    if (isDevMode()) console.log(this.graphs_records[metric]);
 
-    const timestamp = new Date().getTime();
+    let timestamp = this.selected_day.getTime();
     let t_value: number = this.graphs_records[metric]['t_value'];
     let t_unit: number = this.graphs_records[metric]['t_unit'];
     let start_time: number;
     let end_time : number;
 
-    if ( this.graphs_records[metric]['t_now'] == false ) {
+    if (this.graphs_records[metric]['t_now'] == false) {
       let current_timestamp = this.default_date.getTime();
 
       let date: Date =  this.graphs_records[metric]['t_date'].value;
       let selected_date_timestamp = date.getTime();
-    
-      end_time = (timestamp + (current_timestamp - selected_date_timestamp) * -1) / 1000;
 
-      let t_value = this.graphs_records[metric]['t_value'];
-      let t_unit = this.graphs_records[metric]['t_unit'];
+      end_time = (timestamp + (current_timestamp - selected_date_timestamp) * -1) / 1000;
       start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
     } else {
-      end_time = ( timestamp ) / 1000;
+      end_time = timestamp / 1000;
       start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
     }
 
-    if ( isDevMode() ) console.log(end_time + ' ' + start_time);
+    if (isDevMode()) console.log(end_time + ' ' + start_time);
     let step = this.set_prometheus_step(start_time, end_time);
     
     let selected_box = this.box_selected
     let raw_metric_name = metric;
-    
-    let query = '';
 
+    let query = '';
+    let chart_type = '';
     let custom_metric = this.metrics_config['custom_metric'];
 
     Object.keys(custom_metric).forEach(vector_type =>{
-      if ( metric in custom_metric[vector_type] ) {
+      if (metric in custom_metric[vector_type]) {
+        chart_type = custom_metric[vector_type][metric]['chart_type']; 
+        this.graphs_records[metric]["m_chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker'];
         query =  '/query_range?query=' + custom_metric[vector_type][metric]['query'];
-        if ( selected_box != null ) {
-          let box_filter: string = ',job=~"'+ selected_box +'.*"';
-          query = query.replace('<box_filter>', box_filter);
+        if (selected_box != null) {
+          let box_filter: string = 'job=~"'+ selected_box +'.*"';
+          query = query.split('<box_filter>').join(box_filter);
         } else {
-          query = query.replace('<box_filter>', '');
+          query = query.split('<box_filter>').join('');
         }
       }
     });
 
-    if ( query === '' ) {
+    if (chart_type === "horizontal_bar") {
+      start_time = this.selected_day.setHours(0,0,0,0)/1000;
+      end_time = this.selected_day.setHours(24,0,0,0)/1000;
+      step = 200;
+    }
+    if (query === '') {
       metric = this.transform_metric_query(metric, selected_box);
-      if ( metric.includes('_raw') ) {
+      if (metric.includes('_raw')) {
         metric = metric.replace('_raw','');
       }
       query = '/query_range?query=' + metric + '&start=' + start_time + '&end=' + end_time + '&step=' + step;
@@ -395,64 +400,63 @@ export class GraphComponent implements OnInit {
       query = query + '&start=' + start_time + '&end=' + end_time + '&step=' + step;
     }
 
-    let url: string;
-    if ( timestamp / 1000 - 3600 * 6 >= start_time || timestamp / 1000 - 3600 * 6  >= end_time ) {
-      if ( isDevMode() ) console.log('>= 6h');
-      url = this.base_url + query;
-    } else {
-      if ( isDevMode() ) console.log('< 6h');
-      url = this.base_url_buffer + query;
-    }
+    let url = this.prometheus_api_url;
+    let $t = timestamp / 1000 - 3600 * 6;
 
-    url = this.prometheus_api_url + this.base_url + query;
+    if ($t >= start_time) {
+      if (isDevMode()) console.log('>= 6h');
+      url += this.base_url + query;
+    } else {
+      if (isDevMode()) console.log('< 6h');
+      url += this.base_url_buffer + query;
+    }
 
     let headers = new HttpHeaders();
     headers = headers.set('accept', 'application/json');
     this.httpClient.request('GET', url, {headers})
       .pipe(timeout(10000))
-      
       .toPromise()
       .then(response => {
-        if ( isDevMode() ) console.log(response);
-        if ( response['status'] != 'success' ) {
-          if ( this._lang == 'fr' ) {
+        if (response['status'] != 'success') {
+          if (this._lang == 'fr') {
             this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus','Fermer','error');
           } else {
             this.notification.show_notification('An error occurred while communicating with prometheus.','Close','error');
           }
           throw new Error ('Request to prom : not successful');
         }
-        // Complete data
-        let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
-        // Parse data
-        let parsed_data = this.parse_response(data_completed_to_parse, raw_metric_name);
-        // Build chart
-        let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
-        this.keep_legend_visibility(raw_metric_name, chart);
+        if (chart_type === "horizontal_bar") {
+          let parsed_data = this.parse_response_bar(response, raw_metric_name);
+          this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
+        } else if (chart_type === 'line') {
+          let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
+          let parsed_data = this.parse_response_line(data_completed_to_parse, raw_metric_name);
 
-        // Create legends
-        this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
-        this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
-        // Apply graph options
-        this.stack_lines(this.graphs_records[raw_metric_name]);
+          let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
+
+          this.keep_legend_visibility(raw_metric_name, chart);
+          this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
+          this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
+
+          this.stack_lines(this.graphs_records[raw_metric_name]);
+        }
       });
   }
 
   get_extra_labels(response:any): Array<string> {
     delete response['__name__'];
     delete response['instance'];
-    delete response['job'];
     let extra_label = Object.keys(response);
     return extra_label;
   }
 
+  // Add NaN value when no value exist inside data_to_complete
   completeResponse(data_to_complete, start_time, end_time, step) {
     data_to_complete.forEach(dataset => {
       let currentDataset = dataset['values'];
       let tabLength = currentDataset.length - 1
       let completedDataset = []
 
-      // Complete missing value before tab
       let firstTime = currentDataset[0][0];
       if ( firstTime > start_time ) {
         let missingStepsBefore = (firstTime - start_time)/step ;
@@ -462,7 +466,6 @@ export class GraphComponent implements OnInit {
         }
       }
 
-      // Complete missing value inside tab
       for ( let i = 0; i < currentDataset.length - 1; i++ ) {
         let firstTime = currentDataset[i][0];
         let secondTime = currentDataset[i+1][0];
@@ -474,7 +477,6 @@ export class GraphComponent implements OnInit {
         }
       }
 
-      // Complete missing value after tab
       let lastTime = currentDataset[tabLength][0];
       if ( lastTime < end_time ) {
         let missingStepsAfter = (end_time - lastTime)/step;
@@ -488,67 +490,80 @@ export class GraphComponent implements OnInit {
     return data_to_complete;
   }
 
-  parse_response(data_to_parse : any, metric:string): Object {
+  addSrcIpToRequestedIps(request_IPs, src_ip, metric) {
+    if (src_ip === undefined) {
+      return
+    }
+    if (request_IPs.includes(src_ip)) {
+      return
+    }
+    request_IPs.push(src_ip);
+    if (src_ip === '0.0.0.0') {
+      this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
+    }
+  }
+
+  addServiceToRequestedServices(request_services, service) {
+    if (service === undefined) {
+      return
+    }
+    if (false === request_services.includes(service)) {
+      request_services.push(service);
+    }
+  }
+
+  parse_response_line(data_to_parse : any, metric:string): Object {
     if ( isDevMode() ) console.log(data_to_parse);
     let datasets = [];
     let metric_timestamp_list = [];
     let custom_metric = this.metrics_config['custom_metric'];
     let request_IPs = this.graphs_records[metric]["m_request_IPs"];
     let request_services = this.graphs_records[metric]["m_request_services"];
-    for ( const key in data_to_parse ) {
+    for (const data_key in data_to_parse) {
 
-      let instance;
-      if ( metric in custom_metric['instant_vectors'] ) {
-        instance = custom_metric['instant_vectors'][metric]["description"]
-      } else if ( metric in custom_metric['range_vectors'] ) {
-        instance = custom_metric['range_vectors'][metric]["description"]
-      } else if ( metric in custom_metric['multi_query'] ) {
-        instance = custom_metric['multi_query'][metric]["description"]
-      } else {
-        instance = data_to_parse[key]['metric']['job'];
+      let metric_data;
+      if (metric in custom_metric['instant_vectors']) {
+        metric_data = custom_metric['instant_vectors'][metric];
+      } else if (metric in custom_metric['range_vectors']) {
+        metric_data = custom_metric['range_vectors'][metric];
+      } else if (metric in custom_metric['multi_query']) {
+        metric_data = custom_metric['multi_query'][metric];
       }
 
       let metric_value_list = [];
-      data_to_parse[key]['values'].forEach(value=>{
+      data_to_parse[data_key]['values'].forEach(value => {
         metric_timestamp_list.push(value[0] * 1000); //Chartjs need ms timestamp to work correctly
         metric_value_list.push(value[1]);
       });
-      
-      let extra_label: Array<string> = this.get_extra_labels(data_to_parse[key]['metric']);
-      let label: string = '';
-      if ( this.metric_alternative_name[this.user_information.role][metric] !== undefined ) {
-        if ( this.box_selected != null ) {
-          label = this.metric_alternative_name[this.user_information.role][metric][this._lang]
-        } else {
-          label = this.metric_alternative_name[this.user_information.role][metric][this._lang] + ' { instance: ' + instance + ' }';
-        }
-      } else {
-        label = metric + " [NO TRANSLATION]";
-      }
 
-      let service = data_to_parse[key]['metric']["service"];
-      let src_ip = data_to_parse[key]['metric']["src_ip"];
-      if ( src_ip !== undefined ) {
-        if ( false === request_IPs.includes(src_ip) ) {
-          request_IPs.push(src_ip);
-          if ( src_ip == '0.0.0.0' ) {
-            this.graphs_records[metric]["m_selected_IPs"] = new FormControl([src_ip]);
-          }
-        }
-      }
-      if ( service !== undefined ) {
-        if ( false === request_services.includes(service) ) {
-          request_services.push(service);
-        }
-      }
+      let src_ip = data_to_parse[data_key]['metric']["src_ip"];
+      this.addSrcIpToRequestedIps(request_IPs, src_ip, metric)
 
-      extra_label.forEach(element => {
-        label = label + ' { ' + element + ': ' + data_to_parse[key]['metric'][element] + ' }';
+      let service = data_to_parse[data_key]['metric']["service"];
+      this.addServiceToRequestedServices(request_services, service)
+
+      // Match data values with separator and select proper label template
+      // Then replace template with metric values
+      let separator_index = 0; 
+      metric_data.metric_separator.forEach((element, index_x) => {
+        if (Object.values(data_to_parse[data_key]['metric']).includes(element)) {
+          separator_index = index_x
+        }
       });
-      let dataset;
-      dataset = {
+      let label_part_to_replace = metric_data.legend_text_to_replace[separator_index];
+      let label = metric_data.metric_legend[separator_index];
+      for (let label_key of Object.keys(label_part_to_replace)) {
+        let value = label_part_to_replace[label_key];
+        let replace_by = data_to_parse[data_key]['metric'][value]
+        label = label.replace(label_key, replace_by)
+      }
+      let y_axis_id = Object.keys(metric_data.y_axis_scales);
+      let yAxisID =  y_axis_id[separator_index];
+
+      let dataset = {
         label: label,
         data: metric_value_list,
+        yAxisID: yAxisID,
         pointRadius: 1, // Graph dot size : 0 -> no dot
         borderColor : '#' + this.crc32(label), // Line color
         backgroundColor : '#' + this.crc32(label), // Legend color
@@ -562,6 +577,50 @@ export class GraphComponent implements OnInit {
       labels: metric_timestamp_list,
       datasets: datasets
     };
+    return parsed_data;
+  }
+
+  parse_response_bar(data_to_parse, metric) {
+    let custom_metric = this.metrics_config['custom_metric'];
+    let metric_data;
+    if (metric in custom_metric['instant_vectors']) {
+      metric_data = custom_metric['instant_vectors'][metric]
+    } else if (metric in custom_metric['range_vectors']) {
+      metric_data = custom_metric['range_vectors'][metric]
+    } else if (metric in custom_metric['multi_query']) {
+      metric_data = custom_metric['multi_query'][metric]
+    }
+
+    let legend_title = this.GetDefaultOrCurrent(metric_data['legend_title'], '');
+    let number_of_element_to_show = this.GetDefaultOrCurrent(metric_data['number_of_element_to_show'], 5);
+
+    this.sort_bandwidth_connection_volume(data_to_parse['data']['result'])
+
+    let datasets = [];
+    let labels = [];
+    let dataset = this.initDatasetBar()
+    let src_ip_list = [];
+    let data_index = 0;
+
+    // Fill dataset, stop when full or no more data
+    while (labels.length < number_of_element_to_show && data_to_parse["data"]["result"].length > data_index) {
+      let data_element = data_to_parse["data"]["result"][data_index];
+      let value = data_element.values[0][1]; // metric bytes volume
+      let metric = data_element.metric;
+      data_index++;
+
+      // reduce of 5 000 000 / (30 * 60) as number of stuff in 30 mn < 5Mo
+      if (value < metric.age * 2_777) {
+        continue;
+      }
+      this.addElementToDataset(value, metric, src_ip_list, labels, dataset)
+    }
+    datasets.push(dataset)
+
+    this.graphs_records[metric]["m_legend"].title = legend_title;
+    this.graphs_records[metric]["m_legend"].legends = dataset.legend;
+
+    let parsed_data = {labels, datasets};
     return parsed_data;
   }
 
@@ -1231,5 +1290,55 @@ export class GraphComponent implements OnInit {
       }
     }
     return config;
+  }
+    
+  sort_bandwidth_connection_volume(datas) {
+    datas.sort(function (a, b) {
+      let result_a = a.values[0];
+      let value_a = result_a[1];
+
+      let result_b = b.values[0];
+      let value_b = result_b[1];
+      return value_b - value_a;
+    })
+  }
+
+  addElementToDataset(value, metric, src_ip_list, labels, dataset) {
+    let backgroundColor;
+    let current_src = metric.src_ip
+
+    // add volume to dataset if src_ip already exist
+    if (src_ip_list.includes(metric.src_ip)) {
+      let index = src_ip_list.indexOf(current_src)
+      backgroundColor = dataset.legend[index].fillStyle;
+    }
+    else { // create new dataset
+      src_ip_list.push(current_src)
+      let index = dataset.legend.length;
+      backgroundColor = BACKGROUND_COLOR[index]
+      let new_legend = {
+        text: current_src,
+        fillStyle: backgroundColor,
+        cursor: "unset"
+      }
+      dataset.legend.push(new_legend);
+    }
+    dataset.data.push(value);
+    dataset.backgroundColor.push(backgroundColor);
+    dataset.metric.push(metric);
+
+    labels.push(metric.dst_ip)
+  }
+
+  initDatasetBar() {
+    let new_dataset = {
+      label: 'Dataset',
+      legend: [],
+      unique_src_ips: [],
+      data: [],
+      backgroundColor: [],
+      metric: []
+    };
+    return new_dataset
   }
 }
