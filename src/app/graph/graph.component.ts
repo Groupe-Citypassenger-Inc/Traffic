@@ -243,6 +243,7 @@ export class GraphComponent implements OnInit {
           m_selected_IPs: new FormControl(),
           m_request_services: [],
           m_selected_services: new FormControl(),
+          m_chart_date_picker : "range_type",
           m_stacked: false,
           t_value : +this.params_list['value'][index],
           t_unit : this.params_list['unit'][index],
