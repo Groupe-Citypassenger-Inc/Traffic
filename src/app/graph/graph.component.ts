@@ -19,7 +19,8 @@ import { AuthService } from '../auth_services/auth.service';
 import { NotificationServiceService } from '../notification/notification-service.service'
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
-import { UNIT_INFORMATION } from '../../data.constants';
+import { UNIT_INFORMATION, BACKGROUND_COLOR } from '../../data.constants';
+import { GraphMethodsService } from './graph-methods.service';
 
 export interface unit_conversion {
   minute : number,
@@ -107,6 +108,7 @@ export class GraphComponent implements OnInit {
               public theme_handler: ThemeHandlerService,
               private router: Router,
               private route: ActivatedRoute,
+              private graphMethodsService: GraphMethodsService,
               private location:Location) {
     this.form_group = this._formBuilder.group({
       default_date: [{value: '', disabled: true }, Validators.required]
@@ -194,6 +196,11 @@ export class GraphComponent implements OnInit {
   add_records(query: string): void{
     this.graphs_records[query] = {
       m_chart : "chart",
+      m_legend : {
+        title: '',
+        legends: [],
+        position : 'bottom'
+      },
       m_hidden: false,
       m_request_IPs: [],
       m_selected_IPs: new FormControl(),
@@ -226,11 +233,17 @@ export class GraphComponent implements OnInit {
         let date = new Date(this.params_list['date'][index])
         this.graphs_records[query] = {
           m_chart : "chart",
+          m_legend : {
+            title: '',
+            legends: [],
+            position : 'bottom'
+          },
           m_hidden: false,
           m_request_IPs: [],
           m_selected_IPs: new FormControl(),
           m_request_services: [],
           m_selected_services: new FormControl(),
+          m_chart_date_picker : "range_type",
           m_stacked: false,
           t_value : +this.params_list['value'][index],
           t_unit : this.params_list['unit'][index],
@@ -663,7 +676,7 @@ export class GraphComponent implements OnInit {
         legend.hidden = false;
       }
     });
-    this.graph_legends_to_display.set(metric, metric_legends_to_display);
+    this.graphs_records[metric]["m_legend"].legends = metric_legends_to_display;
     grm["m_chart"].update();
   }
 
