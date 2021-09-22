@@ -19,7 +19,7 @@
         <div style='max-width: 100;'>
           <div id='increment' class='time_opt'>
             <!-- increment section -->
-            <mat-form-field class='form'>
+            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] == "range_type"' class='form'>
               <button mat-button mat-icon-button matPrefix aria-label='Remove' [color]='primary'
                 (click)='incrementValue(-_step, query)' [disabled]='shouldDisableDecrement(_value)'>
                 <mat-icon>remove</mat-icon>
@@ -34,7 +34,7 @@
             </mat-form-field>
 
             <!-- Unit section -->
-            <mat-form-field appearance='legacy' class='form'>
+            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] == "range_type"' appearance='legacy' class='form'>
               <mat-label i18n='title unit options|title unit options@@title_unit_options_time_selection_graph'>Unit
                 options
               </mat-label>
@@ -52,9 +52,9 @@
               </mat-select>
             </mat-form-field>
 
-            <!-- Date time section -->
+            <!-- Date time section - Range selector -->
             <form novalidate [formGroup]='form_group' class='form' id='datetime'
-              *ngIf='!graphs_records[query]["t_now"]'>
+              *ngIf='!graphs_records[query]["t_now"] && this.graphs_records[query]["m_chart_date_picker"] == "range_type"'>
               <mat-form-field>
                 <mat-placeholder
                   i18n='"until" text date selection|"until" text in time range selection@@text_until_date_selection_time_selection_graph'>
@@ -70,7 +70,7 @@
 
             <!-- Now slide toggle -->
             <!-- The value is updating correctly BUT w/o visual changes (still unchecked) -->
-            <mat-slide-toggle *ngIf='!is_mobile' [(ngModel)]='graphs_records[query]["t_now"]'
+            <mat-slide-toggle *ngIf='!is_mobile && this.graphs_records[query]["m_chart_date_picker"] == "range_type"' [(ngModel)]='graphs_records[query]["t_now"]'
               style="align-self: center; margin-left: 1%; margin-right: 1%;"
               (change)='on_slide_toggle_change($event, query)' color="primary" labelPosition='before'
               i18n-matTooltip='tooltip date selection@@tooltip_date_selection_time_selection_graph'
@@ -78,6 +78,14 @@
                 i18n='"now" text|"now" text in time range selection@@text_now_time_selection_graph'
                 *ngIf='graphs_records[query]["t_now"]'>Now</span>
             </mat-slide-toggle>
+                        
+            <!-- Date time section - Day selector -->
+            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] == "day_type"' appearance="fill">
+              <mat-label i18n='"Choose a date" text|"Choose a date" text in day selector@@text_choose_a_date_graph'>Choose a date</mat-label>
+              <input matInput [matDatepicker]="picker" [max]="maxDate" [(ngModel)]="selected_day" (dateInput)="time_value_changes(query);">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
 
             <!-- Refresh -->
             <button mat-button 
@@ -128,15 +136,15 @@
             </button>
 
             <!-- Select a specific IP -->
-            <mat-form-field appearance="fill">
+            <mat-form-field *ngIf='false === !this.graphs_records[query]["m_request_IPs"].length' appearance="fill">
               <mat-label>IP</mat-label>
               <mat-select [formControl]='this.graphs_records[query]["m_selected_IPs"]' multiple (selectionChange)='showLegendSelected(this.graphs_records[query], graph_legends.get(query), query)'>
                 <mat-option *ngFor='let ip of this.graphs_records[query]["m_request_IPs"]' [value]="ip">{{ip}}</mat-option>
               </mat-select>
             </mat-form-field>
 
-            <!-- Select a specific IP -->
-            <mat-form-field style="margin-left: 20px;" appearance="fill">
+            <!-- Select a specific Service -->
+            <mat-form-field *ngIf='false === !this.graphs_records[query]["m_request_services"].length' style="margin-left: 20px;" appearance="fill">
               <mat-label>Service</mat-label>
               <mat-select [formControl]='this.graphs_records[query]["m_selected_services"]' multiple (selectionChange)='showLegendSelected(this.graphs_records[query], graph_legends.get(query), query)'>
                 <mat-option *ngFor='let service of this.graphs_records[query]["m_request_services"]' [value]="service">{{service}}</mat-option>
@@ -155,17 +163,153 @@
         </div>
         <div style="min-width: 100%; min-height: 100%; margin-bottom: 2%;">
           <canvas id={{query}} width="800" height="400"></canvas>
+
+          <!-- Not using DOM binding, this way is the lib's methdology -->
+          <div *ngIf='this.graphs_records[query]["m_tooltip"] as tooltip' 
+                  style="
+                      background: rgba(0, 0, 0, 0.8);
+                      border-radius: 3px;
+                      color: white;
+                      opacity: 0;
+                      pointer-events: none;
+                      position: absolute;
+                      font: 400 14px / 20px Ubuntu, sans-serif;
+                      transform: translate(-50%, 0px);
+                      transition: all 0.1s ease 0s;
+                      left: 0px;
+                      top: 0px;
+                      padding: 10px;
+                      display: inline-flex;
+                      "
+                [ngStyle]='{"opacity": tooltip.opacity,
+                      "left": this.graphs_records[query]["m_chart"].canvas.offsetLeft + tooltip.caretX + "px",
+                      "top": this.graphs_records[query]["m_chart"].canvas.offsetTop + tooltip.caretY + "px"}'    
+          >
+            <table style="display: inline-table;">
+              <thead>
+                <tr *ngFor="let title of tooltip.title">
+                  <th [ngSwitch]="title.switchCase">
+                    <span *ngSwitchCase="'Src_To_Dest'">
+                      {{title.src}} -> {{title.dest}}
+                    </span>
+                    <div *ngSwitchCase="'FullDate'">
+                      {{title.date}}
+                    </div>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(title); else no_match">{{title}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody *ngFor="let dataset of tooltip.body; let i = index">
+                <tr *ngFor="let beforeLine of dataset.before">
+                  <td [ngSwitch]="beforeLine.switchCase">
+                    <div *ngSwitchCase="'Port'">
+                      <span i18n='"port" text|"port" text in chart beforeLabel tooltip@@text_port_tooltip'>
+                        Port</span> : {{beforeLine.port}}
+                    </div>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(beforeLine); else no_match">{{beforeLine}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr *ngFor="let line of dataset.lines">
+                  <td [ngSwitch]="line.switchCase">
+                    <div *ngSwitchCase="'Start_Duration'">
+                      <span [ngStyle]="{'background-color' : line.color}" 
+                      style="
+                        border-color: white; 
+                        border-width: 2px; 
+                        border-style: solid;
+                        margin-right: 10px; 
+                        height: 10px; 
+                        width: 10px; 
+                        display: inline-block;
+                      ">
+                      </span>{{line.start | timestampToDate : line.format}} ({{line.duration | transformSeconds}})
+                    </div>
+                    <div *ngSwitchCase="['Volume', 'Time', 'Number'].includes(line.switchCase) ? line.switchCase : !line.switchCase">
+                      <span [ngStyle]="{'background-color' : tooltip.labelColors[i].backgroundColor}" 
+                      style="
+                        border-color: white; 
+                        border-width: 2px; 
+                        border-style: solid;
+                        margin-right: 10px; 
+                        height: 10px; 
+                        width: 10px; 
+                        display: inline-block;
+                      ">
+                      </span>{{line.label}}: {{line.value | addUnitToValue : line.unit : _lang}}
+                    </div>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(line); else no_match">
+                        <span [ngStyle]="{'background-color' : tooltip.labelColors[i].backgroundColor}" 
+                          style="
+                            border-color: white; 
+                            border-width: 2px; 
+                            border-style: solid;
+                            margin-right: 10px; 
+                            height: 10px; 
+                            width: 10px; 
+                            display: inline-block;
+                          "></span>{{line}}
+                        </div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr *ngFor="let afterLine of dataset.after">
+                  <td [ngSwitch]="afterLine.switchCase">
+                    <div *ngSwitchCase="'Protocol'">
+                      <span i18n='"protocol" text|"protocol" text in chart afterLabel tooltip@@text_protocol_tooltip'>
+                        Protocol</span> : {{afterLine.protocol}}
+                    </div>
+                    <div *ngSwitchCase="'Port'">
+                      <span i18n='"port" text|"port" text in chart beforeLabel tooltip@@text_port_tooltip'>
+                        Port</span> : {{afterLine.port}}
+                    </div>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(afterLine); else no_match">{{afterLine}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+
+              <tfoot *ngFor="let footer of tooltip.footer">
+                <tr>
+                  <th [ngSwitch]="footer.switchCase">
+                    <div *ngSwitchCase="'Volume'">
+                      <span i18n='"volume" text|"volume" text in chart footer tooltip@@text_volume_tooltip'>
+                        Volume</span> : {{footer.value | addUnitToValue : footer.unit : _lang}}
+                    </div>
+                    <div *ngSwitchDefault>
+                      <div *ngIf="isString(footer); else no_match">{{footer}}</div>
+                        <ng-template #no_match i18n='"No match" text|"No Match" text in tooltip@@text_no_match_tooltip'>No match : error during tooltip processing</ng-template>
+                    </div>
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
         <div class="graph_legend">
+          <p *ngIf='this.graphs_records[query]["m_legend"]["title"] as legend_title' style="margin: auto;">{{legend_title}} :</p>
           <ul style="flex-wrap: wrap; flex-direction: row; align-content: flex-start;">
-            <li style="flex-direction: row;" *ngFor='let legend of graph_legends_to_display.get(query)' (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
-              <span [style.background]="legend.fillStyle" 
-                [style.borderColor]="legend.strokeStyle" 
-                [style.borderWidth]="legend.lineWidth + 'px'">
+            <li *ngFor='let legend of this.graphs_records[query]["m_legend"].legends' 
+                style="flex-direction: row; margin-right: 10px;" 
+                [ngStyle]="{'cursor' : legend.cursor}" 
+                (click)='switch_visibility_legend(legend, this.graphs_records[query]["m_chart"])'>
+              <span [ngStyle]="{'background': legend.fillStyle}" 
+                    style="height: 20px; width: 20px; margin-right: 10px; display: inline-block;">
               </span>
-              <p style="display: inline-block;" 
-                [style.color]="legend.fontColor" 
-                [style.textDecoration]="legend.hidden ? 'line-through' : '' ">
+              <p style="display: inline-block;"
+                  [ngStyle]="{'textDecoration': (legend.hidden && legend.cursor == 'pointer' ) ? 'line-through' : ''}">
                 {{legend.text}}
               </p>
             </li>
