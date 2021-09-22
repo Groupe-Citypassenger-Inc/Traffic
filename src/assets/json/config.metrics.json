@@ -1,8 +1,8 @@
 {
-  "custom_metric":{
-    "instant_vectors":{
+  "custom_metric": {
+    "instant_vectors": {
       "average_pfstats_latence_1h": {
-        "chart_type" : "line",
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "avg_over_time(pf_stats{data_type='avg_latency' ,<box_filter>}[1h])",
@@ -14,35 +14,43 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "Latency",
             "fr": "Latence"
-          },          
-          "unit" : "time", 
+          },
+          "unit": "time",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : [""], 
+        "metric_separator": [""],
         "metric_legend": ["-SERVICE- [-SRC_IP-] : -JOB-"],
-        "legend_text_to_replace": [{"-SERVICE-" : "service", "-SRC_IP-": "src_ip", "-JOB-": "job"}],
+        "legend_text_to_replace": [
+          { "-SERVICE-": "service", "-SRC_IP-": "src_ip", "-JOB-": "job" }
+        ],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Time"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Time"]
+          }
         }
       },
-      
+
       "sum_pfstats_ccnxcount_1h": {
-        "chart_type" : "line",
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count' ,<box_filter>}[1h])",
@@ -54,35 +62,43 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "Number of connections",
             "fr": "Nombre de connexions"
-          },          
-          "unit" : "number",  
+          },
+          "unit": "number",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : [""], 
+        "metric_separator": [""],
         "metric_legend": ["-SERVICE- [-SRC_IP-]"],
-        "legend_text_to_replace": [{"-SERVICE-" : "service", "-SRC_IP-": "src_ip"}],
+        "legend_text_to_replace": [
+          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+        ],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Number"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Number"]
+          }
         }
       },
-      
+
       "sum_pfstats_restransmit_1h": {
-        "chart_type" : "line",
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "sum_over_time(pf_stats{data_type='retransmit' ,<box_filter>}[1h])",
@@ -94,35 +110,43 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "Number of retransmissions",
             "fr": "Nombre de retransmissions"
-          },          
-          "unit" : "number",
+          },
+          "unit": "number",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : [""], 
+        "metric_separator": [""],
         "metric_legend": ["-SERVICE- [-SRC_IP-]"],
-        "legend_text_to_replace": [{"-SERVICE-" : "service", "-SRC_IP-": "src_ip"}],
+        "legend_text_to_replace": [
+          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+        ],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Number"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Number"]
+          }
         }
       },
-     
+
       "pfstats_up": {
-        "chart_type" : "line",
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_UP' ,<box_filter>}",
@@ -134,34 +158,42 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "Bandwidth usage",
             "fr": "Consommation bande passante"
           },
-          "unit" : "bytes",
+          "unit": "bytes",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : [""], 
+        "metric_separator": [""],
         "metric_legend": ["-SERVICE- [-SRC_IP-]"],
-        "legend_text_to_replace": [{"-SERVICE-" : "service", "-SRC_IP-": "src_ip"}],
+        "legend_text_to_replace": [
+          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+        ],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Volume"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Volume"]
+          }
         }
       },
       "pfstats_down": {
-        "chart_type" : "line",
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_DOWN' ,<box_filter>}",
@@ -173,34 +205,42 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "Bandwidth usage",
             "fr": "Consommation bande passante"
           },
-          "unit" : "bytes",
+          "unit": "bytes",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : [""], 
+        "metric_separator": [""],
         "metric_legend": ["-SERVICE- [-SRC_IP-]"],
-        "legend_text_to_replace": [{"-SERVICE-" : "service", "-SRC_IP-": "src_ip"}],
+        "legend_text_to_replace": [
+          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+        ],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Volume"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Volume"]
+          }
         }
       },
       "output_wan": {
-        "chart_type" : "line",
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "increase(output{wan=~'.%2B' ,<box_filter>}[10m])",
@@ -212,34 +252,40 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "Bandwidth consumption",
             "fr": "Consommation bande passante"
-          },   
-          "unit" : "bytes",
+          },
+          "unit": "bytes",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : [""], 
+        "metric_separator": [""],
         "metric_legend": ["-PORT- [-WAN-]"],
-        "legend_text_to_replace": [{"-PORT-" : "port", "-WAN-": "wan"}],
+        "legend_text_to_replace": [{ "-PORT-": "port", "-WAN-": "wan" }],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Volume"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Volume"]
+          }
         }
-      },      
+      },
       "input_wan": {
-        "chart_type" : "line",
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "increase(input{wan=~'.%2B' ,<box_filter>}[10m])",
@@ -251,35 +297,41 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "Bandwidth consumption",
             "fr": "Consommation bande passante"
-          },   
-          "unit" : "bytes",
+          },
+          "unit": "bytes",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : [""], 
+        "metric_separator": [""],
         "metric_legend": ["-PORT- [-WAN-]"],
-        "legend_text_to_replace": [{"-PORT-" : "port", "-WAN-": "wan"}],
+        "legend_text_to_replace": [{ "-PORT-": "port", "-WAN-": "wan" }],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Volume"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Volume"]
+          }
         }
       },
 
       "largest_connection": {
-        "chart_type" : "horizontal_bar",
+        "chart_type": "horizontal_bar",
         "chart_date_picker": "day_type",
         "role": ["Support", "Admin", "User"],
         "query": "outlyers_download{<box_filter>}",
@@ -292,74 +344,92 @@
           }
         },
         "y": {
-          "title" : {
+          "title": {
             "en": "IP Destination",
             "fr": "IP Destination"
-          },   
-          "unit" : "bytes",
+          },
+          "unit": "bytes",
           "min": 0,
           "step": ""
         },
         "type": "",
-        "number_of_element_to_show" : 10,
+        "number_of_element_to_show": 10,
         "custom_tooltip": {
-          "title": ["Src_To_Dest"],
-          "label": ["Start_Duration"],
-          "afterLabel": ["Protocol", "Port"],
-          "footer": ["Volume"]
+          "title": {
+            "to_show": ["Src_To_Dest"]
+          },
+          "label": {
+            "to_show": ["Start_Duration"]
+          },
+          "afterLabel": {
+            "to_show": ["Protocol", "Port"]
+          },
+          "footer": {
+            "to_show": ["Volume"]
+          }
         }
       }
     },
-    "range_vectors":{
-      
-    },
-    "multi_query" : {
-      "pfstats_down_with_input_wan_15m":{
-        "chart_type" : "line",
+    "range_vectors": {},
+    "multi_query": {
+      "pfstats_down_with_input_wan_15m": {
+        "chart_type": "line",
         "chart_date_picker": "range_type",
         "role": ["Support", "Admin", "User"],
         "query": "pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0' ,<box_filter>}[15m] or sum(increase(input{wan=~'.%2B' ,<box_filter>}[15m]))",
-        "description":"Consommation de bande passante des services par rapport à l'ensemble de la consommation",
+        "description": "Consommation de bande passante des services par rapport à l'ensemble de la consommation",
         "y": {
-          "title" : {
+          "title": {
             "en": "Bandwidth usage",
             "fr": "Consommation bande passante"
-          },          
-          "unit" : "bytes",  
+          },
+          "unit": "bytes",
           "min": 0,
           "step": ""
         },
-        "metric_separator" : ["", "bytes_DOWN"], 
-        "metric_legend": ["Somme des downloads des wans over the last 15 minutes", "-SERVICE- [-SRC_IP-]"],
-        "legend_text_to_replace": [{}, {"-SERVICE-" : "service", "-SRC_IP-": "src_ip"}],
+        "metric_separator": ["", "bytes_DOWN"],
+        "metric_legend": [
+          "Somme des downloads des wans over the last 15 minutes",
+          "-SERVICE- [-SRC_IP-]"
+        ],
+        "legend_text_to_replace": [
+          {},
+          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+        ],
         "y_axis_scales": {
-          "yNotStacked" : {
+          "yNotStacked": {
             "stacked": false,
-            "display" : false
+            "display": false
           },
-          "yStacked" : {
+          "yStacked": {
             "stacked": true,
-            "fill" : "origin"
+            "fill": "origin"
           }
         },
         "type": "",
         "custom_tooltip": {
-          "label": ["Volume"]
+          "title": {
+            "do_once": true,
+            "to_show": ["FullDate"]
+          },
+          "label": {
+            "to_show": ["Volume"]
+          }
         }
       }
     }
-  },  
+  },
 
   "": {
     "x": {
       "unit": {
-        "fr":"",
-        "en":""
+        "fr": "",
+        "en": ""
       }
     },
     "y": {
-      "title" : "___",
-      "unit" :"___",
+      "title": "___",
+      "unit": "___",
       "min": 0,
       "step": 1
     },
@@ -368,14 +438,13 @@
     "tension": 0.5
   },
 
-  
   "example_simple": {
     "x": {
       "unit": "___",
       "min": 0
     },
     "y": {
-      "title" : "___",
+      "title": "___",
       "unit": "___",
       "min": 0,
       "step": "___"
@@ -384,10 +453,10 @@
     "promql": "deriv",
     "tension": 1
   },
-  "example_multi_query":{
+  "example_multi_query": {
     "role": ["Support", "Admin", "User"],
     "query": "promql query, use 'A(data_type=~'bytes_DOWN') or B()' to combine query A & B on the same Chart",
-    "description":"example of multi query structure",
+    "description": "example of multi query structure",
     "x": {
       "unit": {
         "fr": "X Axis Unit is time",
@@ -395,21 +464,27 @@
       }
     },
     "y": {
-      "title" : {
+      "title": {
         "en": "Y axis Title",
         "fr": ""
-      },          
-      "unit" : "y axis Unit"  
+      },
+      "unit": "y axis Unit"
     },
-    "separator" : "divide metrics into 2 parts -> separator example : 'bytes_DOWN'", 
-    "metricLegend": ["first part metrics legend, use -AAAAA- for text you want to replace", "second part metrics legend"],
-    "legendReplace": ["to replace use Object, [key = text to replace inside newLegend | value = key of oldLegend to acces the value we need]",{"-AAAAA-" : "aaaaa"}, {}],
+    "separator": "divide metrics into 2 parts -> separator example : 'bytes_DOWN'",
+    "metricLegend": [
+      "first part metrics legend, use -AAAAA- for text you want to replace",
+      "second part metrics legend"
+    ],
+    "legendReplace": [
+      "to replace use Object, [key = text to replace inside newLegend | value = key of oldLegend to acces the value we need]",
+      { "-AAAAA-": "aaaaa" },
+      {}
+    ],
     "yAxis": {
-      "yStacked" : {
+      "yStacked": {
         "chart option you want to had to the axis named yStacked": ""
-      } ,
-      "yNotStacked" : {
-      }
+      },
+      "yNotStacked": {}
     }
   }
 }
