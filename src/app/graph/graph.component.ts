@@ -399,8 +399,8 @@ export class GraphComponent implements OnInit {
     });
 
     if (chart_type === "horizontal_bar") {
-      start_time = this.selected_day.setHours(0,0,0,0)/1000;
-      end_time = this.selected_day.setHours(24,0,0,0)/1000;
+      start_time = new Date(this.selected_day).setHours(0,0,0,0)/1000;
+      end_time = new Date(this.selected_day).setHours(24,0,0,0)/1000;
       step = 200;
     }
     if (query === '') {
