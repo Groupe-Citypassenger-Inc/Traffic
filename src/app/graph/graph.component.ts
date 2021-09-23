@@ -376,7 +376,7 @@ export class GraphComponent implements OnInit {
 
     if (isDevMode()) console.log(end_time + ' ' + start_time);
     let step = this.set_prometheus_step(start_time, end_time);
-    
+
     let selected_box = this.box_selected
     let raw_metric_name = metric;
 
@@ -420,8 +420,13 @@ export class GraphComponent implements OnInit {
       if (isDevMode()) console.log('>= 6h');
       url += this.base_url + query;
     } else {
-      if (isDevMode()) console.log('< 6h');
-      url += this.base_url_buffer + query;
+      if (metric in custom_metric['multi_query']) {
+        if (isDevMode()) console.log('Combine metric');
+        url += this.base_url + query;
+      } else {
+        if (isDevMode()) console.log('< 6h');
+        url += this.base_url_buffer + query;
+      }
     }
 
     let headers = new HttpHeaders();
