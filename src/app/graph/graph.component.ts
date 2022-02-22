@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef, isDevMode } from '@angular/core';
-import { HttpClient, HttpHeaders }    from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, timeout } from 'rxjs/operators';
@@ -19,18 +19,18 @@ import { AuthService } from '../auth_services/auth.service';
 import { NotificationServiceService } from '../notification/notification-service.service'
 import { ThemeHandlerService } from '../theme_handler/theme-handler.service'
 import * as metrics_config from '../../assets/json/config.metrics.json';
-import { UNIT_INFORMATION, BACKGROUND_COLOR, TEXT_TRANSLATION } from '../../data.constants';
+import { UNIT_INFORMATION, BACKGROUND_COLOR } from '../../data.constants';
 import { GraphMethodsService } from './graph-methods.service';
 
 export interface unit_conversion {
-  minute : number,
-  hour : number,
-  day : number,
+  minute: number,
+  hour: number,
+  day: number,
 }
 export interface user_informations {
-  id : number,
-  role : string,
-  username : string,
+  id: number,
+  role: string,
+  username: string,
 }
 export interface params {
   [key: string]: any
@@ -45,7 +45,7 @@ export interface params {
 export class GraphComponent implements OnInit {
 
   user_information: user_informations;
-  user_info_subscription : Subscription;
+  user_info_subscription: Subscription;
   form_group_controls_subscription: Subscription;
   is_mobile: boolean;
 
@@ -56,24 +56,24 @@ export class GraphComponent implements OnInit {
   metrics_config: any = (metrics_config as any).default;
   is_dev: boolean = isDevMode();
 
-  prometheus_api_url : string = environment.prometheus_base_api_url;
+  prometheus_api_url: string = environment.prometheus_base_api_url;
 
-  base_url : string = '';
+  base_url: string = '';
   base_url_buffer: string = '';
-  box_selected : string = null;
+  box_selected: string = null;
   password: string = '';
-  group_name : string = '';
+  group_name: string = '';
   group_router: string = '';
 
-  default_up_start_time : number = -1 * 60 * 60 * 1000;
-  default_end_time : any = 0;
-  up_start_time : number = this.default_up_start_time;
-  end_time : number = this.default_end_time;
-  start_date : Date;
-  options : any;
+  default_up_start_time: number = -1 * 60 * 60 * 1000;
+  default_end_time: any = 0;
+  up_start_time: number = this.default_up_start_time;
+  end_time: number = this.default_end_time;
+  start_date: Date;
+  options: any;
 
   form_group: FormGroup;
-  graphs_records : Object = {};
+  graphs_records: Object = {};
   default_value: number = 1;
   default_date: Date = new Date();
 
@@ -84,36 +84,37 @@ export class GraphComponent implements OnInit {
   _now: boolean = true;
   color: string = 'primary';
   default_unit: 'minute' | 'hour' | 'day' = 'hour';
-  _unit : unit_conversion = {
-    minute : 60 * 1000,
-    hour : 60 * 60 * 1000,
-    day : 27 * 60 * 60 * 1000,
+  _unit: unit_conversion = {
+    minute: 60 * 1000,
+    hour: 60 * 60 * 1000,
+    day: 27 * 60 * 60 * 1000,
   }
   unit_select = new FormControl(false);
 
   _is_dark_mode_enabled: boolean = false;
   theme_subscription: Subscription;
 
-  CRC_table:Array<number> = [];
+  CRC_table: Array<number> = [];
   graph_legends = new Map();
   selected_day: Date = new Date();
   maxDate: Date = new Date();
 
-  constructor(private appRef: ChangeDetectorRef,  
-              private _formBuilder: FormBuilder, 
-              private httpClient: HttpClient, 
-              public lingual: LanguageService, 
-              private auth: AuthService,
-              private notification: NotificationServiceService,
-              public theme_handler: ThemeHandlerService,
-              private router: Router,
-              private graphMethodsService: GraphMethodsService,
-              private route: ActivatedRoute,
-              private location:Location) {
+  constructor(private appRef: ChangeDetectorRef,
+    private _formBuilder: FormBuilder,
+    private httpClient: HttpClient,
+    public lingual: LanguageService,
+    private auth: AuthService,
+    private notification: NotificationServiceService,
+    public theme_handler: ThemeHandlerService,
+    private router: Router,
+    private graphMethodsService: GraphMethodsService,
+    private route: ActivatedRoute,
+    private graphMethodsService: GraphMethodsService,
+    private location: Location) {
     this.form_group = this._formBuilder.group({
-      default_date: [{value: '', disabled: true }, Validators.required]
+      default_date: [{ value: '', disabled: true }, Validators.required]
     });
-    this.user_info_subscription = this.auth.log_user_info_change.subscribe((user_info:user_informations) => {
+    this.user_info_subscription = this.auth.log_user_info_change.subscribe((user_info: user_informations) => {
       this.user_information = user_info;
     });
     this.theme_subscription = this.theme_handler.theme_changes.subscribe((theme) => {
@@ -124,10 +125,10 @@ export class GraphComponent implements OnInit {
     this._is_dark_mode_enabled = this.theme_handler.get_theme() === 'Dark' ? true : false;
     moment.locale(this._lang);
   }
-  
+
   ngOnInit(): void {
 
-    if ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       this.is_mobile = true;
     } else {
       this.is_mobile = false;
@@ -146,30 +147,30 @@ export class GraphComponent implements OnInit {
     this.query_list = this.route.queryParams['_value']['metric'];
     this.params_list = this.route.queryParams['_value'];
 
-    if ( typeof this.query_list == 'string' ) {
+    if (typeof this.query_list == 'string') {
       this.query_list = [this.query_list];
       this.params_list = {};
-      Object.keys(this.route.queryParams['_value']).forEach(key =>{
-        if ( key == 'metric') return;
+      Object.keys(this.route.queryParams['_value']).forEach(key => {
+        if (key == 'metric') return;
         this.params_list[key] = [this.route.queryParams['_value'][key]];
       });
     }
 
-    if ( this.password == null || this.group_name == null || this.query_list == undefined ) {
-      if ( this._lang == 'fr' ) {
-        this.notification.show_notification('Veuillez sélectionner des données à visualiser.','Ok','error');
+    if (this.password == null || this.group_name == null || this.query_list == undefined) {
+      if (this._lang == 'fr') {
+        this.notification.show_notification('Veuillez sélectionner des données à visualiser.', 'Ok', 'error');
       } else {
-        this.notification.show_notification('Please select data to visualize.','Ok','error');
+        this.notification.show_notification('Please select data to visualize.', 'Ok', 'error');
       }
       this.router.navigate(['/select']);
     }
 
     this.base_url = '/' + this.password + '/prometheus/' + this.group_name + '/api/v1';
-    this.base_url_buffer = '/' +  this.password + '/prombuffer/' + this.group_name + '/api/v1';
+    this.base_url_buffer = '/' + this.password + '/prombuffer/' + this.group_name + '/api/v1';
     this.box_selected = box_name;
 
     this.prometheus_api_url = this.prometheus_api_url.replace('XXXX', router);
-    
+
     this.get_records(this.query_list);
   }
 
@@ -188,18 +189,18 @@ export class GraphComponent implements OnInit {
   ngOnDestroy(): void {
     this.user_info_subscription.unsubscribe();
     this.theme_subscription.unsubscribe();
-    if ( this.form_group_controls_subscription != undefined ) {
+    if (this.form_group_controls_subscription != undefined) {
       this.form_group_controls_subscription.unsubscribe();
     }
   }
 
-  add_records(query: string): void{
+  add_records(query: string): void {
     this.graphs_records[query] = {
-      m_chart : "chart",
-      m_legend : {
+      m_chart: "chart",
+      m_legend: {
         title: '',
         legends: [],
-        position : 'bottom'
+        position: 'bottom'
       },
       m_hidden: false,
       m_request_IPs: [],
@@ -207,16 +208,16 @@ export class GraphComponent implements OnInit {
       m_request_services: [],
       m_selected_services: new FormControl(),
       m_stacked: false,
-      t_value : this.default_value,
-      t_unit : this.default_unit,
-      t_date : this._formBuilder.control({
+      t_value: this.default_value,
+      t_unit: this.default_unit,
+      t_date: this._formBuilder.control({
         value: this.default_date, disabled: false
       }),
-      t_now : this._now
+      t_now: this._now
     }
     this.form_group.addControl(query, this.graphs_records[query]['t_date']);
     this.form_group_controls_subscription = this.form_group.controls[query].valueChanges.subscribe(date => {
-      if ( isDevMode() ) {
+      if (isDevMode()) {
         console.log('Date changes :')
         console.log(date)
         console.log(query)
@@ -232,29 +233,29 @@ export class GraphComponent implements OnInit {
       (query, index) => {
         let date = new Date(this.params_list['date'][index])
         this.graphs_records[query] = {
-          m_chart : "chart",
-          m_legend : {
+          m_chart: "chart",
+          m_legend: {
             title: '',
             legends: [],
-            position : 'bottom'
+            position: 'bottom'
           },
           m_hidden: false,
           m_request_IPs: [],
           m_selected_IPs: new FormControl(),
           m_request_services: [],
           m_selected_services: new FormControl(),
-          m_chart_date_picker : "range_type",
+          m_chart_date_picker: "range_type",
           m_stacked: false,
-          t_value : +this.params_list['value'][index],
-          t_unit : this.params_list['unit'][index],
-          t_date : this._formBuilder.control({
+          t_value: +this.params_list['value'][index],
+          t_unit: this.params_list['unit'][index],
+          t_date: this._formBuilder.control({
             value: date, disabled: false
           }),
-          t_now : this.params_list['now'][index] == 'true'
+          t_now: this.params_list['now'][index] == 'true'
         }
         this.form_group.addControl(query, this.graphs_records[query]['t_date']);
         this.form_group_controls_subscription = this.form_group.controls[query].valueChanges.subscribe(date => {
-          if ( isDevMode() ) {
+          if (isDevMode()) {
             console.log('Date changes :')
             console.log(date)
             console.log(query)
@@ -270,23 +271,23 @@ export class GraphComponent implements OnInit {
     const headers = new HttpHeaders().set("Content-Type", "application/json").set("Accept", "application/json");
     let user_config_base_url = '/traffic/' + this._lang + '/assets/json/';
     let user_config_url = user_config_base_url + this.user_information.username + ".json.nousNeVoulousPlusDeConfigPerso";
-    
-    this.httpClient.get<any>(user_config_url, {headers}).pipe(
+
+    this.httpClient.get<any>(user_config_url, { headers }).pipe(
       catchError((err => {
         console.log('Handling error locally and rethrowing it...', err);
         return throwError(err);
-    })))
-    .subscribe(custom_config => // replace the file if the user has a custom configuration
-      { 
+      })))
+      .subscribe(custom_config => // replace the file if the user has a custom configuration
+      {
         this.metrics_config = custom_config;
       }, err => // No custom conf
-      { 
+      {
         this.metrics_config = (metrics_config as any).default;
       });
   }
 
   set_charts(): void {
-    if ( isDevMode() ) {
+    if (isDevMode()) {
       console.log('set charts')
       console.log(this.query_list)
     }
@@ -298,18 +299,18 @@ export class GraphComponent implements OnInit {
   }
 
   generate_all_graph(): void {
-    this.get_records(this.query_list); 
+    this.get_records(this.query_list);
     this.set_charts();
   }
 
   destroy_all(): void {
-    Chart.helpers.each(Chart.instances, function(instance) {
+    Chart.helpers.each(Chart.instances, function (instance) {
       instance.chart.destroy();
     });
   }
 
   update_all(): void {
-    Chart.helpers.each(Chart.instances, function(instance) {
+    Chart.helpers.each(Chart.instances, function (instance) {
       instance.chart.update();
     });
   }
@@ -319,78 +320,76 @@ export class GraphComponent implements OnInit {
     this.generate_all_graph();
   }
 
-  regenerate(id:string): void {
+  regenerate(id: string): void {
     this.graphs_records[id]['m_chart'].destroy();
-    if ( isDevMode() ) {
-      console.log ('destroying ' + id + ' chart');
+    if (isDevMode()) {
+      console.log('destroying ' + id + ' chart');
       console.log(this.graphs_records);
-      console.log ('re-building ' + id + ' chart');
+      console.log('re-building ' + id + ' chart');
     }
     this.graphs_records[id]['m_chart'] = this.get_metric_from_prometheus(id);
   }
 
-  transform_metric_query(metric_name:string, box:string): string{
+  transform_metric_query(metric_name: string, box: string): string {
     let query: string = metric_name;
-    if ( box != null ) {
+    if (box != null) {
       query = metric_name + '%7Bjob=~%22' + box + '.*%22%7D';
     }
     let scrape_interval = 2; //scrape interval => 2min
     let range = scrape_interval * 4; //safe 
 
-    if ( isDevMode() ) console.log(this.metrics_config);
+    if (isDevMode()) console.log(this.metrics_config);
 
-    if ( metric_name in this.metrics_config ) {
-      if ( this.metrics_config[metric_name]['type'] == "range_vectors" ) {
+    if (metric_name in this.metrics_config) {
+      if (this.metrics_config[metric_name]['type'] == "range_vectors") {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + '[' + range + 'm])';
-  
-      } else if ( this.metrics_config[metric_name]['type'] == "instant_vectors" ) {
+
+      } else if (this.metrics_config[metric_name]['type'] == "instant_vectors") {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + ')';
-      
-      } else if ( this.metrics_config[metric_name]['type'] == "multi_query" ) {
+
+      } else if (this.metrics_config[metric_name]['type'] == "multi_query") {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + ')';
       }
     }
     return query;
   }
 
-  get_metric_from_prometheus(metric:string): void {
-    if ( isDevMode() ) console.log(this.graphs_records[metric]);
+  get_metric_from_prometheus(metric: string): void {
+    if (isDevMode()) console.log(this.graphs_records[metric]);
     const date = new Date(this.selected_day);
     const timestamp = date.getTime();
     let t_value: number = this.graphs_records[metric]['t_value'];
     let t_unit: number = this.graphs_records[metric]['t_unit'];
     let start_time: number;
-    let end_time : number;
+    let end_time: number;
 
-    if ( this.graphs_records[metric]['t_now'] == false ) {
+    if (this.graphs_records[metric]['t_now'] == false) {
       let current_timestamp = this.default_date.getTime();
 
-      let date: Date =  this.graphs_records[metric]['t_date'].value;
+      let date: Date = this.graphs_records[metric]['t_date'].value;
       let selected_date_timestamp = date.getTime();
-    
       end_time = (timestamp + (current_timestamp - selected_date_timestamp) * -1) / 1000;
-      start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
+      start_time = -1 * t_value * this._unit[t_unit] / 1000 + end_time;
     } else {
-      end_time = ( timestamp ) / 1000;
-      start_time = -1 * t_value * this._unit[t_unit]/1000 + end_time;
+      end_time = timestamp / 1000;
+      start_time = -1 * t_value * this._unit[t_unit] / 1000 + end_time;
     }
 
     if (isDevMode()) console.log(end_time + ' ' + start_time);
     let step = this.set_prometheus_step(start_time, end_time);
-    
+
     let selected_box = this.box_selected
     let raw_metric_name = metric;
-    
     let query = '';
     let chart_type = '';
     let custom_metric = this.metrics_config['custom_metric'];
-    Object.keys(custom_metric).forEach(vector_type =>{
-      if ( metric in custom_metric[vector_type] ) {
-        chart_type = custom_metric[vector_type][metric]['chart_type']; 
-        this.graphs_records[metric]["m_chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker']; 
-        query =  '/query_range?query=' + custom_metric[vector_type][metric]['query'];
-        if ( selected_box != null ) {
-          let box_filter: string = 'job=~"'+ selected_box +'.*"';
+    Object.keys(custom_metric).forEach(vector_type => {
+      if (metric in custom_metric[vector_type]) {
+        chart_type = custom_metric[vector_type][metric]['chart_type'];
+        this.graphs_records[metric]["m_chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker'];
+        query = '/query_range?query=' + custom_metric[vector_type][metric]['query'];
+        if (selected_box != null) {
+          let box_filter: string = 'job=~"' + selected_box + '.*"';
           query = query.split('<box_filter>').join(box_filter);
         } else {
           query = query.split('<box_filter>').join('');
@@ -398,46 +397,51 @@ export class GraphComponent implements OnInit {
       }
     });
 
-    if ( chart_type === "horizontal_bar" ) {
-      start_time = date.setHours(0,0,0,0)/1000;
-      end_time = date.setHours(24,0,0,0)/1000;
+    if (chart_type === "horizontal_bar") {
+      start_time = date.setHours(0, 0, 0, 0) / 1000;
+      end_time = date.setHours(24, 0, 0, 0) / 1000;
       step = 200;
     }
-    if ( query === '' ) {
+    if (query === '') {
       metric = this.transform_metric_query(metric, selected_box);
-      if ( metric.includes('_raw') ) {
-        metric = metric.replace('_raw','');
+      if (metric.includes('_raw')) {
+        metric = metric.replace('_raw', '');
       }
       query = '/query_range?query=' + metric + '&start=' + start_time + '&end=' + end_time + '&step=' + step;
     } else {
       query = query + '&start=' + start_time + '&end=' + end_time + '&step=' + step;
     }
 
-    let url: string;
-    if ( timestamp / 1000 - 3600 * 6 >= start_time || timestamp / 1000 - 3600 * 6  >= end_time ) {
-      if ( isDevMode() ) console.log('>= 6h');
-      url = this.base_url + query;
-    } else {
-      if ( isDevMode() ) console.log('< 6h');
-      url = this.base_url_buffer + query;
-    }
+    let url = this.prometheus_api_url;
+    let $t = timestamp / 1000 - 3600 * 6;
 
-    url = this.prometheus_api_url + this.base_url + query;
+    if ($t >= start_time) {
+      if (isDevMode()) console.log('>= 6h');
+      url += this.base_url + query;
+    } else {
+      if (metric in custom_metric['multi_query']) {
+        if (isDevMode()) console.log('Combine metric');
+        url += this.base_url + query;
+      } else {
+        if (isDevMode()) console.log('< 6h');
+        url += this.base_url_buffer + query;
+      }
+    }
 
     let headers = new HttpHeaders();
     headers = headers.set('accept', 'application/json');
-    this.httpClient.request('GET', url, {headers})
+    this.httpClient.request('GET', url, { headers })
       .pipe(timeout(10000))
       .toPromise()
       .then(response => {
         if (isDevMode()) console.log(response);
         if (response['status'] != 'success') {
           if (this._lang == 'fr') {
-            this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus','Fermer','error');
+            this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus', 'Fermer', 'error');
           } else {
-            this.notification.show_notification('An error occurred while communicating with prometheus.','Close','error');
+            this.notification.show_notification('An error occurred while communicating with prometheus.', 'Close', 'error');
           }
-          throw new Error ('Request to prom : not successful');
+          throw new Error('Request to prom : not successful');
         }
         if (chart_type === "horizontal_bar") {
           let parsed_data = this.parse_response_bar(response, raw_metric_name);
@@ -445,19 +449,18 @@ export class GraphComponent implements OnInit {
         } else if (chart_type === 'line') {
           let data_completed_to_parse = this.completeResponse(response['data']['result'], start_time, end_time, step)
           let parsed_data = this.parse_response_line(data_completed_to_parse, raw_metric_name);
-          
           let chart = this.graphs_records[raw_metric_name]['m_chart'] = this.chart_builder(raw_metric_name, parsed_data);
 
           this.keep_legend_visibility(raw_metric_name, chart);
           this.graph_legends.set(raw_metric_name, chart.options.plugins.legend.labels.generateLabels(chart));
-          this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name) , raw_metric_name)
+          this.showLegendSelected(this.graphs_records[raw_metric_name], this.graph_legends.get(raw_metric_name), raw_metric_name)
 
           this.stack_lines(this.graphs_records[raw_metric_name]);
         }
       });
   }
 
-  get_extra_labels(response:any): Array<string> {
+  get_extra_labels(response: any): Array<string> {
     delete response['__name__'];
     delete response['instance'];
     let extra_label = Object.keys(response);
@@ -472,29 +475,29 @@ export class GraphComponent implements OnInit {
       let completedDataset = []
 
       let firstTime = currentDataset[0][0];
-      if ( firstTime > start_time ) {
-        let missingStepsBefore = (firstTime - start_time)/step ;
-        for ( let i = missingStepsBefore; i > 0; i-- ) {
+      if (firstTime > start_time) {
+        let missingStepsBefore = (firstTime - start_time) / step;
+        for (let i = missingStepsBefore; i > 0; i--) {
           let time = firstTime - (i * step);
           completedDataset.push([time, 'NaN']);
         }
       }
 
-      for ( let i = 0; i < currentDataset.length - 1; i++ ) {
+      for (let i = 0; i < currentDataset.length - 1; i++) {
         let firstTime = currentDataset[i][0];
-        let secondTime = currentDataset[i+1][0];
+        let secondTime = currentDataset[i + 1][0];
         let missingSteps = (secondTime - firstTime - step) / step;
         completedDataset.push(currentDataset[i]);
-        for ( let j = 1; j <= missingSteps; j++ ) {
+        for (let j = 1; j <= missingSteps; j++) {
           let time = firstTime + (j * step);
           completedDataset.push([time, 'NaN']);
         }
       }
 
       let lastTime = currentDataset[tabLength][0];
-      if ( lastTime < end_time ) {
-        let missingStepsAfter = (end_time - lastTime)/step;
-        for ( let i = 1; i <= missingStepsAfter; i++ ) {
+      if (lastTime < end_time) {
+        let missingStepsAfter = (end_time - lastTime) / step;
+        for (let i = 1; i <= missingStepsAfter; i++) {
           let time = lastTime + (i * step);
           completedDataset.push([time, 'NaN']);
         }
@@ -526,8 +529,8 @@ export class GraphComponent implements OnInit {
     }
   }
 
-  parse_response_line(data_to_parse : any, metric:string): Object {
-    if ( isDevMode() ) console.log(data_to_parse);
+  parse_response_line(data_to_parse: any, metric: string): Object {
+    if (isDevMode()) console.log(data_to_parse);
     let datasets = [];
     let metric_timestamp_list = [];
     let custom_metric = this.metrics_config['custom_metric'];
@@ -558,7 +561,7 @@ export class GraphComponent implements OnInit {
 
       // Match data values with separator and select proper label template
       // Then replace template with metric values
-      let separator_index = 0; 
+      let separator_index = 0;
       metric_data.metric_separator.forEach((element, index_x) => {
         if (Object.values(data_to_parse[data_key]['metric']).includes(element)) {
           separator_index = index_x
@@ -572,15 +575,15 @@ export class GraphComponent implements OnInit {
         label = label.replace(label_key, replace_by)
       }
       let y_axis_id = Object.keys(metric_data.y_axis_scales);
-      let yAxisID =  y_axis_id[separator_index];
+      let yAxisID = y_axis_id[separator_index];
 
       let dataset = {
         label: label,
         data: metric_value_list,
         yAxisID: yAxisID,
         pointRadius: 1, // Graph dot size : 0 -> no dot
-        borderColor : '#' + this.crc32(label), // Line color
-        backgroundColor : '#' + this.crc32(label), // Legend color
+        borderColor: '#' + this.crc32(label), // Line color
+        backgroundColor: '#' + this.crc32(label), // Legend color
         src_ip: src_ip,
         service: service,
       };
@@ -597,91 +600,54 @@ export class GraphComponent implements OnInit {
   parse_response_bar(data_to_parse, metric) {
     let custom_metric = this.metrics_config['custom_metric'];
     let metric_data;
-    if ( metric in custom_metric['instant_vectors'] ) {
+    if (metric in custom_metric['instant_vectors']) {
       metric_data = custom_metric['instant_vectors'][metric]
-    } else if ( metric in custom_metric['range_vectors'] ) {
+    } else if (metric in custom_metric['range_vectors']) {
       metric_data = custom_metric['range_vectors'][metric]
-    } else if ( metric in custom_metric['multi_query'] ) {
+    } else if (metric in custom_metric['multi_query']) {
       metric_data = custom_metric['multi_query'][metric]
     }
 
     let legend_title = this.GetDefaultOrCurrent(metric_data['legend_title'], '');
     let number_of_element_to_show = this.GetDefaultOrCurrent(metric_data['number_of_element_to_show'], 5);
 
-    data_to_parse["data"]["result"].sort(function (a, b) {
-      let result_a = a.values[0];
-      let value_a = result_a[1];
-
-      let result_b = b.values[0];
-      let value_b = result_b[1];
-      return value_b - value_a;
-    });
+    this.sort_bandwidth_connection_volume(data_to_parse['data']['result'])
 
     let datasets = [];
     let labels = [];
-    let dataset = {
-      label: 'Dataset',
-      legend: [],
-      unique_src_ips: [],
-      data: [],
-      backgroundColor: [],
-      metric: []
-    };
+    let dataset = this.initDatasetBar()
     let src_ip_list = [];
     let data_index = 0;
 
+    // Fill dataset, stop when full or no more data
     while (labels.length < number_of_element_to_show && data_to_parse["data"]["result"].length > data_index) {
       let data_element = data_to_parse["data"]["result"][data_index];
       let value = data_element.values[0][1]; // metric bytes volume
       let metric = data_element.metric;
+      data_index++;
 
       // reduce of 5 000 000 / (30 * 60) as number of stuff in 30 mn < 5Mo
       if (value < metric.age * 2_777) {
-        data_index++;
         continue;
       }
-      let backgroundColor;
-      let current_src = metric.src_ip
-      // add volume to dataset if src_ip already exist
-      if (src_ip_list.includes(metric.src_ip)) {
-        let index = src_ip_list.indexOf(current_src)
-        backgroundColor = dataset.legend[index].fillStyle;
-      }
-      // create new dataset
-      else {
-        src_ip_list.push(current_src)
-        let index = dataset.legend.length;
-        backgroundColor = BACKGROUND_COLOR[index]
-        let new_legend = {
-          text: current_src,
-          fillStyle: backgroundColor,
-          cursor: "unset"
-        }
-        dataset.legend.push(new_legend);
-      }
-      dataset.data.push(value);
-      dataset.backgroundColor.push(backgroundColor);
-      dataset.metric.push(metric);
-
-      labels.push(metric.dst_ip)
-      data_index++;
+      this.addElementToDataset(value, metric, src_ip_list, labels, dataset)
     }
     datasets.push(dataset)
 
     this.graphs_records[metric]["m_legend"].title = legend_title;
     this.graphs_records[metric]["m_legend"].legends = dataset.legend;
 
-    let parsed_data = {labels, datasets};
+    let parsed_data = { labels, datasets };
     return parsed_data;
   }
 
   makeCRCTable(): Array<any> {
     var c;
     var crcTable = [];
-    for ( var n = 0; n < 256; n++ ) {
+    for (var n = 0; n < 256; n++) {
       c = n;
-        for ( var k = 0; k < 8; k++ ) {
-          c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+      for (var k = 0; k < 8; k++) {
+        c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
       }
       crcTable[n] = c;
     }
@@ -698,18 +664,18 @@ export class GraphComponent implements OnInit {
       let src_ip = datasets[index]["src_ip"];
       let service = datasets[index]["service"];
       legend.cursor = "pointer";
-      if ( src_ip ==  undefined ) { // always show legend if there is no IP
+      if (src_ip == undefined) { // always show legend if there is no IP
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
-      } else if ( service ==  undefined ) { // always show legend if there is no service
+      } else if (service == undefined) { // always show legend if there is no service
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
-      } else if ( false === selected_IPs.includes(src_ip) ) {
+      } else if (false === selected_IPs.includes(src_ip)) {
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
         legend.hidden = true;
-      } else if ( false === selected_services.includes(service) ) {
+      } else if (false === selected_services.includes(service)) {
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, false);
         legend.hidden = true;
       } else {
@@ -725,18 +691,18 @@ export class GraphComponent implements OnInit {
 
   crc32(str: string): string {
     var crcTable;
-    if ( this.CRC_table = [] ) {
+    if (this.CRC_table = []) {
       crcTable = this.makeCRCTable();
     } else {
       crcTable = this.CRC_table
     }
-    
+
     var crc = 0 ^ (-1);
 
-    for ( var i = 0; i < str.length; i++ ) {
+    for (var i = 0; i < str.length; i++) {
       crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
     }
-    let tmpColor = Math.abs(((crc ^ (-1)) >>> 0)).toString(16); 
+    let tmpColor = Math.abs(((crc ^ (-1)) >>> 0)).toString(16);
     tmpColor += '000000'; // tmpColor.length has to be 6 or above
     return tmpColor.substring(0, 6);
   }
@@ -744,30 +710,30 @@ export class GraphComponent implements OnInit {
   // Compute a step for range_query (interval between 2 points in second)
   // Min step: 1s
   // Default: 1 step every 15px
-  set_prometheus_step( start: number, end: number ): number {
+  set_prometheus_step(start: number, end: number): number {
     const timestamp = new Date().getTime();
-    const second_duration = ( end - start );
+    const second_duration = (end - start);
     let chart_width = window.innerWidth;
     let step: number;
-    step = Math.floor( second_duration / chart_width ) * 5;
+    step = Math.floor(second_duration / chart_width) * 5;
 
-    if ( step == 0 ) {
+    if (step == 0) {
       step = 50;
     }
-    
+
     return step;
   }
 
   GetDefaultOrCurrent(value, defaultValue) {
-    if ( value === undefined || value === null || value === '' ) { 
+    if (value === undefined || value === null || value === '') {
       return defaultValue;
     }
     return value;
   }
 
   getArrayMaxValue(array, array_max_value) {
-    let reducer = (current_max, current_value) => { 
-      if ( isNaN(current_value) ) {
+    let reducer = (current_max, current_value) => {
+      if (isNaN(current_value)) {
         return current_max;
       }
       return Math.max(current_max, current_value);
@@ -777,13 +743,13 @@ export class GraphComponent implements OnInit {
   }
 
   rewriteYAxisMaxValue(max_value_raw) {
-    if ( max_value_raw == 0 ) {
+    if (max_value_raw == 0) {
       return 1;
     }
     let length = Math.ceil(max_value_raw).toString().length;
-    let add_or_remove_digits = 10**(length - 1)
+    let add_or_remove_digits = 10 ** (length - 1)
     let max_value_rewrite = max_value_raw / add_or_remove_digits;
-    max_value_rewrite = Math.ceil(max_value_rewrite/.5)*.5;
+    max_value_rewrite = Math.ceil(max_value_rewrite / .5) * .5;
     max_value_rewrite = max_value_rewrite * add_or_remove_digits;
     return max_value_rewrite;
   }
@@ -791,8 +757,8 @@ export class GraphComponent implements OnInit {
   // for each keyword in keyword_to_replace
   // replace the keyword of new_label by the value of old_label
   replaceLabel(element, new_label, keyword_to_replace) {
-    for ( const [key, value] of Object.entries(keyword_to_replace) )  {
-      if ( element[value + ''] !== undefined ) {        // [value] : type unknown | [value+''] : type string
+    for (const [key, value] of Object.entries(keyword_to_replace)) {
+      if (element[value + ''] !== undefined) {        // [value] : type unknown | [value+''] : type string
         new_label = new_label.replaceAll(key, element[value + '']);
         continue
       }
@@ -803,7 +769,7 @@ export class GraphComponent implements OnInit {
     return new_label;
   }
 
-  chart_builder(metric:string, data:Object): Chart {
+  chart_builder(metric: string, data: Object): Chart {
     // get metric config
     let metric_data = undefined;
     if (metric in this.metrics_config) {
@@ -812,13 +778,13 @@ export class GraphComponent implements OnInit {
       metric_data = this.metrics_config['custom_metric']['instant_vectors'][metric];
     } else if (metric in this.metrics_config['custom_metric']['multi_query']) {
       metric_data = this.metrics_config['custom_metric']['multi_query'][metric];
-    }
+    };
 
+    // Set chart interface & interaction according to type
     let type = 'line'
     let indexAxis = 'x';
     let interaction_mode = 'index';
     let interaction_intersect = false;
-
     let chart_type = this.GetDefaultOrCurrent(metric_data['chart_type'], '');
     if (chart_type === "horizontal_bar") {
       type = 'bar';
@@ -839,7 +805,7 @@ export class GraphComponent implements OnInit {
       options: {
         maintainAspectRatio: false,
         responsive: true,
-        indexAxis: indexAxis,  
+        indexAxis: indexAxis,
         plugins: {
           filler: {
             propagate: false
@@ -851,7 +817,7 @@ export class GraphComponent implements OnInit {
             enabled: false,
             callbacks: tooltip_callbacks,
             external: (context) => {
-              this.graphs_records[metric]["m_tooltip"] = context.tooltip 
+              this.graphs_records[metric]["m_tooltip"] = context.tooltip
             },
             position: 'followCursor'
           }
@@ -868,25 +834,31 @@ export class GraphComponent implements OnInit {
           bar: {
             borderWidth: 0,
           }
-        },
-        font: {
-          family: 'Ubuntu, sans-serif'
         }
       }
     };
-    
+
     if (type === "bar") {
       config = this.createBarChartScales(config, metric_data);
     } else if (type === 'line') {
       config = this.createLineChartScales(config, metric_data, data);
     }
 
-    let ctx = document.getElementById(metric);
-    if ( ctx === null ) {
-      throw new Error('An error as occured. Can\'t get id ok : ' + metric);
+    // let ctx = document.getElementById(metric);
+    // if (ctx === null) {
+    //   throw new Error('An error as occured. Can\'t get id ok : ' + metric);
+    // }
+    // let chart = new Chart(ctx, config);
+    // return chart
+    let canvas = <HTMLCanvasElement> document.getElementById(metric)
+    if (canvas === null) {
+      console.warn("No canvas with id : '" + metric + "' found on the page!");
+      console.warn("Have you changed the value of metric?");
+      return;
     }
+    let ctx = canvas.getContext('2d');
     let chart = new Chart(ctx, config);
-    return chart
+    return chart;
   }
 
   // Show/Hide legend and curve on click
@@ -898,7 +870,7 @@ export class GraphComponent implements OnInit {
 
   keep_legend_visibility(metric, chart) {
     let legends = this.graph_legends.get(metric);
-    if ( legends !== undefined ) {
+    if (legends !== undefined) {
       legends.forEach(legend => {
         chart.setDatasetVisibility(legend.datasetIndex, !legend.hidden);
       });
@@ -906,9 +878,9 @@ export class GraphComponent implements OnInit {
     chart.update();
   }
 
-  incrementValue(step: number = 1, query : string): void {
+  incrementValue(step: number = 1, query: string): void {
     let inputValue = this.graphs_records[query]['t_value'] + step;
-    if ( this._wrap ) {
+    if (this._wrap) {
       inputValue = this.wrappedValue(inputValue);
     }
     this.graphs_records[query]['t_value'] = inputValue;
@@ -916,11 +888,11 @@ export class GraphComponent implements OnInit {
   }
 
   private wrappedValue(inputValue): number {
-    if ( inputValue > this._max ) {
+    if (inputValue > this._max) {
       return this._min + inputValue - this._max;
     }
-    if ( inputValue < this._min ) {
-      if ( this._max === Infinity ) {
+    if (inputValue < this._min) {
+      if (this._max === Infinity) {
         return this._min;
       }
       return this._max + inputValue;
@@ -950,30 +922,30 @@ export class GraphComponent implements OnInit {
     let selected_date_timestamp = date.getTime();
 
     this.end_time = (current_timestamp - selected_date_timestamp) * -1;
-    
+
     let t_value = this.graphs_records[query]['t_value'];
     let t_unit = this.graphs_records[query]['t_unit'];
 
     this.up_start_time = -1 * t_value * this._unit[t_unit] + this.end_time;
 
-    if ( current_timestamp < selected_date_timestamp ) {
+    if (current_timestamp < selected_date_timestamp) {
       this.end_time = 0;
       this.up_start_time = -1 * t_value * this._unit[t_unit]
       this.form_group.controls[query].setValue(this.default_date);
-      if ( this._lang == 'fr' ) {
+      if (this._lang == 'fr') {
         this.notification.show_notification(
-          'La date choisie ne doit pas se situer dans le futur. Date sélectionnée : ' 
-          + date.toLocaleDateString('fr-FR') + ' ' 
-          + date.toLocaleTimeString('fr-FR'), 
-          'Ok', 
+          'La date choisie ne doit pas se situer dans le futur. Date sélectionnée : '
+          + date.toLocaleDateString('fr-FR') + ' '
+          + date.toLocaleTimeString('fr-FR'),
+          'Ok',
           'error'
         );
       } else {
         this.notification.show_notification(
-          'The selected date must not be in the future. Selected date : ' 
-          + date.toLocaleDateString('en-US') + ' ' 
-          + date.toLocaleTimeString('en-US'), 
-          'Ok', 
+          'The selected date must not be in the future. Selected date : '
+          + date.toLocaleDateString('en-US') + ' '
+          + date.toLocaleTimeString('en-US'),
+          'Ok',
           'error'
         );
       }
@@ -985,13 +957,13 @@ export class GraphComponent implements OnInit {
   shouldDisableDecrement(inputValue: number): boolean {
     return !this._wrap && inputValue <= this._min;
   }
-  
+
   shouldDisableIncrement(inputValue: number): boolean {
     return !this._wrap && inputValue >= this._max;
   }
 
-  on_slide_toggle_change($event:Event, query:string): void {
-    if ( $event['checked'] ) {
+  on_slide_toggle_change($event: Event, query: string): void {
+    if ($event['checked']) {
       let t_value = this.graphs_records[query]['t_value'];
       let t_unit = this.graphs_records[query]['t_unit'];
       this.up_start_time = -1 * t_value * this._unit[t_unit];
@@ -1001,7 +973,7 @@ export class GraphComponent implements OnInit {
     this.update_url();
   }
 
-  set_default_settings(query:string): void {
+  set_default_settings(query: string): void {
     this.up_start_time = this.default_up_start_time;
     this.end_time = this.default_end_time;
     this.graphs_records[query]["t_value"] = this.default_value;
@@ -1011,18 +983,18 @@ export class GraphComponent implements OnInit {
     this.update_url();
   }
 
-  hide_lines(metric:string): void {
+  hide_lines(metric: string): void {
     let _is_disabled: boolean = this.graphs_records[metric]["m_hidden"];
     this.graphs_records[metric]['m_chart'].data.datasets.forEach((dataSet, i) => {
       var meta = this.graphs_records[metric]['m_chart'].getDatasetMeta(i);
-      if ( meta.hidden == null ) {
+      if (meta.hidden == null) {
         meta.hidden = _is_disabled;
       }
       meta.hidden = !_is_disabled;
     });
     this.graphs_records[metric]["m_hidden"] = !_is_disabled;
     this.graph_legends.get(metric).forEach(element => {
-      element.hidden = !_is_disabled ;
+      element.hidden = !_is_disabled;
     });;
     this.graphs_records[metric]['m_chart'].update();
   }
@@ -1034,57 +1006,57 @@ export class GraphComponent implements OnInit {
 
   stack_lines(grm: string): void {
     let _is_stacked: boolean = grm['m_chart'].options.scales.yStacked.stacked
-    
+
     grm["m_stacked"] = _is_stacked;
     grm['m_chart'].data.datasets.forEach(element => {
-      if ( element.yAxisID === "yStacked" ) {
+      if (element.yAxisID === "yStacked") {
         element.fill = _is_stacked ? 'origin' : false;
       }
     });
     grm['m_chart'].update();
   }
 
-  change_theme(dark_theme:boolean): void {
-    if ( dark_theme ) {
+  change_theme(dark_theme: boolean): void {
+    if (dark_theme) {
       Chart.defaults.global.defaultFontColor = 'white';
     } else {
       Chart.defaults.global.defaultFontColor = 'black';
     }
-    Chart.helpers.each(Chart.instances, function(instance) {
+    Chart.helpers.each(Chart.instances, function (instance) {
       instance.chart.update();
     });
   }
 
   delete(query: string): void {
-    if ( isDevMode() ) console.log('Deleting : ' + query + ' chart');
+    if (isDevMode()) console.log('Deleting : ' + query + ' chart');
     delete this.graphs_records[query];
     this.update_url();
   }
 
   update_url(): void {
-    if ( Object.keys(this.graphs_records).length == 0 ) {
+    if (Object.keys(this.graphs_records).length == 0) {
       this.router.navigateByUrl('/select');
     } else {
       let url: string;
-      if ( this.box_selected == null ) {
+      if (this.box_selected == null) {
         url = '/graph/' + this.group_name + '/' + this.group_router + '/' + this.password + '/metric?';
       } else {
         url = '/graph/' + this.group_name + '/' + this.group_router + '/' + this.password + '/' + this.box_selected + '/metric?';
       }
 
-      Object.keys(this.graphs_records).forEach((metric, index) =>{
-        if ( Object.keys(this.graphs_records).length - 1 == index ) {
-          url = url + 'metric=' + metric 
-                    + '&value='+ this.graphs_records[metric]['t_value'] 
-                    + '&unit='+ this.graphs_records[metric]['t_unit'] 
-                    + '&now='+ this.graphs_records[metric]['t_now'] 
-                    + '&date=' + this.graphs_records[metric]['t_date']['value'].toISOString();
+      Object.keys(this.graphs_records).forEach((metric, index) => {
+        if (Object.keys(this.graphs_records).length - 1 == index) {
+          url = url + 'metric=' + metric
+            + '&value=' + this.graphs_records[metric]['t_value']
+            + '&unit=' + this.graphs_records[metric]['t_unit']
+            + '&now=' + this.graphs_records[metric]['t_now']
+            + '&date=' + this.graphs_records[metric]['t_date']['value'].toISOString();
         } else {
-          url = url + 'metric=' + metric 
-          + '&value='+ this.graphs_records[metric]['t_value'] 
-          + '&unit='+ this.graphs_records[metric]['t_unit'] 
-          + '&now='+ this.graphs_records[metric]['t_now'] 
-          + '&date=' + this.graphs_records[metric]['t_date']['value'].toISOString() +'&';
+          url = url + 'metric=' + metric
+            + '&value=' + this.graphs_records[metric]['t_value']
+            + '&unit=' + this.graphs_records[metric]['t_unit']
+            + '&now=' + this.graphs_records[metric]['t_now']
+            + '&date=' + this.graphs_records[metric]['t_date']['value'].toISOString() + '&';
         }
       });
 
@@ -1096,8 +1068,8 @@ export class GraphComponent implements OnInit {
     this.router.navigate(['/select'])
   }
 
-  
-  isString(value){
+
+  isString(value) {
     return typeof value === "string"
   }
 
@@ -1106,7 +1078,7 @@ export class GraphComponent implements OnInit {
     let tooltipLine = {
       switchCase: line_type
     }
-    switch(line_type) {
+    switch (line_type) {
       case 'Port':
         tooltipLine["port"] = current_metric.dst_port;
         break;
@@ -1121,7 +1093,7 @@ export class GraphComponent implements OnInit {
         tooltipLine["start"] = (current_metric.end_time - current_metric.age) * 1000;
         tooltipLine["duration"] = current_metric.age;
         tooltipLine["format"] = 'LLL',
-        tooltipLine["color"] = element.dataset.backgroundColor[element.dataIndex];
+          tooltipLine["color"] = element.dataset.backgroundColor[element.dataIndex];
         break;
       case 'Volume':
         tooltipLine["value"] = element.raw;
@@ -1139,15 +1111,17 @@ export class GraphComponent implements OnInit {
         tooltipLine["unit"] = 'number';
         break;
       case "FullDate":
-        tooltipLine["date"] = element.label
+        tooltipLine["date"] = element.label;
+        break;
       default:
+        console.error(line_type + " doesn't match any case, you can visit ")
         break;
     }
     return tooltipLine;
   }
 
-  createCustomTooltipField(tooltipItems, labels_config){
-    if (labels_config === undefined) return
+  createCustomTooltipField(tooltipItems, labels_config) {
+    if (labels_config === undefined || labels_config.to_show === undefined) return
 
     let tooltip_section = [];
     for (let i = 0; i < tooltipItems.length; i++) {
@@ -1170,7 +1144,7 @@ export class GraphComponent implements OnInit {
   createTooltipCallbacks(custom_tooltip) {
     const beforeTitle = (tooltipItems) => {
       return this.createCustomTooltipField(tooltipItems, custom_tooltip.beforeTitle);
-    };    
+    };
     const title = (tooltipItems) => {
       return this.createCustomTooltipField(tooltipItems, custom_tooltip.title);
     };
@@ -1207,10 +1181,11 @@ export class GraphComponent implements OnInit {
       afterFooter: afterFooter
     }
   }
-  
+
+  // track tooltip to keep it fully visible on screen regardless size and position
   createFollowCursorTooltipPositioner() {
     const tooltipPlugin = Chart.registry.getPlugin('tooltip');
-    tooltipPlugin.positioners.followCursor = function(elements, eventPosition) {
+    tooltipPlugin.positioners.followCursor = function (elements, eventPosition) {
       let x_pos = 0;
       if (eventPosition.x > window.screen.width / 2) {
         x_pos = eventPosition.x - (this.width / 2);
@@ -1227,12 +1202,12 @@ export class GraphComponent implements OnInit {
   createBarChartScales(config, metric_data) {
     let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
     let x_axis_title = this.GetDefaultOrCurrent(metric_data['x']['title'][this._lang], '');
-    const x_ticks_callback = (value, index) => {  
+    const x_ticks_callback = (value, index) => {
       return this.graphMethodsService.add_unit_to_value(value, "bytes", this._lang)
     }
 
     config.options["scales"] = {
-      x : {
+      x: {
         ticks: {
           callback: x_ticks_callback
         },
@@ -1241,10 +1216,10 @@ export class GraphComponent implements OnInit {
           text: x_axis_title
         }
       },
-      y : {
+      y: {
         stacked: true,
         title: {
-          display : true,
+          display: true,
           text: y_axis_title
         }
       }
@@ -1257,35 +1232,35 @@ export class GraphComponent implements OnInit {
     let y_axis_title = this.GetDefaultOrCurrent(metric_data['y']['title'][this._lang], '');
     let y_axis_min = this.GetDefaultOrCurrent(metric_data['y']['min'], 0);
     let y_axis_scales = this.GetDefaultOrCurrent(metric_data['y_axis_scales'], []);
-    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
-
-    if ( UNIT_INFORMATION.get(y_axis_unit) === undefined )
-    {
+    if (UNIT_INFORMATION.get(y_axis_unit) === undefined) {
+      console.log(y_axis_unit + " has no match in " + UNIT_INFORMATION)
+      console.log("Either the unit is misspelled or you need to add the unit in 'data.constants.ts'.")
       y_axis_unit = "unknownName";
     }
 
-    let year_regex = /\/\d{4}/;
+    let unit_value_list = UNIT_INFORMATION.get(y_axis_unit)[this._lang]
+
     let data_labels: Array<number> = data['labels'];
     let data_size = data_labels.length;
     let start: number = data_labels[0];
     let end: number = data_labels[data_size - 1];
-    let delta: number = ( end - start ) / 1000;
+    let delta: number = (end - start) / 1000;
     let x_axis_format: string;
     let time_format: string;
-    if ( delta <= 10_800 ) { // <= 3h
+    if (delta <= 10_800) { // <= 3h
       time_format = 'LT';
       x_axis_format = 'minute';
-    } else if ( delta <= 86_400 ) { // <= 24h
+    } else if (delta <= 86_400) { // <= 24h
       time_format = 'LT';
       x_axis_format = 'hour';
-    } else if ( delta <= 259_200 ) { // <= 3j
-      time_format = 'L (LT)';
+    } else if (delta <= 259_200) { // <= 3j
+      time_format = 'MM/DD (LT)';
       x_axis_format = 'day';
-    } else if ( delta < 1_296_000 ) { // < 15j
-      time_format = 'L';
+    } else if (delta < 1_296_000) { // < 15j
+      time_format = 'MM/DD';
       x_axis_format = 'day';
     } else { // > 15j
-      time_format = 'L'
+      time_format = 'MM/DD'
       x_axis_format = 'month';
     }
 
@@ -1298,10 +1273,11 @@ export class GraphComponent implements OnInit {
         ticks: {
           autoSkip: true,
           maxTicksLimit: 15,
-          callback: function(value, index, values) {
-            let moment_label = moment(values[index].value);
+          // Whe're using times[index].value because it's a timestamp
+          // time only has hour:minutes
+          callback: function (time, index, times) {
+            let moment_label = moment(times[index].value);
             let formated_label = moment_label.format(time_format);
-            formated_label = formated_label.replace(year_regex, '');
             return formated_label;
           }
         }
@@ -1310,34 +1286,81 @@ export class GraphComponent implements OnInit {
 
     let request_max_value_raw = 0;
     data["datasets"].forEach(element => {
-      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);      
+      request_max_value_raw = this.getArrayMaxValue(element.data, request_max_value_raw);
     });
     let ceiled_request_max_value_y = this.rewriteYAxisMaxValue(request_max_value_raw);
 
+    const y_ticks_callback = (value, index) => {
+      return this.graphMethodsService.add_unit_to_value(value, y_axis_unit, this._lang)
+    }
+
     // create y Axis scales : y & y_stackable
-    for ( const [scaleKey, scaleValue] of Object.entries(y_axis_scales) ) {
+    for (const [scaleKey, scaleValue] of Object.entries(y_axis_scales)) {
       config.options["scales"][scaleKey] = {
-        title : {
+        title: {
           display: true,
           text: y_axis_title
         },
         min: y_axis_min,
         max: ceiled_request_max_value_y,
         ticks: {
-          callback: function(value, index) {
-            let thousand_counter = 0;
-            while ( value >= 1000 ) {
-              value = value / 1000;
-              thousand_counter ++;
-            }
-            return value + ' ' + unit_value_list[thousand_counter];
-          }
+          callback: y_ticks_callback
         }
       }
-      for ( const [optionsKey, optionsValue] of Object.entries(scaleValue) ) {
+      for (const [optionsKey, optionsValue] of Object.entries(scaleValue)) {
         config.options["scales"][scaleKey][optionsKey] = optionsValue;
       }
     }
     return config;
+  }
+
+  sort_bandwidth_connection_volume(datas) {
+    datas.sort(function (a, b) {
+      let result_a = a.values[0];
+      let value_a = result_a[1];
+
+      let result_b = b.values[0];
+      let value_b = result_b[1];
+      return value_b - value_a;
+    })
+  }
+
+  addElementToDataset(value, metric, src_ip_list, labels, dataset) {
+    let backgroundColor;
+    let current_src = metric.src_ip
+
+    // add volume to dataset if src_ip already exist
+    if (src_ip_list.includes(metric.src_ip)) {
+      let index = src_ip_list.indexOf(current_src)
+      backgroundColor = dataset.legend[index].fillStyle;
+    }
+    else { // create new dataset
+      src_ip_list.push(current_src)
+      let index = dataset.legend.length;
+      backgroundColor = BACKGROUND_COLOR[index]
+      let new_legend = {
+        text: current_src,
+        fillStyle: backgroundColor,
+        cursor: "unset"
+      }
+      dataset.legend.push(new_legend);
+    }
+    dataset.data.push(value);
+    dataset.backgroundColor.push(backgroundColor);
+    dataset.metric.push(metric);
+
+    labels.push(metric.dst_ip)
+  }
+
+  initDatasetBar() {
+    let new_dataset = {
+      label: 'Dataset',
+      legend: [],
+      unique_src_ips: [],
+      data: [],
+      backgroundColor: [],
+      metric: []
+    };
+    return new_dataset
   }
 }
