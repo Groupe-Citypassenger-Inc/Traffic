@@ -107,7 +107,6 @@ export class GraphComponent implements OnInit {
     private notification: NotificationServiceService,
     public theme_handler: ThemeHandlerService,
     private router: Router,
-    private graphMethodsService: GraphMethodsService,
     private route: ActivatedRoute,
     private graphMethodsService: GraphMethodsService,
     private location: Location) {
