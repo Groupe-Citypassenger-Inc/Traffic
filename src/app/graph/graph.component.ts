@@ -641,11 +641,11 @@ export class GraphComponent implements OnInit {
   }
 
   makeCRCTable(): Array<any> {
-    var c;
-    var crcTable = [];
-    for (var n = 0; n < 256; n++) {
+    let c;
+    let crcTable = [];
+    for (let n = 0; n < 256; n++) {
       c = n;
-      for (var k = 0; k < 8; k++) {
+      for (let k = 0; k < 8; k++) {
         c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
       }
       crcTable[n] = c;
@@ -689,16 +689,16 @@ export class GraphComponent implements OnInit {
   }
 
   crc32(str: string): string {
-    var crcTable;
+    let crcTable;
     if (this.CRC_table = []) {
       crcTable = this.makeCRCTable();
     } else {
       crcTable = this.CRC_table
     }
 
-    var crc = 0 ^ (-1);
+    let crc = 0 ^ (-1);
 
-    for (var i = 0; i < str.length; i++) {
+    for (let i = 0; i < str.length; i++) {
       crc = (crc >>> 8) ^ crcTable[(crc ^ str.charCodeAt(i)) & 0xFF];
     }
     let tmpColor = Math.abs(((crc ^ (-1)) >>> 0)).toString(16);
@@ -985,7 +985,7 @@ export class GraphComponent implements OnInit {
   hide_lines(metric: string): void {
     let _is_disabled: boolean = this.graphs_records[metric]["m_hidden"];
     this.graphs_records[metric]['m_chart'].data.datasets.forEach((dataSet, i) => {
-      var meta = this.graphs_records[metric]['m_chart'].getDatasetMeta(i);
+      let meta = this.graphs_records[metric]['m_chart'].getDatasetMeta(i);
       if (meta.hidden == null) {
         meta.hidden = _is_disabled;
       }
