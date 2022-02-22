@@ -843,12 +843,6 @@ export class GraphComponent implements OnInit {
       config = this.createLineChartScales(config, metric_data, data);
     }
 
-    // let ctx = document.getElementById(metric);
-    // if (ctx === null) {
-    //   throw new Error('An error as occured. Can\'t get id ok : ' + metric);
-    // }
-    // let chart = new Chart(ctx, config);
-    // return chart
     let canvas = <HTMLCanvasElement> document.getElementById(metric)
     if (canvas === null) {
       console.warn("No canvas with id : '" + metric + "' found on the page!");
