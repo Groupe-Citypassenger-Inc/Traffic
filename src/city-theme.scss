@@ -1,6 +1,7 @@
-@import '~@angular/material/theming';
+@use '@angular/material' as mat;
+@import '@angular/material/theming';
 
-@include mat-core();
+@include mat.core();
 
 /* MAT PALLETTE */
 $md-cityblue: (
@@ -67,7 +68,7 @@ $md-citygreen: (
     A700 : #000000,
   )
 );
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 
 /* TYPOGRAPHY
@@ -81,25 +82,25 @@ caption - Smaller body and hint text.
 button - Buttons and anchors.
 input - Form input fields. */
 
-$custom-typography: mat-typography-config(
+$custom-typography: mat.define-typography-config(
   $font-family: 'Ubuntu, sans-serif',
-  $headline: mat-typography-level(32px, 48px, 800),
-  $title: mat-typography-level(32px, 48px, 500),
-  $subheading-2: mat-typography-level(30px, 45px, 500),
-  $subheading-1: mat-typography-level(27px, 41px, 500),
-  $body-1: mat-typography-level(20px, 30px, 300),
-  $caption: mat-typography-level(20px, 30px, 300),
-  $button: mat-typography-level(20px, 30px, 200),
-  $input: mat-typography-level(20px, 1.125, 200)
+  $headline: mat.define-typography-level(32px, 48px, 800),
+  $title: mat.define-typography-level(32px, 48px, 500),
+  $subheading-2: mat.define-typography-level(30px, 45px, 500),
+  $subheading-1: mat.define-typography-level(27px, 41px, 500),
+  $body-1: mat.define-typography-level(20px, 30px, 300),
+  $caption: mat.define-typography-level(20px, 30px, 300),
+  $button: mat.define-typography-level(20px, 30px, 200),
+  $input: mat.define-typography-level(20px, 1.125, 200)
 );
-@include angular-material-typography($custom-typography);
+@include mat.all-component-typographies($custom-typography);
 
 /* LIGHT THEME */
-$city-traffic-light-theme-primary: mat-palette($md-cityblue);
-$city-traffic-light-theme-secondary: mat-palette($md-citygreen);
-$city-traffic-light-theme-warn: mat-palette($md-cityblue);
-$city-traffic-light-theme-accent: mat-palette($md-cityblue);
-$city-traffic-light-theme: mat-light-theme((
+$city-traffic-light-theme-primary: mat.define-palette($md-cityblue);
+$city-traffic-light-theme-secondary: mat.define-palette($md-citygreen);
+$city-traffic-light-theme-warn: mat.define-palette($md-cityblue);
+$city-traffic-light-theme-accent: mat.define-palette($md-cityblue);
+$city-traffic-light-theme: mat.define-light-theme((
   color: (
     primary: $city-traffic-light-theme-primary,
     secondary: $city-traffic-light-theme-secondary,
@@ -107,14 +108,14 @@ $city-traffic-light-theme: mat-light-theme((
     accent: $city-traffic-light-theme-accent
   )
 ));
-@include angular-material-theme($city-traffic-light-theme);
+@include mat.all-component-themes($city-traffic-light-theme);
 
 /* DARK THEME */
-$city-traffic-dark-theme-primary: mat-palette($md-cityblue, 500);
-$city-traffic-dark-theme-secondary: mat-palette($md-citygreen, 500);
-$city-traffic-dark-theme-warn: mat-palette($md-cityblue, 400);
-$city-traffic-dark-theme-accent: mat-palette($md-cityblue, A500);
-$city-traffic-dark-theme: mat-dark-theme((
+$city-traffic-dark-theme-primary: mat.define-palette($md-cityblue, 500);
+$city-traffic-dark-theme-secondary: mat.define-palette($md-citygreen, 500);
+$city-traffic-dark-theme-warn: mat.define-palette($md-cityblue, 400);
+$city-traffic-dark-theme-accent: mat.define-palette($md-cityblue, 500);
+$city-traffic-dark-theme: mat.define-dark-theme((
   color: (
     primary: $city-traffic-dark-theme-primary,
     secondary: $city-traffic-dark-theme-secondary,
@@ -123,7 +124,7 @@ $city-traffic-dark-theme: mat-dark-theme((
   )
 ));
 .dark-theme-mode {
-  @include angular-material-color($city-traffic-dark-theme);
+  @include mat.all-component-colors($city-traffic-dark-theme);
 }
 
 /* MAT CLASS */
