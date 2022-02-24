@@ -7,7 +7,7 @@ describe('GraphComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GraphComponent]
+      declarations: [GraphComponent],
     })
       .compileComponents();
   });

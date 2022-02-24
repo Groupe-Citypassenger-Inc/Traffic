@@ -49,8 +49,8 @@
             </div>
 
             <button mat-menu-item
-              i18n-matTooltip='Logout matTooltip|text wich discribe the Logout button@@logout_tooltip'
-              *ngIf='is_logged;' (click)='logout()'>
+              i18n-matTooltip='Logout matTooltip|text wich discribe the Logout button@@logout_tooltip' *ngIf='isLogged;'
+              (click)='logout()'>
               <mat-icon>exit_to_app</mat-icon>
               <span i18n='log out button|log out button stored in navbar menu@@log_out_button'>Log out</span>
             </button>

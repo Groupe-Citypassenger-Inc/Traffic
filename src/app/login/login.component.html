@@ -1,12 +1,12 @@
 <div class='login-container'>
 
-  <form [formGroup]='login_form_group' (ngSubmit)='onSubmit(login_form_group)'>
+  <form [formGroup]='loginFormGroup' (ngSubmit)='onSubmit(loginFormGroup)'>
     <mat-form-field>
       <mat-icon matPrefix>person_outline</mat-icon>
       <input autofocus type='text' matInput
         i18n-placeholder='Username placeholder|text wich discribe the field username@@username_placeholder'
         placeholder='Username' formControlName='username'>
-      <mat-error *ngIf='login_form_group.controls["username"].invalid'>
+      <mat-error *ngIf='loginFormGroup.controls["username"].invalid'>
         {{getError('user')}}
       </mat-error>
     </mat-form-field>
@@ -16,13 +16,13 @@
       <input type='password' autocomplete='false' matInput
         i18n-placeholder='Password placeholder|text wich discribe the field password@@password_placeholder'
         placeholder='Password' formControlName='password'>
-      <mat-error *ngIf='!login_form_group.controls["password"].valid'>
+      <mat-error *ngIf='!loginFormGroup.controls["password"].valid'>
         {{getError('pass')}}
       </mat-error>
     </mat-form-field>
 
     <button type='submit' mat-raised-button color='primary'
-      [disabled]='!login_form_group.valid || !is_login_enable || is_logged'
+      [disabled]='!loginFormGroup.valid || isLogged'
       i18n='Loggin button text|text for the loggin button@@Loggin_btn_txt'>Sign in</button>
   </form>
 </div>

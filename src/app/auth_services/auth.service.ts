@@ -11,13 +11,13 @@ export interface UserInformations {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   isAuth = false;
   public userInfo: UserInformations;
   logStatusChange: Subject<boolean> = new Subject<boolean>();
-  logUserInfoChange: Subject<Object> = new Subject<Object>();
+  logUserInfoChange: Subject<UserInformations> = new Subject<UserInformations>();
 
   constructor(private httpClient: HttpClient, private router: Router) { }
 
@@ -28,7 +28,7 @@ export class AuthService {
       timeout(10000),
       map(res => {
         return res;
-      }
+      },
       ), catchError(
         err => {
           if (err.error.message === 'alreadyLogged') {
@@ -37,16 +37,16 @@ export class AuthService {
             console.error(err.error.message);
           }
           throw err;
-        }
+        },
       )).pipe(take(1))
       .subscribe((response: UserInformations) => {
         const userInfo = {
           id: response.id,
           role: response.role,
-          username: response.username
+          username: response.username,
         };
-        this.update_user_info(userInfo);
-        this.update_log_status(true);
+        this.updateUserInfo(userInfo);
+        this.updateLogStatus(true);
         if (oldUrl !== undefined) {
           this.router.navigateByUrl(oldUrl);
         } else {
@@ -56,65 +56,64 @@ export class AuthService {
   }
 
   logout(): boolean {
-    let is_logged: boolean = this.isAuth;
+    const isLogged: boolean = this.isAuth;
 
-    if (is_logged === false) {
+    if (isLogged === false) {
       return false;
     }
 
-    let logged_api_url = '/ws/User/Logout';
+    const loggedApiUrl = '/ws/User/Logout';
     let headers = new HttpHeaders();
 
     headers = headers.set('accept', 'application/json');
-    this.httpClient.request('GET', logged_api_url, { headers }).pipe(
+    this.httpClient.request('GET', loggedApiUrl, { headers }).pipe(
       timeout(10000),
       map(res => {
         return res;
-      }
+      },
       ), catchError(
         err => {
           console.log('an error occured please try again');
           throw err;
-        }
+        },
       )).pipe(take(1))
-      .subscribe(response => {
-        console.log('Successfully logged out');
+      .subscribe(() => {
         this.redirect('/login');
-        this.update_log_status(false);
+        this.updateLogStatus(false);
       });
-    return is_logged;
+    return isLogged;
   }
 
-  is_logged(url?: string): void | boolean {
-    let logged_api_url = '/ws/User/Logged';
+  isLogged(url?: string): void | boolean {
+    const loggedApiUrl = '/ws/User/Logged';
     let headers = new HttpHeaders();
 
     headers = headers.set('accept', 'application/json');
-    this.httpClient.request('GET', logged_api_url, { headers }).pipe(
+    this.httpClient.request('GET', loggedApiUrl, { headers }).pipe(
       timeout(10000),
       map(res => {
         return res;
-      }
+      },
       ), catchError(
         err => {
-          this.update_log_status(false);
+          this.updateLogStatus(false);
           console.log('user not logged');
           throw err;
-        }
+        },
       )).pipe(take(1))
       .subscribe((response: UserInformations) => {
         if (response === null) {
-          this.update_log_status(false);
+          this.updateLogStatus(false);
           this.redirect('/login');
           return false;
         }
         const userInfo = {
           id: response.id,
           role: response.role,
-          username: response.username
+          username: response.username,
         };
-        this.update_user_info(userInfo);
-        this.update_log_status(true);
+        this.updateUserInfo(userInfo);
+        this.updateLogStatus(true);
 
         if (url === undefined) {
           url = '/select';
@@ -124,16 +123,16 @@ export class AuthService {
       });
   }
 
-  redirect(url: string) {
+  redirect(url: string): void {
     this.router.navigateByUrl(url, { state: this.userInfo });
   }
 
-  update_log_status(status: boolean): void {
+  updateLogStatus(status: boolean): void {
     this.isAuth = status;
     this.logStatusChange.next(this.isAuth);
   }
 
-  update_user_info(userInfo: UserInformations) {
+  updateUserInfo(userInfo: UserInformations): void {
     this.userInfo = userInfo;
     this.logUserInfoChange.next(this.userInfo);
   }

@@ -20,7 +20,7 @@ export interface RouterHistory {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HistoryServiceService {
   previousUrl$ = new BehaviorSubject<string>(null);
@@ -31,7 +31,7 @@ export class HistoryServiceService {
     router.events
       .pipe(
         filter(event =>
-          event instanceof NavigationStart || event instanceof NavigationEnd
+          event instanceof NavigationStart || event instanceof NavigationEnd,
         ),
         scan<NavigationStart | NavigationEnd, RouterHistory>(
           (acc, event) => {
@@ -43,7 +43,7 @@ export class HistoryServiceService {
                 id: event.id,
                 idToRestore:
                   (event.restoredState && event.restoredState.navigationId) ||
-                  undefined
+                  undefined,
               };
             }
             const history = [...acc.history];
@@ -66,7 +66,7 @@ export class HistoryServiceService {
               ...acc,
               event,
               history,
-              currentIndex
+              currentIndex,
             };
           },
           {
@@ -75,12 +75,12 @@ export class HistoryServiceService {
             trigger: null,
             id: 0,
             idToRestore: 0,
-            currentIndex: 0
-          }
+            currentIndex: 0,
+          },
         ),
         filter(
-          ({ event, trigger }) => event instanceof NavigationEnd && !!trigger
-        )
+          ({ event, trigger }) => event instanceof NavigationEnd && !!trigger,
+        ),
       )
       .subscribe(({ history, currentIndex }) => {
         const previous = history[currentIndex - 1];

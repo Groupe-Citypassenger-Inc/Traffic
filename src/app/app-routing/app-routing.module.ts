@@ -17,8 +17,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 
-export class AppRoutingModule { };
+export class AppRoutingModule { }
 export const routingComponents = [LoginComponent, DevicesListComponent, GraphComponent];
