@@ -1,12 +1,9 @@
-import { NgModule, isDevMode } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { CommonModule } from '@angular/common';
 import { GraphComponent } from '../graph/graph.component';
 import { DevicesListComponent } from '../devices-list/devices-list.component';
 import { LoginComponent } from '../login/login.component';
 import { GuardService } from '../auth_services/guard.service';
-import { environment } from '../../environments/environment';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -23,5 +20,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 
-export class AppRoutingModule { }
-export const routingComponents = [LoginComponent, DevicesListComponent, GraphComponent]
+export class AppRoutingModule { };
+export const routingComponents = [LoginComponent, DevicesListComponent, GraphComponent];

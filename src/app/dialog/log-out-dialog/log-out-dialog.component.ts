@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'; 
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../auth_services/auth.service';
 
@@ -11,7 +11,7 @@ import { AuthService } from '../../auth_services/auth.service';
 export class LogOutDialogComponent implements OnInit {
 
   constructor(
-    private auth: AuthService, 
+    private auth: AuthService,
     public dialogRef: MatDialogRef<LogOutDialogComponent>) {
   }
 

@@ -8,19 +8,19 @@ import { AuthService } from './auth.service';
 })
 
 export class GuardService implements CanActivate {
-  
+
   constructor(private auth: AuthService, private router: Router) { }
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    if ( false ){
+    if (false) {
       return true;
     } else {
-      if (this.auth.is_auth) {
+      if (this.auth.isAuth) {
         return true;
       } else {
-        this.router.navigate(['/login'], {queryParams: { returnUrl: state.url }})
+        this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } })
       }
     }
   }

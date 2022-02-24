@@ -3,15 +3,15 @@ import { MatPaginator } from '@angular/material/paginator';
 import * as alternative_metrics_names from '../../assets/json/metric_name_for_human.json';
 
 const frenchRangeLabel = (page: number, pageSize: number, length: number) => {
-  if (length == 0 || pageSize == 0) { return `0 sur ${length}`; }
-  
+  if (length === 0 || pageSize === 0) { return `0 sur ${length}`; }
+
   length = Math.max(length, 0);
 
   const startIndex = page * pageSize;
 
   const endIndex = startIndex < length ?
-      Math.min(startIndex + pageSize, length) :
-      startIndex + pageSize;
+    Math.min(startIndex + pageSize, length) :
+    startIndex + pageSize;
 
   return `${startIndex + 1} - ${endIndex} sur ${length}`;
 }
@@ -23,13 +23,13 @@ export class LanguageService {
   language: string;
   site_language: string = 'English';
   language_list = [
-    { 
-      code: 'en', 
-      label: 'English' 
+    {
+      code: 'en',
+      label: 'English'
     },
-    { 
-      code: 'fr', 
-      label: 'Français' 
+    {
+      code: 'fr',
+      label: 'Français'
     }
   ];
   metric_alternative_name: any = (alternative_metrics_names as any).default;

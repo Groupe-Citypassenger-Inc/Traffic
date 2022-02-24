@@ -27,7 +27,7 @@ export interface unit_conversion {
   hour: number,
   day: number,
 }
-export interface user_informations {
+export interface UserInformations {
   id: number,
   role: string,
   username: string,
@@ -44,7 +44,7 @@ export interface params {
 
 export class GraphComponent implements OnInit {
 
-  user_information: user_informations;
+  user_information: UserInformations;
   user_info_subscription: Subscription;
   form_group_controls_subscription: Subscription;
   is_mobile: boolean;
@@ -113,8 +113,8 @@ export class GraphComponent implements OnInit {
     this.form_group = this._formBuilder.group({
       default_date: [{ value: '', disabled: true }, Validators.required]
     });
-    this.user_info_subscription = this.auth.log_user_info_change.subscribe((user_info: user_informations) => {
-      this.user_information = user_info;
+    this.user_info_subscription = this.auth.logUserInfoChange.subscribe((userInfo: UserInformations) => {
+      this.user_information = userInfo;
     });
     this.theme_subscription = this.theme_handler.theme_changes.subscribe((theme) => {
       this._is_dark_mode_enabled = theme === 'Dark' ? true : false;
@@ -133,7 +133,7 @@ export class GraphComponent implements OnInit {
       this.is_mobile = false;
     }
 
-    this.user_information = this.auth.user_info;
+    this.user_information = this.auth.userInfo;
     this.get_user_metrics();
 
     this.default_date.setHours(this.default_date.getHours());
@@ -146,17 +146,17 @@ export class GraphComponent implements OnInit {
     this.query_list = this.route.queryParams['_value']['metric'];
     this.params_list = this.route.queryParams['_value'];
 
-    if (typeof this.query_list == 'string') {
+    if (typeof this.query_list === 'string') {
       this.query_list = [this.query_list];
       this.params_list = {};
       Object.keys(this.route.queryParams['_value']).forEach(key => {
-        if (key == 'metric') return;
+        if (key === 'metric') return;
         this.params_list[key] = [this.route.queryParams['_value'][key]];
       });
     }
 
-    if (this.password == null || this.group_name == null || this.query_list == undefined) {
-      if (this._lang == 'fr') {
+    if (this.password === null || this.group_name === null || this.query_list === undefined) {
+      if (this._lang === 'fr') {
         this.notification.show_notification('Veuillez sélectionner des données à visualiser.', 'Ok', 'error');
       } else {
         this.notification.show_notification('Please select data to visualize.', 'Ok', 'error');
@@ -188,7 +188,7 @@ export class GraphComponent implements OnInit {
   ngOnDestroy(): void {
     this.user_info_subscription.unsubscribe();
     this.theme_subscription.unsubscribe();
-    if (this.form_group_controls_subscription != undefined) {
+    if (this.form_group_controls_subscription !== undefined) {
       this.form_group_controls_subscription.unsubscribe();
     }
   }
@@ -250,7 +250,7 @@ export class GraphComponent implements OnInit {
           t_date: this._formBuilder.control({
             value: date, disabled: false
           }),
-          t_now: this.params_list['now'][index] == 'true'
+          t_now: this.params_list['now'][index] === 'true'
         }
         this.form_group.addControl(query, this.graphs_records[query]['t_date']);
         this.form_group_controls_subscription = this.form_group.controls[query].valueChanges.subscribe(date => {
@@ -331,7 +331,7 @@ export class GraphComponent implements OnInit {
 
   transform_metric_query(metric_name: string, box: string): string {
     let query: string = metric_name;
-    if (box != null) {
+    if (box !== null) {
       query = metric_name + '%7Bjob=~%22' + box + '.*%22%7D';
     }
     let scrape_interval = 2; //scrape interval => 2min
@@ -340,13 +340,13 @@ export class GraphComponent implements OnInit {
     if (isDevMode()) console.log(this.metrics_config);
 
     if (metric_name in this.metrics_config) {
-      if (this.metrics_config[metric_name]['type'] == "range_vectors") {
+      if (this.metrics_config[metric_name]['type'] === "range_vectors") {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + '[' + range + 'm])';
 
-      } else if (this.metrics_config[metric_name]['type'] == "instant_vectors") {
+      } else if (this.metrics_config[metric_name]['type'] === "instant_vectors") {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + ')';
 
-      } else if (this.metrics_config[metric_name]['type'] == "multi_query") {
+      } else if (this.metrics_config[metric_name]['type'] === "multi_query") {
         query = this.metrics_config[metric_name]['promql'] + '(' + query + ')';
       }
     }
@@ -362,7 +362,7 @@ export class GraphComponent implements OnInit {
     let start_time: number;
     let end_time: number;
 
-    if (this.graphs_records[metric]['t_now'] == false) {
+    if (this.graphs_records[metric]['t_now'] === false) {
       let current_timestamp = this.default_date.getTime();
 
       let date: Date = this.graphs_records[metric]['t_date'].value;
@@ -387,7 +387,7 @@ export class GraphComponent implements OnInit {
         chart_type = custom_metric[vector_type][metric]['chart_type'];
         this.graphs_records[metric]["m_chart_date_picker"] = custom_metric[vector_type][metric]['chart_date_picker'];
         query = '/query_range?query=' + custom_metric[vector_type][metric]['query'];
-        if (selected_box != null) {
+        if (selected_box !== null) {
           let box_filter: string = 'job=~"' + selected_box + '.*"';
           query = query.split('<box_filter>').join(box_filter);
         } else {
@@ -434,8 +434,8 @@ export class GraphComponent implements OnInit {
       .toPromise()
       .then(response => {
         if (isDevMode()) console.log(response);
-        if (response['status'] != 'success') {
-          if (this._lang == 'fr') {
+        if (response['status'] !== 'success') {
+          if (this._lang === 'fr') {
             this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus', 'Fermer', 'error');
           } else {
             this.notification.show_notification('An error occurred while communicating with prometheus.', 'Close', 'error');
@@ -663,11 +663,11 @@ export class GraphComponent implements OnInit {
       let src_ip = datasets[index]["src_ip"];
       let service = datasets[index]["service"];
       legend.cursor = "pointer";
-      if (src_ip == undefined) { // always show legend if there is no IP
+      if (src_ip === undefined) { // always show legend if there is no IP
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
-      } else if (service == undefined) { // always show legend if there is no service
+      } else if (service === undefined) { // always show legend if there is no service
         metric_legends_to_display.push(legend);
         grm["m_chart"].setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
@@ -716,7 +716,7 @@ export class GraphComponent implements OnInit {
     let step: number;
     step = Math.floor(second_duration / chart_width) * 5;
 
-    if (step == 0) {
+    if (step === 0) {
       step = 50;
     }
 
@@ -742,7 +742,7 @@ export class GraphComponent implements OnInit {
   }
 
   rewriteYAxisMaxValue(max_value_raw) {
-    if (max_value_raw == 0) {
+    if (max_value_raw === 0) {
       return 1;
     }
     let length = Math.ceil(max_value_raw).toString().length;
@@ -843,7 +843,7 @@ export class GraphComponent implements OnInit {
       config = this.createLineChartScales(config, metric_data, data);
     }
 
-    let canvas = <HTMLCanvasElement> document.getElementById(metric)
+    let canvas = <HTMLCanvasElement>document.getElementById(metric)
     if (canvas === null) {
       console.warn("No canvas with id : '" + metric + "' found on the page!");
       console.warn("Have you changed the value of metric?");
@@ -925,7 +925,7 @@ export class GraphComponent implements OnInit {
       this.end_time = 0;
       this.up_start_time = -1 * t_value * this._unit[t_unit]
       this.form_group.controls[query].setValue(this.default_date);
-      if (this._lang == 'fr') {
+      if (this._lang === 'fr') {
         this.notification.show_notification(
           'La date choisie ne doit pas se situer dans le futur. Date sélectionnée : '
           + date.toLocaleDateString('fr-FR') + ' '
@@ -980,7 +980,7 @@ export class GraphComponent implements OnInit {
     let _is_disabled: boolean = this.graphs_records[metric]["m_hidden"];
     this.graphs_records[metric]['m_chart'].data.datasets.forEach((dataSet, i) => {
       let meta = this.graphs_records[metric]['m_chart'].getDatasetMeta(i);
-      if (meta.hidden == null) {
+      if (meta.hidden === null) {
         meta.hidden = _is_disabled;
       }
       meta.hidden = !_is_disabled;
@@ -1027,18 +1027,18 @@ export class GraphComponent implements OnInit {
   }
 
   update_url(): void {
-    if (Object.keys(this.graphs_records).length == 0) {
+    if (Object.keys(this.graphs_records).length === 0) {
       this.router.navigateByUrl('/select');
     } else {
       let url: string;
-      if (this.box_selected == null) {
+      if (this.box_selected === null) {
         url = '/graph/' + this.group_name + '/' + this.group_router + '/' + this.password + '/metric?';
       } else {
         url = '/graph/' + this.group_name + '/' + this.group_router + '/' + this.password + '/' + this.box_selected + '/metric?';
       }
 
       Object.keys(this.graphs_records).forEach((metric, index) => {
-        if (Object.keys(this.graphs_records).length - 1 == index) {
+        if (Object.keys(this.graphs_records).length - 1 === index) {
           url = url + 'metric=' + metric
             + '&value=' + this.graphs_records[metric]['t_value']
             + '&unit=' + this.graphs_records[metric]['t_unit']
@@ -1336,7 +1336,7 @@ export class GraphComponent implements OnInit {
         fillStyle: backgroundColor,
         cursor: "unset"
       }
-      dataset.legend.push(new_legend);
+      dataset.legend.push(new_legend)
     }
     dataset.data.push(value);
     dataset.backgroundColor.push(backgroundColor);

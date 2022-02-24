@@ -6,10 +6,10 @@
       <span i18n='Go back to selection@@return-button'>Go back to selection</span>
     </button>
 
-    <p *ngIf=' box_selected == null ' i18n='description graph group@@description_graph_group'>
+    <p *ngIf=' box_selected === null ' i18n='description graph group@@description_graph_group'>
       You are currently viewing the data of the <strong>{{group_name}}</strong> group boxes.
     </p>
-    <p *ngIf=' box_selected != null ' i18n='description graph box@@description_graph_box'>
+    <p *ngIf=' box_selected !== null ' i18n='description graph box@@description_graph_box'>
       You are currently viewing the data of <strong>{{box_selected}}</strong> device.
     </p>
 
@@ -25,7 +25,7 @@
         <div style='max-width: 100;'>
           <div id='increment' class='time_opt'>
             <!-- increment section -->
-            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] == "range_type"' class='form'>
+            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] === "range_type"' class='form'>
               <button mat-button mat-icon-button matPrefix aria-label='Remove' [color]='primary'
                 (click)='incrementValue(-_step, query)' [disabled]='shouldDisableDecrement(_value)'>
                 <mat-icon>remove</mat-icon>
@@ -40,7 +40,7 @@
             </mat-form-field>
 
             <!-- Unit section -->
-            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] == "range_type"'
+            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] === "range_type"'
               appearance='legacy' class='form'>
               <mat-label i18n='title unit options|title unit options@@title_unit_options_time_selection_graph'>Unit
                 options
@@ -61,7 +61,7 @@
 
             <!-- Date time section - Range selector -->
             <form novalidate [formGroup]='form_group' class='form' id='datetime'
-              *ngIf='!graphs_records[query]["t_now"] && this.graphs_records[query]["m_chart_date_picker"] == "range_type"'>
+              *ngIf='!graphs_records[query]["t_now"] && this.graphs_records[query]["m_chart_date_picker"] === "range_type"'>
               <mat-form-field>
                 <mat-placeholder
                   i18n='"until" text date selection|"until" text in time range selection@@text_until_date_selection_time_selection_graph'>
@@ -77,7 +77,7 @@
 
             <!-- Now slide toggle -->
             <!-- The value is updating correctly BUT w/o visual changes (still unchecked) -->
-            <mat-slide-toggle *ngIf='!is_mobile && this.graphs_records[query]["m_chart_date_picker"] == "range_type"'
+            <mat-slide-toggle *ngIf='!is_mobile && this.graphs_records[query]["m_chart_date_picker"] === "range_type"'
               [(ngModel)]='graphs_records[query]["t_now"]'
               style="align-self: center; margin-left: 1%; margin-right: 1%;"
               (change)='on_slide_toggle_change($event, query)' color="primary" labelPosition='before'
@@ -90,7 +90,7 @@
             </mat-slide-toggle>
 
             <!-- Date time section - Day selector -->
-            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] == "day_type"' appearance="fill">
+            <mat-form-field *ngIf='this.graphs_records[query]["m_chart_date_picker"] === "day_type"' appearance="fill">
               <mat-label i18n='"Choose a date" text|"Choose a date" text in day selector@@text_choose_a_date_graph'>
                 Choose a date
               </mat-label>
@@ -129,7 +129,7 @@
             </button>
 
             <!-- Stack lines -->
-            <button *ngIf='false == this.graphs_records[query]["m_stacked"]' mat-button
+            <button *ngIf='false === this.graphs_records[query]["m_stacked"]' mat-button
               (click)='switch_stack_lines(this.graphs_records[query])'
               i18n-matTooltip='tooltip Stack lines@@tooltip_stacked_lines_graph' matTooltip='Stack lines'
               class='icon_button'>
@@ -298,7 +298,7 @@
                 style="height: 20px; width: 20px; margin-right: 10px; display: inline-block;">
               </span>
               <p style="display: inline-block;"
-                [ngStyle]="{'textDecoration': (legend.hidden && legend.cursor == 'pointer' ) ? 'line-through' : ''}">
+                [ngStyle]="{'textDecoration': (legend.hidden && legend.cursor === 'pointer' ) ? 'line-through' : ''}">
                 {{legend.text}}
               </p>
             </li>

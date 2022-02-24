@@ -8,8 +8,8 @@ import { NotificationComponent } from './notification.component'
 export class NotificationServiceService {
   constructor(private snackBar: MatSnackBar) { }
 
-  show_notification(display_message: string, button_text: string, message_type:'error' | 'success') {
-    this.snackBar.openFromComponent(NotificationComponent,{
+  show_notification(display_message: string, button_text: string, message_type: 'error' | 'success') {
+    this.snackBar.openFromComponent(NotificationComponent, {
       data: {
         message: display_message,
         buttonText: button_text,
@@ -21,5 +21,4 @@ export class NotificationServiceService {
       panelClass: message_type
     })
   }
-
 }

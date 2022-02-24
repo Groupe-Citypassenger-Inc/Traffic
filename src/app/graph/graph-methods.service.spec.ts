@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { GraphMethodsService } from './graph-methods.service';
 
 describe('GraphMethodsService', () => {

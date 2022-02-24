@@ -13,16 +13,14 @@ export class ThemeHandlerService {
     this.theme = localStorage.getItem('theme');
   }
 
-  update_theme(theme:string): void{
+  update_theme(theme: string): void {
     this.theme = theme;
     localStorage.setItem('theme', theme);
     this.is_dark_mode_enabled = localStorage.getItem('theme') === 'Dark' ? true : false;
     this.theme_changes.next(theme);
   }
 
-  get_theme(): string{
+  get_theme(): string {
     return localStorage.getItem('theme');
   }
 }
-
-

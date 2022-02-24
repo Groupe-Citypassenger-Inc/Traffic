@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   appVersion: require('../../package.json').version + '-dev',
-  prometheus_base_api_url:'https://XXXX.citypassenger.com:4443',
+  prometheus_base_api_url: 'https://XXXX.citypassenger.com:4443',
   city_url_api: 'http://app.citypassenger.com:4200'
 };
 /*
