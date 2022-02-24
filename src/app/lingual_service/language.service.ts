@@ -37,14 +37,21 @@ export class LanguageService {
   constructor() { }
 
   get_language(): string {
-    this.language = window.location.pathname.split('/')[2];
+    this.language = window.localStorage.getItem('language') || 'en';
     this.site_language = this.language_list.find(
       f => f.code === this.language
     ).label;
     return this.language;
   }
-  
-  translate_paginator(paginator: MatPaginator): MatPaginator{
+
+  setLanguage(lang): void {
+    window.localStorage.setItem('language', lang);
+    this.site_language = this.language_list.find(
+      f => f.code === this.language
+    ).label;
+  }
+
+  translate_paginator(paginator: MatPaginator): MatPaginator {
     paginator._intl.firstPageLabel = 'Première page';
     paginator._intl.itemsPerPageLabel = 'Nombre d\'éléments par page';
     paginator._intl.lastPageLabel = 'Dernière page';

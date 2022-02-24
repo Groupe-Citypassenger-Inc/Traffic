@@ -105,4 +105,10 @@ export class AppComponent implements OnInit {
     }
     this.theme_handler.update_theme(this._theme);
   }
+
+  setLanguage(lang): void {
+    this.language.setLanguage(lang);
+    this.site_locale = lang;
+  }
+
 }

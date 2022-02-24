@@ -35,13 +35,13 @@
 
             <div>
               <a href="/traffic/en/select">
-                <button mat-menu-item *ngIf='(site_locale == "fr")'>
+                <button mat-menu-item *ngIf='(site_locale === "fr")' (click)="setLanguage('en')">
                   <mat-icon svgIcon='gb_flag'></mat-icon>
                   <span>Basculez en anglais</span>
                 </button>
               </a>
               <a href="/traffic/fr/select">
-                <button mat-menu-item *ngIf='(site_locale == "en")'>
+                <button mat-menu-item *ngIf='(site_locale === "en")' (click)="setLanguage('fr')">
                   <mat-icon svgIcon='fr_flag'></mat-icon>
                   <span>Switch to French</span>
                 </button>
