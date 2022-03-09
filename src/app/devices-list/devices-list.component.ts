@@ -37,6 +37,30 @@ export interface DevicesInformations {
   [key: string]: any;
 }
 
+interface Columns {
+  key: string,
+  fr: string,
+  en: string,
+}
+
+const COLUMNS_TO_DISPLAY = [
+  {
+    key: 'address',
+    fr: 'Adresse',
+    en: 'Address',
+  },
+  {
+    key: 'display_name',
+    fr: 'Nom de groupe',
+    en: 'Group name',
+  },
+  {
+    key: 'box_display_name',
+    fr: 'Nom de boitier',
+    en: 'Box name',
+  },
+];
+
 @Component({
   selector: 'app-devices-list',
   templateUrl: './devices-list.component.html',
@@ -66,28 +90,8 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
   dataSource: MatTableDataSource<any>;
   expandedElement: TableDevicesInfo | null;
 
-  columnsToDisplay: Array<any> = [
-    {
-      key: 'address',
-      fr: 'Adresse',
-      en: 'Address',
-    },
-    {
-      key: 'display_name',
-      fr: 'Nom de groupe',
-      en: 'Group name',
-    },
-    {
-      key: 'box_display_name',
-      fr: 'Nom de boitier',
-      en: 'Box name',
-    },
-  ];
-  columnsToDisplayKeys: string[] = [
-    'address',
-    'display_name',
-    'box_display_name',
-  ];
+  columnsToDisplay: Columns[] = COLUMNS_TO_DISPLAY;
+  columnsToDisplayKeys: string[] = this.columnsToDisplay.map((col) => col.key);
 
   // deadcode
   // _disabled_visualize_group_form = true;
@@ -195,22 +199,18 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   on_row_click(row: TableDevicesInfo): void {
-    if (this.devicesInformations[row.group_name].group_metric === 0) {
-      this.devicesInformations[row.group_name].form_disabled = true;
-    } else {
-      this.devicesInformations[row.group_name].form_disabled = false;
-    }
+    const deviceInfo = this.devicesInformations[row.group_name];
+    deviceInfo.form_disabled = (deviceInfo.group_metric === 0);
 
-    if (this.expandedElement !== null) {
-      if (this.devicesInformations[row.group_name][row.box_name].box_password === null) {
-        this.getBoxPassword(row);
-      } else if (this.devicesInformations[row.group_name].group_metric === 0) {
-        this.getMetricList(row);
-      } else {
-        this.devicesInformations[row.group_name].form_disabled = false;
-      }
+    if (this.expandedElement === null) return;
+
+    if (deviceInfo[row.box_name].box_password === null) {
+      this.getBoxPassword(row);
+    } else if (deviceInfo.group_metric === 0) {
+      this.getMetricList(row);
+    } else {
+      deviceInfo.form_disabled = false;
     }
-    if (isDevMode()) { console.log(this.devicesInformations); }
   }
 
   getUserMetrics(): void {
@@ -218,12 +218,14 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
     const userConfigBaseUrl = '/traffic/' + this.lang + '/assets/json/';
     const userConfigUrl = userConfigBaseUrl + this.userInformation.username + '.json.nousNeVoulousPlusDeConfigPerso';
 
-    this.httpClient.get<any>(userConfigUrl, { headers }).pipe(
-      catchError((err => {
-        console.log('Handling error locally and rethrowing it...', err);
-        return throwError(err);
-      })))
-      .subscribe(customConfig => { // replace the file if the user has a custom configuration
+    this.httpClient
+      .get<any>(userConfigUrl, { headers })
+      .pipe(
+        catchError((err) => {
+          console.error('Handling error locally and rethrowing it...', err);
+          return throwError(err);
+        }),
+      ).subscribe((customConfig) => { // replace the file if the user has a custom configuration
         this.metricsConfig = customConfig;
       }, () => { // No custom conf
         this.metricsConfig = (metricsConfig as any).default;
@@ -245,14 +247,15 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.httpClient.request('GET', prometheusApiUrl, { headers })
       .pipe(
         timeout(10000),
-        map(res => {
+        map((res) => {
           return res;
         },
         ), catchError(
           err => {
             throw err;
           },
-        )).pipe(take(1))
+        ))
+      .pipe(take(1))
       .subscribe((response: { data /*TODO */ }) => {
         const prometheusMetrics: Array<any> = response.data;
         this.parse_get_metric(prometheusMetrics, groupName);
@@ -268,27 +271,21 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+  private checkAccessAndAddMetric(metricList, metrics) {
+    Object.keys(metrics).forEach(metric => {
+      if (metrics[metric].role.includes(this.userInformation.role)) {
+        metricList.push(metric);
+      }
+    });
+  }
+
   parse_get_metric(prometheusMetrics: Array<any>, groupName: string): void {
     const metricList: Array<string> = [];
     const customMetric = this.metricsConfig.custom_metric;
 
-    Object.keys(customMetric.instant_vectors).forEach(metric => {
-      if (customMetric.instant_vectors[metric].role.includes(this.userInformation.role)) {
-        metricList.push(metric);
-      }
-    });
-
-    Object.keys(customMetric.range_vectors).forEach(metric => {
-      if (customMetric.range_vectors[metric].role.includes(this.userInformation.role)) {
-        metricList.push(metric);
-      }
-    });
-
-    Object.keys(customMetric.multi_query).forEach(metric => {
-      if (customMetric.multi_query[metric].role.includes(this.userInformation.role)) {
-        metricList.push(metric);
-      }
-    });
+    this.checkAccessAndAddMetric(metricList, customMetric.instant_vectors);
+    this.checkAccessAndAddMetric(metricList, customMetric.range_vectors);
+    this.checkAccessAndAddMetric(metricList, customMetric.multi_query);
 
     prometheusMetrics.forEach(metricName => {
       if (metricName in this.metricsConfig) {
@@ -353,7 +350,6 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   visualize(groupName: string, boxName?: string): void {
-
     const devicesInformations: DevicesInformations = this.devicesInformations;
     const graphInformations: Array<any> = [];
     let password: string;

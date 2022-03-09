@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/select';
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl || '/select';
     if (isDevMode()) console.log(this.returnUrl);
     this.auth.isLogged(this.returnUrl);
     this.isLogged = this.auth.isAuth;
@@ -59,8 +59,8 @@ export class LoginComponent implements OnInit {
     if (isDevMode()) {
       console.log(form);
     }
-    let username = encodeURIComponent(form.controls['username'].value);
-    let password = encodeURIComponent(form.controls['password'].value);
+    let username = encodeURIComponent(form.controls.username.value);
+    let password = encodeURIComponent(form.controls.password.value);
     let urlLogin = '/ws/User/Login?login=' + username + '&password=' + password;
     this.auth.login(urlLogin, this.returnUrl);
   }
