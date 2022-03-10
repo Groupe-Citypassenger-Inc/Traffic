@@ -39,12 +39,7 @@ export class AuthService {
           throw err;
         },
       )).pipe(take(1))
-      .subscribe((response: UserInformations) => {
-        const userInfo = {
-          id: response.id,
-          role: response.role,
-          username: response.username,
-        };
+      .subscribe((userInfo: UserInformations) => {
         this.updateUserInfo(userInfo);
         this.updateLogStatus(true);
         if (oldUrl !== undefined) {
@@ -66,17 +61,18 @@ export class AuthService {
     let headers = new HttpHeaders();
 
     headers = headers.set('accept', 'application/json');
-    this.httpClient.request('GET', loggedApiUrl, { headers }).pipe(
-      timeout(10000),
-      map(res => {
-        return res;
-      },
-      ), catchError(
-        err => {
-          console.log('an error occured please try again');
+    this.httpClient.request('GET', loggedApiUrl, { headers })
+      .pipe(
+        timeout(10000),
+        map(res => {
+          return res;
+        }),
+        catchError((err) => {
+          console.error('an error occured please try again');
           throw err;
-        },
-      )).pipe(take(1))
+        }),
+      )
+      .pipe(take(1))
       .subscribe(() => {
         this.redirect('/login');
         this.updateLogStatus(false);
@@ -89,29 +85,25 @@ export class AuthService {
     let headers = new HttpHeaders();
 
     headers = headers.set('accept', 'application/json');
-    this.httpClient.request('GET', loggedApiUrl, { headers }).pipe(
-      timeout(10000),
-      map(res => {
-        return res;
-      },
-      ), catchError(
-        err => {
+    this.httpClient.request('GET', loggedApiUrl, { headers })
+      .pipe(
+        timeout(10000),
+        map(res => {
+          return res;
+        }),
+        catchError((err) => {
           this.updateLogStatus(false);
-          console.log('user not logged');
+          console.error('user not logged');
           throw err;
-        },
-      )).pipe(take(1))
-      .subscribe((response: UserInformations) => {
-        if (response === null) {
+        }),
+      )
+      .pipe(take(1))
+      .subscribe((userInfo: UserInformations) => {
+        if (userInfo === null) {
           this.updateLogStatus(false);
           this.redirect('/login');
           return false;
         }
-        const userInfo = {
-          id: response.id,
-          role: response.role,
-          username: response.username,
-        };
         this.updateUserInfo(userInfo);
         this.updateLogStatus(true);
 
