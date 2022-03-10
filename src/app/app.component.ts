@@ -37,18 +37,10 @@ export class AppComponent implements OnInit, OnDestroy {
     private domSanitizer: DomSanitizer,
     public overlayContainer: OverlayContainer,
     public themeHandler: ThemeHandlerService,
-  ) {
-    this.matIconRegistry.addSvgIcon(
-      'fr_flag',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/fr.svg'),
-    );
-    this.matIconRegistry.addSvgIcon(
-      'gb_flag',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/images/gb.svg'),
-    );
-  }
+  ) { }
 
   ngOnInit(): void {
+    this.addSvgs();
     this.setTheme();
     this.storeThemeSelection();
 
@@ -63,6 +55,16 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.auth_status_subscription.unsubscribe();
     this.dialogRefSubscription.unsubscribe();
+  }
+
+  addSvgs() {
+    this.addSvgIcon('fr_flag', 'assets/images/fr.svg');
+    this.addSvgIcon('gb_flag', 'assets/images/gb.svg');
+  }
+
+  addSvgIcon(name: string, path: string) {
+    const safeRessourceUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(path);
+    this.matIconRegistry.addSvgIcon(name, safeRessourceUrl);
   }
 
   logout(): void {
