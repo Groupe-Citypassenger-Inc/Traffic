@@ -18,12 +18,10 @@ const DARK_THEME_MODE_CLASS = 'dark-theme-mode';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy {
-  _show_graph: boolean = false;
   isLogged: boolean = false;
   currentApplicationVersion = environment.appVersion;
   auth_status_subscription: Subscription;
   dialogRefSubscription: Subscription;
-  is_dev_mode: boolean = false;
   isDarkMode: boolean = false;
   siteLocale: string;
   previousUrl$ = new BehaviorSubject<string>(null);
@@ -44,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.setTheme();
     this.storeThemeSelection();
 
-    this.is_dev_mode = isDevMode();
     this.isLogged = this.auth.isAuth;
     this.auth_status_subscription = this.auth.logStatusChange.subscribe(
       (status) => { this.isLogged = status; },
