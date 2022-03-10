@@ -5,7 +5,7 @@
   <head>
   </head>
 
-  <body class="app-frame mat-app-background" [ngClass]='{"dark-theme-mode":is_dark_mode_enabled}'>
+  <body class="app-frame mat-app-background" [ngClass]='{"dark-theme-mode":isDarkMode}'>
     <header style='color:#fefefe'>
       <!-- Toolbar -->
       <mat-toolbar color='primary'>
@@ -22,26 +22,26 @@
 
           <mat-menu #menu="matMenu">
             <button mat-menu-item>
-              <mat-icon *ngIf='is_dark_mode_enabled'>bedtime</mat-icon>
-              <mat-icon *ngIf='!is_dark_mode_enabled'>wb_sunny</mat-icon>
-              <span *ngIf='!is_dark_mode_enabled'>Switch off the lights</span>
-              <span *ngIf='is_dark_mode_enabled'>Switch on the lights</span>
+              <mat-icon *ngIf='isDarkMode'>bedtime</mat-icon>
+              <mat-icon *ngIf='!isDarkMode'>wb_sunny</mat-icon>
+              <span *ngIf='!isDarkMode'>Switch off the lights</span>
+              <span *ngIf='isDarkMode'>Switch on the lights</span>
               <span style='align-self: normal;'>
-                <mat-slide-toggle color='warn' labelPosition='before' [(ngModel)]='is_dark_mode_enabled'
-                  (change)='store_theme_selection()'>
+                <mat-slide-toggle color='warn' labelPosition='before' [(ngModel)]='isDarkMode'
+                  (change)='storeThemeSelection()'>
                 </mat-slide-toggle>
               </span>
             </button>
 
             <div>
               <a href="/traffic/en/select">
-                <button mat-menu-item *ngIf='(site_locale === "fr")' (click)="setLanguage('en')">
+                <button mat-menu-item *ngIf='(siteLocale === "fr")' (click)="setLanguage('en')">
                   <mat-icon svgIcon='gb_flag'></mat-icon>
                   <span>Basculez en anglais</span>
                 </button>
               </a>
               <a href="/traffic/fr/select">
-                <button mat-menu-item *ngIf='(site_locale === "en")' (click)="setLanguage('fr')">
+                <button mat-menu-item *ngIf='(siteLocale === "en")' (click)="setLanguage('fr')">
                   <mat-icon svgIcon='fr_flag'></mat-icon>
                   <span>Switch to French</span>
                 </button>

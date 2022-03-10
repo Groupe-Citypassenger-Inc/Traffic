@@ -179,12 +179,12 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.userInfoSubscription = this.auth.logUserInfoChange.subscribe((userInfo: UserInformations) => {
       this.userInformation = userInfo;
     });
-    this.themeSubscription = this.themeHandler.theme_changes.subscribe((theme) => {
+    this.themeSubscription = this.themeHandler.themeChanges.subscribe((theme) => {
       this.isDarkMode = theme === 'Dark' ? true : false;
       this.change_theme(this.isDarkMode);
       this.regenerate_all_graph();
     });
-    this.isDarkMode = this.themeHandler.get_theme() === 'Dark' ? true : false;
+    this.isDarkMode = this.themeHandler.getTheme() === 'Dark' ? true : false;
     moment.locale(this.lang);
   }
 

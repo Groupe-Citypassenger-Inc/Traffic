@@ -1,4 +1,4 @@
-import { Component, OnInit, isDevMode } from '@angular/core';
+import { Component, OnInit, isDevMode, OnDestroy } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -10,21 +10,22 @@ import { AuthService } from './auth_services/auth.service';
 import { environment } from '../environments/environment';
 import { LogOutDialogComponent } from './dialog/log-out-dialog/log-out-dialog.component';
 
+const DARK_THEME_MODE_CLASS = 'dark-theme-mode';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   _show_graph: boolean = false;
   isLogged: boolean = false;
   currentApplicationVersion = environment.appVersion;
   auth_status_subscription: Subscription;
-  dialog_ref_subscription: Subscription;
+  dialogRefSubscription: Subscription;
   is_dev_mode: boolean = false;
-  is_dark_mode_enabled: boolean = false;
-  site_locale: string;
-  _theme: string;
+  isDarkMode: boolean = false;
+  siteLocale: string;
   previousUrl$ = new BehaviorSubject<string>(null);
   currentUrl$ = new BehaviorSubject<string>(null);
 
@@ -48,56 +49,52 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (
-      window.matchMedia('(prefers-color-scheme: dark)').matches &&
-      this.themeHandler.get_theme() === null
-    ) {
-      this.is_dark_mode_enabled = true;
-    } else if (this.themeHandler.get_theme() === 'Dark') {
-      this.is_dark_mode_enabled = true;
-    } else {
-      this.is_dark_mode_enabled = false;
-    }
-    this.store_theme_selection();
+    this.setTheme();
+    this.storeThemeSelection();
 
     this.is_dev_mode = isDevMode();
     this.isLogged = this.auth.isAuth;
     this.auth_status_subscription = this.auth.logStatusChange.subscribe(
-      (status) => {
-        this.isLogged = status;
-      },
+      (status) => { this.isLogged = status; },
     );
-    this.site_locale = this.languageService.getLanguage();
+    this.siteLocale = this.languageService.getLanguage();
   }
 
   ngOnDestroy(): void {
     this.auth_status_subscription.unsubscribe();
-    this.dialog_ref_subscription.unsubscribe();
+    this.dialogRefSubscription.unsubscribe();
   }
 
   logout(): void {
     const dialogRef = this.dialog.open(LogOutDialogComponent);
-    this.dialog_ref_subscription = dialogRef
-      .afterClosed()
-      .subscribe(() => { });
+    this.dialogRefSubscription = dialogRef.afterClosed().subscribe(() => { });
   }
 
-  store_theme_selection(): void {
-    this._theme = this.is_dark_mode_enabled ? 'Dark' : 'Light';
-    if (!this.is_dark_mode_enabled) {
-      this.overlayContainer
-        .getContainerElement()
-        .classList.remove('dark-theme-mode');
+  setTheme() {
+    const isDarkModePreferred = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const noModeSelected = (this.themeHandler.getTheme() === null);
+    if (noModeSelected && isDarkModePreferred) {
+      this.isDarkMode = true;
     } else {
-      this.overlayContainer
-        .getContainerElement()
-        .classList.add('dark-theme-mode');
+      this.isDarkMode = (this.themeHandler.getTheme() === 'Dark');
     }
-    this.themeHandler.update_theme(this._theme);
+  }
+
+  storeThemeSelection(): void {
+    const theme = this.isDarkMode ? 'Dark' : 'Light';
+    const containerClassList = this.overlayContainer.getContainerElement().classList;
+
+    if (!this.isDarkMode) {
+      containerClassList.remove(DARK_THEME_MODE_CLASS);
+    } else {
+      containerClassList.add(DARK_THEME_MODE_CLASS);
+    }
+
+    this.themeHandler.updateTheme(theme);
   }
 
   setLanguage(lang): void {
     this.languageService.setLanguage(lang);
-    this.site_locale = lang;
+    this.siteLocale = lang;
   }
 }

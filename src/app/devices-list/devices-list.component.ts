@@ -112,7 +112,7 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userInformation = this.auth.userInfo;
     this.lang = this.languageService.language;
     this.isDarkMode = localStorage.getItem('theme') === 'Dark' ? true : false;
-    this.themeSubscription = this.themeHandler.theme_changes.subscribe((theme) => {
+    this.themeSubscription = this.themeHandler.themeChanges.subscribe((theme) => {
       this.isDarkMode = theme === 'Dark' ? true : false;
     });
   }
