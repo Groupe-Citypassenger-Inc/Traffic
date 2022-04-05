@@ -1,7 +1,8 @@
 <div class="mat-app-background">
   <div style="margin: 1%;">
     <h3 i18n="welcome text|welcome text device table component@@welcome_devices_table">
-      Welcome to traffic {{userInformation["username"]}} !</h3>
+      Welcome to traffic {{userInformation["username"]}} !
+    </h3>
     <p style="max-width: 80%;" i18n="short description@@short_description_devices_table">
       Traffic allows you to visualize the performance data of your devices. Select a device in the table
       below, once the device is selected choose the data you wish to view and then click on the "view" button.
@@ -10,9 +11,9 @@
     <h2 i18n="title your devices|@@title_your_devices_table">Your devices </h2>
     <div class="table_container">
       <mat-form-field>
-        <mat-label i18n="search text|tip text for seach input in device table@@search_tip_devices_table">Type here
-          to
-          search for a specific device</mat-label>
+        <mat-label i18n="search text|tip text for seach input in device table@@search_tip_devices_table">
+          Type here to search for a specific device
+        </mat-label>
         <input matInput (keyup)="apply_filter($event)" placeholder="Ex. Citybox" #input>
       </mat-form-field>
 
@@ -40,14 +41,16 @@
                       <mat-form-field appearance="legacy" class="fullwidth">
                         <mat-label
                           i18n="title of metric selection|title of metric selection@@title_metric_selection_devices_table">
-                          Graph available</mat-label>
+                          Graph available
+                        </mat-label>
                         <mat-select [formControl]="devicesInformations[box['group_name']]['form_control']"
                           (selectionChange)="onChangeGroupForm($event, box)"
                           [disabled]="devicesInformations[box['group_name']]['form_disabled']" multiple>
                           <mat-form-field class="container">
                             <mat-label
                               i18n="text for search metric|text used in search metric input@@search_metric_input_devices_table">
-                              search for metric</mat-label>
+                              search for metric
+                            </mat-label>
                             <input [(ngModel)]="filterNameGroup" matInput type="text"
                               (keyup)="filterListCareUnit($event.target.value, box['group_name'])"
                               [ngStyle]="{'color':isDarkMode  ? 'white' : 'black' }">
@@ -55,15 +58,18 @@
                           <mat-option
                             *ngFor="let graph_available of devicesInformations[box['group_name']]['group_metric']"
                             value="{{graph_available}}">
-                            {{metricAlternativeName[userInformation.role][graph_available] === undefined ?
-                            graph_available + " [NOT TRANSLATED]" :
-                            metricAlternativeName[userInformation.role][graph_available][lang]}}</mat-option>
+                            {{metricAlternativeName[userInformation.role][graph_available] === undefined
+                            ? graph_available + " [NOT TRANSLATED]"
+                            : metricAlternativeName[userInformation.role][graph_available][lang]}}
+                          </mat-option>
                         </mat-select>
                       </mat-form-field>
-                      <br /><button mat-flat-button
-                        [disabled]="devicesInformations[box['group_name']]['visualize_disabled']" color="primary"
-                        (click)="visualize(box['group_name'])" class="visualize_btn"
-                        i18n="text visualize button|text used in visualize button in devices table@@button_visualize_devices_table">Visualize</button>
+                      <br />
+                      <button mat-flat-button [disabled]="devicesInformations[box['group_name']]['visualize_disabled']"
+                        color="primary" (click)="visualize(box['group_name'])" class="visualize_btn"
+                        i18n="text visualize button|text used in visualize button in devices table@@button_visualize_devices_table">
+                        Visualize
+                      </button>
                     </md-content>
                   </mat-grid-tile>
 
@@ -73,7 +79,8 @@
                       <mat-form-field appearance="legacy" class="fullwidth">
                         <mat-label
                           i18n="title of metric selection|title of metric selection@@title_metric_selection_devices_table">
-                          Graph available</mat-label>
+                          Graph available
+                        </mat-label>
                         <mat-select
                           [formControl]="devicesInformations[box['group_name']][box['box_name']]['form_control']"
                           (selectionChange)="onChangeBoxForm($event, box)"
@@ -81,22 +88,27 @@
                           <mat-form-field class="input_metric">
                             <mat-label
                               i18n="text for search metric|text used in search metric input@@search_metric_input_devices_table">
-                              search for metric</mat-label>
+                              search for metric
+                            </mat-label>
                             <input class="input" [(ngModel)]="filterNameBox" matInput type="text"
                               (keyup)="filterListCareUnit($event.target.value, box['group_name'])">
                           </mat-form-field>
                           <mat-option
                             *ngFor="let graph_available of devicesInformations[box['group_name']]['group_metric']"
                             value="{{graph_available}}">
-                            {{metricAlternativeName[userInformation.role][graph_available] === undefined ?
-                            graph_available + " [NOT TRANSLATED]" :
-                            metricAlternativeName[userInformation.role][graph_available][lang]}}</mat-option>
+                            {{metricAlternativeName[userInformation.role][graph_available] === undefined
+                            ? graph_available + " [NOT TRANSLATED]"
+                            : metricAlternativeName[userInformation.role][graph_available][lang]}}
+                          </mat-option>
                         </mat-select>
                       </mat-form-field>
-                      <br /><button mat-flat-button
+                      <br />
+                      <button mat-flat-button
                         [disabled]="devicesInformations[box['group_name']][box['box_name']]['visualize_disabled']"
                         color="primary" (click)="visualize(box['group_name'], box['box_name'])" class="visualize_btn"
-                        i18n="text visualize button|text used in visualize button in devices table@@button_visualize_devices_table">Visualize</button>
+                        i18n="text visualize button|text used in visualize button in devices table@@button_visualize_devices_table">
+                        Visualize
+                      </button>
                     </md-content>
                   </mat-grid-tile>
                 </mat-grid-list>

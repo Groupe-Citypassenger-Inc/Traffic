@@ -1,6 +1,8 @@
 <div class="mat-app-background">
   <div class="container">
-    <h2 i18n="title Graph@@Title_graph" style="margin-top: 1%;">Graphs</h2>
+    <h2 i18n="title Graph@@Title_graph" style="margin-top: 1%;">
+      Graphs
+    </h2>
     <button mat-button mat-icon-button matPrefix aria-label="Back" (click)="back_to_selection()">
       <mat-icon>keyboard_return</mat-icon>
       <span i18n="Go back to selection@@return-button">Go back to selection</span>
@@ -16,23 +18,20 @@
     <div *ngFor="let query of queryList">
       <div *ngIf="graphs_records.hasOwnProperty(query)">
         <h4>
-          {{
-          metricAlternativeName[userInformation.role][query] === undefined
+          {{ metricAlternativeName[userInformation.role][query] === undefined
           ? query + "[NOT TRANSLATED]"
-          : metricAlternativeName[userInformation.role][query][lang]
-          }}
+          : metricAlternativeName[userInformation.role][query][lang]}}
         </h4>
         <div style="max-width: 100;">
           <div id="increment" class="time_opt">
             <!-- increment section -->
-            <mat-form-field *ngIf="this.graphs_records[query]['_chart_date_picker'] === 'range_type'" class="form">
+            <mat-form-field *ngIf="this.graphs_records[query].m_chart_date_picker === 'range_type'" class="form">
               <button mat-button mat-icon-button matPrefix aria-label="Remove" [color]="primary"
                 (click)="incrementValue(query, -step)" [disabled]="shouldDisableDecrement(_value)">
                 <mat-icon>remove</mat-icon>
               </button>
-              <input matInput type="number" class="counter" [(ngModel)]="graphs_records[query]['t_value']"
-                (ngModelChange)="time_value_changes(query)" (focus)="setColor('primary')" (blur)="setColor('default')"
-                min="1" oninput="validity.valid||(value='1');" />
+              <input matInput type="number" class="counter" [(ngModel)]="graphs_records[query].t_value"
+                (ngModelChange)="time_value_changes(query)" min="1" oninput="validity.valid||(value='1');" />
               <button mat-button mat-icon-button matSuffix aria-label="Add" [color]="primary"
                 (click)="incrementValue(query, step)" [disabled]="shouldDisableIncrement(_value)">
                 <mat-icon>add</mat-icon>
@@ -40,36 +39,38 @@
             </mat-form-field>
 
             <!-- Unit section -->
-            <mat-form-field *ngIf="this.graphs_records[query]['m_chart_date_picker'] === 'range_type'"
-              appearance="legacy" class="form">
-              <mat-label i18n="title unit options|title unit options@@title_unit_options_time_selection_graph">Unit
-                options
+            <mat-form-field *ngIf="this.graphs_records[query].m_chart_date_picker === 'range_type'" appearance="legacy"
+              class="form">
+              <mat-label i18n="title unit options|title unit options@@title_unit_options_time_selection_graph">
+                Unit options
               </mat-label>
-              <mat-select [(ngModel)]="graphs_records[query]['t_unit']" placeholder="Unit" [disabled]="unitSelect.value"
+              <mat-select [(ngModel)]="graphs_records[query].t_unit" placeholder="Unit" [disabled]="unitSelect.value"
                 (ngModelChange)="unit_selection_changes(query)">
                 <mat-option value="minute"
                   i18n="minute unit option|minute unit option for time range selection@@minute_unit_time_selection_graph">
-                  minute</mat-option>
+                  minute
+                </mat-option>
                 <mat-option value="hour"
-                  i18n="hour unit option|hour unit option for time range selection@@hour_unit_time_selection_graph">hour
+                  i18n="hour unit option|hour unit option for time range selection@@hour_unit_time_selection_graph">
+                  hour
                 </mat-option>
                 <mat-option value="day"
-                  i18n="day unit option|day unit option for time range selection@@day_unit_time_selection_graph">day
+                  i18n="day unit option|day unit option for time range selection@@day_unit_time_selection_graph">
+                  day
                 </mat-option>
               </mat-select>
             </mat-form-field>
 
             <!-- Date time section - Range selector -->
             <form novalidate [formGroup]="formGroup" class="form" id="datetime"
-              *ngIf="!graphs_records[query]['t_now'] && this.graphs_records[query]['m_chart_date_picker'] === 'range_type'">
+              *ngIf="!graphs_records[query].t_now && this.graphs_records[query].m_chart_date_picker === 'range_type'">
               <mat-form-field>
                 <mat-placeholder
                   i18n="'until' text date selection | 'until' text in time range selection@@text_until_date_selection_time_selection_graph">
                   Until
                 </mat-placeholder>
-
                 <input matInput formControlName={{query}} [matDatetimepicker]="dts" required autocomplete="false"
-                  [disabled]="graphs_records[query]['t_now']">
+                  [disabled]="graphs_records[query].t_now">
                 <mat-datetimepicker-toggle [for]="dts" matSuffix></mat-datetimepicker-toggle>
                 <mat-datetimepicker #dts type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
               </mat-form-field>
@@ -77,20 +78,19 @@
 
             <!-- Now slide toggle -->
             <!-- The value is updating correctly BUT w/o visual changes (still unchecked) -->
-            <mat-slide-toggle *ngIf="!isMobile && this.graphs_records[query]['m_chart_date_picker'] === 'range_type'"
-              [(ngModel)]="graphs_records[query]['t_now']"
-              style="align-self: center; margin-left: 1%; margin-right: 1%;"
+            <mat-slide-toggle *ngIf="!isMobile && this.graphs_records[query].m_chart_date_picker === 'range_type'"
+              [(ngModel)]="graphs_records[query].t_now" style="align-self: center; margin-left: 1%; margin-right: 1%;"
               (change)="on_slide_toggle_change($event, query)" color="primary" labelPosition="before"
               i18n-matTooltip="tooltip date selection@@tooltip_date_selection_time_selection_graph"
               matTooltip="Switch between now and a selected date time">
               <span i18n="'now' text|'now' text in time range selection@@text_now_time_selection_graph"
-                *ngIf="graphs_records[query]['t_now']">
+                *ngIf="graphs_records[query].t_now">
                 Now
               </span>
             </mat-slide-toggle>
 
             <!-- Date time section - Day selector -->
-            <mat-form-field *ngIf="this.graphs_records[query]['m_chart_date_picker']==='day_type'" appearance="fill">
+            <mat-form-field *ngIf="this.graphs_records[query].m_chart_date_picker === 'day_type'" appearance="fill">
               <mat-label i18n="'Choose a date' text | 'Choose a date' text in day selector@@text_choose_a_date_graph">
                 Choose a date
               </mat-label>
@@ -115,14 +115,14 @@
             </button>
 
             <!-- Hide curves -->
-            <button *ngIf="!this.graphs_records[query]['m_hidden']" mat-button (click)="hide_lines(query)"
+            <button *ngIf="!this.graphs_records[query].m_hidden" mat-button (click)="hide_lines(query)"
               i18n-matTooltip="tooltip Hide all curves@@tooltip_hide_all_curves_time_selection_graph"
               matTooltip="Hide all curves" class="icon_button">
               <mat-icon>visibility_off</mat-icon>
             </button>
 
             <!-- Show curves -->
-            <button *ngIf="this.graphs_records[query]['m_hidden']" mat-button (click)="hide_lines(query)"
+            <button *ngIf="this.graphs_records[query].m_hidden" mat-button (click)="hide_lines(query)"
               i18n-matTooltip="tooltip Show all curves@@tooltip_show_all_curves_time_selection_graph"
               matTooltip="Show all curves" class="icon_button">
               <mat-icon>visibility</mat-icon>
@@ -145,7 +145,7 @@
             </button>
 
             <!-- Select a specific IP -->
-            <mat-form-field *ngIf="false === !this.graphs_records[query]['m_request_IPs'].length" appearance="fill">
+            <mat-form-field *ngIf="false === !this.graphs_records[query].m_request_IPs.length" appearance="fill">
               <mat-label>IP</mat-label>
               <mat-select [formControl]="this.graphs_records[query]['m_selected_IPs']" multiple
                 (selectionChange)="showLegendSelected(this.graphs_records[query], graphLegends.get(query), query)">
@@ -177,10 +177,10 @@
         </div>
         <div style="min-width: 100%; min-height: 100%; margin-bottom: 2%;">
           <canvas id={{query}} width="800" height="400"></canvas>
-          <div *ngIf="this.graphs_records[query]['m_tooltip'] as tooltip" class="tooltip" [ngStyle]="{ 'left':
-            this.graphs_records[query]['m_chart'].canvas.offsetLeft + tooltip.caretX + 'px' , 'top' :
-            this.graphs_records[query]['m_chart'].canvas.offsetTop + tooltip.caretY + 'px' , 'opacity' :
-            tooltip.opacity}">
+          <div *ngIf="this.graphs_records[query].m_tooltip as tooltip" class="tooltip" [ngStyle]="this.graphs_records[query].m_chart.canvas 
+          && { 'left': tooltip.caretX + 'px' , 
+          'top' : this.graphs_records[query].m_chart.canvas.offsetTop + tooltip.caretY + 'px' , 
+          'opacity' : tooltip.opacity}">
             <table style="display: inline-table;">
               <thead>
                 <tr *ngFor="let title of tooltip.title">
@@ -288,11 +288,11 @@
           </div>
         </div>
         <div class="graph_legend">
-          <p *ngIf="this.graphs_records[query]['m_legend']['title'] as legend_title" style="margin: auto;">
+          <p *ngIf="this.graphs_records[query].m_legend.title as legend_title" style="margin: auto;">
             {{legend_title}} :
           </p>
           <ul style="flex-wrap: wrap; flex-direction: row; align-content: flex-start;">
-            <li *ngFor="let legend of this.graphs_records[query]['m_legend'].legends"
+            <li *ngFor="let legend of this.graphs_records[query].m_legend.legends"
               style="flex-direction: row; margin-right: 10px;" [ngStyle]="{ 'cursor' : legend.cursor}"
               (click)="switch_visibility_legend(legend, this.graphs_records[query]['m_chart'])">
               <span [ngStyle]="{ 'background': legend.fillStyle}"

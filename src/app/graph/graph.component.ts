@@ -1,11 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, isDevMode, AfterViewInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnChanges, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, timeout } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 
-
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import moment from 'moment';
 import 'chartjs-adapter-moment';
@@ -19,17 +18,20 @@ import { ThemeHandlerService } from '../theme_handler/theme-handler.service';
 import * as metricsConfig from '../../assets/json/config.metrics.json';
 import { UNIT_INFORMATION, BACKGROUND_COLOR } from '../../data.constants';
 import { GraphMethodsService } from './graph-methods.service';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 export interface UnitConversion {
   minute: number,
   hour: number,
   day: number,
 }
+
 export interface UserInformations {
   id: number,
   role: string,
   username: string,
 }
+
 export interface Params {
   [key: string]: any
 }
@@ -49,8 +51,13 @@ interface Tooltip {
   unit?,
   date?,
 }
+
+export interface GraphRecords {
+  [key: string]: GraphRecord,
+}
+
 export interface GraphRecord {
-  m_chart: string,
+  m_chart: Chart,
   m_legend: {
     title: string,
     legends: string[],
@@ -63,42 +70,12 @@ export interface GraphRecord {
   m_selected_services: FormControl,
   m_chart_date_picker: string,
   m_stacked: boolean,
-  t_value, // TODO
-  t_unit, // TODO
-  t_date: {
-    value: Date,
-    disabled: boolean,
-  },
+  m_tooltip: [],
+  t_value: number,
+  t_unit: string,
+  t_date: AbstractControl,
   t_now: boolean,
 }
-
-const BASIC_CONFIG = {
-  options: {
-    maintainAspectRatio: false,
-    responsive: true,
-    plugins: {
-      filler: {
-        propagate: false,
-      },
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: false,
-        position: 'followCursor',
-      },
-    },
-    elements: {
-      line: {
-        borderWidth: 2,
-        tension: 0, // Use this to curve the lines, 0 means straight line
-      },
-      bar: {
-        borderWidth: 0,
-      },
-    },
-  },
-};
 
 @Component({
   selector: 'app-graph',
@@ -106,7 +83,7 @@ const BASIC_CONFIG = {
   styleUrls: ['./graph.component.css'],
 })
 
-export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   userInformation: UserInformations;
   userInfoSubscription: Subscription;
   formGroupControlsSubscription: Subscription;
@@ -134,7 +111,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   options: any;
 
   formGroup: FormGroup;
-  graphs_records: GraphRecord;
+  graphs_records: GraphRecords = {};
   defaultValue: number = 1;
   defaultDate: Date = new Date();
 
@@ -189,33 +166,28 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   ngOnInit(): void {
-
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       this.isMobile = true;
     } else {
       this.isMobile = false;
     }
-
     this.userInformation = this.auth.userInfo;
     this.getUserMetrics();
 
     this.defaultDate.setHours(this.defaultDate.getHours());
 
-    const router = this.route.snapshot.paramMap.get('router');
-    this.groupRouter = router;
-    this.password = this.route.snapshot.paramMap.get('password');
-    this.boxSelected = this.route.snapshot.paramMap.get('box_name');
-    this.group_name = this.route.snapshot.paramMap.get('group_name');
-    this.queryList = this.route.queryParams['_value'].metric;
-    this.paramsList = this.route.queryParams['_value'];
+    const paramMap = this.route.snapshot.paramMap;
+    this.groupRouter = paramMap.get('router');
+    this.password = paramMap.get('password');
+    this.boxSelected = paramMap.get('box_name');
+    this.group_name = paramMap.get('group_name');
+
+    this.route.queryParams.subscribe(params => this.paramsList = params);
+    this.queryList = this.paramsList.metric;
 
     if (typeof this.queryList === 'string') {
       this.queryList = [this.queryList];
-      this.paramsList = {};
-      Object.keys(this.route.queryParams['_value']).forEach((key) => {
-        if (key === 'metric') return;
-        this.paramsList[key] = [this.route.queryParams['_value'][key]];
-      });
+      this.paramsList = this.mapObjectValueToArray(this.paramsList);
     }
 
     if (this.password === null || this.group_name === null || this.queryList === undefined) {
@@ -228,14 +200,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
 
     this.baseUrl = '/' + this.password + '/prometheus/' + this.group_name + '/api/v1';
-    this.baseUrlBuffer = '/' + this.password + '/prombuffer/' + this.group_name + '/api/v1';
-
-    this.prometheusApiUrl = this.prometheusApiUrl.replace('XXXX', router);
+    this.baseUrlBuffer = '/' + this.password + '/prometheus/' + this.group_name + '/api/v1';
+    this.prometheusApiUrl = this.prometheusApiUrl.replace('XXXX', this.groupRouter);
 
     this.get_records(this.queryList);
-  }
-
-  ngAfterViewInit(): void {
     this.set_charts();
   }
 
@@ -255,77 +223,60 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
   }
 
-  add_records(query: string): void {
-    this.graphs_records[query] = {
-      m_chart: 'chart',
-      m_legend: {
-        title: '',
-        legends: [],
-        position: 'bottom',
-      },
-      m_hidden: false,
-      m_request_IPs: [],
-      m_selected_IPs: new FormControl(),
-      m_request_services: [],
-      m_selected_services: new FormControl(),
-      m_stacked: false,
-      t_value: this.defaultValue,
-      t_unit: this.defaultUnit,
-      t_date: this.formBuilder.control({
-        value: this.defaultDate, disabled: false,
-      }),
-      t_now: this.now,
-    };
-    this.formGroup.addControl(query, this.graphs_records[query].t_date);
-    this.formGroupControlsSubscription = this.formGroup.controls[query].valueChanges.subscribe(date => {
-      this.date_changes(date, query);
-    });
-    this.queryList.push('up');
-  }
-
   get_records(queryList: Array<string>): void {
-    queryList.forEach(
-      (query, index) => {
-        let date = new Date(this.paramsList.date[index]);
-        this.graphs_records[query] = {
-          m_chart: 'chart',
-          m_legend: {
-            title: '',
-            legends: [],
-            position: 'bottom',
-          },
-          m_hidden: false,
-          m_request_IPs: [],
-          m_selected_IPs: new FormControl(),
-          m_request_services: [],
-          m_selected_services: new FormControl(),
-          m_chart_date_picker: 'range_type',
-          m_stacked: false,
-          t_value: +this.paramsList.value[index],
-          t_unit: this.paramsList.unit[index],
-          t_date: this.formBuilder.control({
-            value: date, disabled: false,
-          }),
-          t_now: this.paramsList.now[index] === 'true',
-        };
-        this.formGroup.addControl(query, this.graphs_records[query].t_date);
-        this.formGroupControlsSubscription = this.formGroup.controls[query].valueChanges.subscribe(newDate => {
-          this.date_changes(newDate, query);
-        });
-      },
-    );
+    queryList.forEach((query, index) => {
+      let date = new Date(this.paramsList.date[index]);
+      this.graphs_records[query] = {
+        m_chart: 'chart',
+        m_legend: {
+          title: '',
+          legends: [],
+          position: 'bottom',
+        },
+        m_hidden: false,
+        m_request_IPs: [],
+        m_selected_IPs: new FormControl(),
+        m_request_services: [],
+        m_selected_services: new FormControl(),
+        m_chart_date_picker: 'range_type',
+        m_stacked: false,
+        m_tooltip: [],
+        t_value: +this.paramsList.value[index],
+        t_unit: this.paramsList.unit[index],
+        t_date: this.formBuilder.control({
+          value: date,
+          disabled: false,
+        }),
+        t_now: this.paramsList.now[index] === 'true',
+      };
+      this.formGroup.addControl(query, this.graphs_records[query].t_date);
+      this.formGroupControlsSubscription = this.formGroup.controls[query].valueChanges.subscribe(newDate => {
+        this.date_changes(newDate, query);
+      });
+    });
   }
 
-  getUserMetrics() {
+  mapObjectValueToArray(object) {
+    const newObject = {};
+    Object.keys(object).forEach((key) => {
+      if (key === 'metric') return;
+      newObject[key] = [object[key]];
+    });
+    return newObject;
+  }
+
+  getUserMetrics(): void {
     const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
     let userConfigBaseUrl = '/traffic/' + this.lang + '/assets/json/';
     let userConfigUrl = userConfigBaseUrl + this.userInformation.username + '.json.nousNeVoulousPlusDeConfigPerso';
 
-    this.httpClient.get<any>(userConfigUrl, { headers }).pipe(
-      catchError((err => {
-        console.error('Handling error locally and rethrowing it...', err);
-        return throwError(err);
-      })))
+    this.httpClient.get<any>(userConfigUrl, { headers })
+      .pipe(
+        catchError((err => {
+          console.error('Handling error locally and rethrowing it...', err);
+          return throwError(err);
+        })),
+      )
       .subscribe(customConfig => { // replace the file if the user has a custom configuration
         this.metricsConfig = customConfig;
       }, () => { // No custom conf
@@ -334,11 +285,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   set_charts(): void {
-    this.queryList.forEach(
-      query => {
-        this.get_metric_from_prometheus(query);
-      },
-    );
+    this.queryList.forEach(query => {
+      this.get_metric_from_prometheus(query);
+    });
   }
 
   generate_all_graph(): void {
@@ -364,8 +313,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   regenerate(id: string): void {
-    this.graphs_records[id].m_chart.destroy();
-    this.graphs_records[id].m_chart = this.get_metric_from_prometheus(id);
+    const grm = this.graphs_records[id];
+    grm.m_chart.destroy();
+    this.get_metric_from_prometheus(id);
   }
 
   transform_metric_query(metricName: string, box: string): string {
@@ -391,13 +341,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   getMetricTimes(grm: GraphRecord, timestamp: number, chartType: string): [number, number] {
     const tValue: number = grm.t_value;
-    const tUnit: number = grm.t_unit;
+    const tUnit: string = grm.t_unit;
+
     let startTime: number;
     let endTime: number;
 
     if (chartType === 'horizontal_bar') {
-      startTime = this.selectedDay.setHours(0, 0, 0, 0) / 1000;
-      endTime = this.selectedDay.setHours(24, 0, 0, 0) / 1000;
+      startTime = new Date(this.selectedDay).setHours(0, 0, 0, 0) / 1000;
+      endTime = new Date(this.selectedDay).setHours(24, 0, 0, 0) / 1000;
     } else if (grm.t_now === false) {
       const date: Date = grm.t_date.value;
       const selectedDateTimestamp = date.getTime();
@@ -450,24 +401,18 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     if ($t >= startTime) return url + this.baseUrl + query;
     if (metric in customMetric.multi_query) return url + this.baseUrl + query;
-    return url = this.baseUrlBuffer + query;
+    return url + this.baseUrlBuffer + query;
   }
 
-  private fetchData(url) {
-    let headers = new HttpHeaders();
-    headers = headers.set('accept', 'application/json');
-
-    return this.httpClient.request('GET', url, { headers })
-      .pipe(timeout(10000))
-      .toPromise()
-      .then(response => {
-        return response;
-      });
+  private async fetchData(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to get data');
+    return response.json();
   }
 
   private parseData(response, rawMetricName, chartType, startTime, endTime, step) {
-    const grm = this.graphs_records[rawMetricName];
-    if (response['status'] !== 'success') {
+    const grm: GraphRecord = this.graphs_records[rawMetricName];
+    if (response.status !== 'success') {
       if (this.lang === 'fr') {
         this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus', 'Fermer', 'error');
       } else {
@@ -482,7 +427,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
 
     if (chartType === 'line') {
-      const dataCompletedToParse = this.completeResponse(response['data'].result, startTime, endTime, step);
+      const dataCompletedToParse = this.completeResponse(response.data.result, startTime, endTime, step);
       const parsedData = this.parse_response_line(dataCompletedToParse, rawMetricName);
       grm.m_chart = this.chart_builder(rawMetricName, parsedData);
 
@@ -492,7 +437,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.graphLegends.set(rawMetricName, labels);
 
       this.showLegendSelected(rawMetricName);
-
       this.stack_lines(grm);
     }
   }
@@ -510,7 +454,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     const url = this.createURL(query, metric, customMetric, startTime, timestamp);
     const response = await this.fetchData(url);
-
     this.parseData(response, rawMetricName, chartType, startTime, endTime, step);
   }
 
@@ -557,6 +500,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         completedDataset.push([missingTime, 'NaN']);
       }
     }
+    return completedDataset;
   }
 
   // Add NaN value where no value exist inside data_to_complete
@@ -722,6 +666,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     const selectedIPs = grm.m_selected_IPs.value;
     const metricLegendsToDisplay = [];
     const datasets = grm.m_chart.data.datasets;
+
     glm.forEach((legend, index) => {
       const srcIp = datasets[index].src_ip;
       const service = datasets[index].service;
@@ -734,7 +679,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         metricLegendsToDisplay.push(legend);
         grm.m_chart.setDatasetVisibility(legend.datasetIndex, true);
         legend.hidden = false;
-      } else if (false === selectedIPs.includes(srcIp)) {
+      } else if (false === selectedIPs?.includes(srcIp)) {
         grm.m_chart.setDatasetVisibility(legend.datasetIndex, false);
         legend.hidden = true;
       } else if (false === selectedServices.includes(service)) {
@@ -746,6 +691,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         legend.hidden = false;
       }
     });
+
     // this.graph_legends_to_display.set(metric, metric_legends_to_display);
     this.graphs_records[metric].m_legend.legends = metricLegendsToDisplay;
     grm.m_chart.update();
@@ -857,19 +803,36 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     let customTooltip = this.GetDefaultOrCurrent(metricData.custom_tooltip, '');
     let tooltipCallbacks = this.createTooltipCallbacks(customTooltip);
 
-    // Create basic chart config
-    return [type, {
-      ...BASIC_CONFIG,
+    const config = {
       type: type,
       data: data,
       options: {
         indexAxis: indexAxis,
+        maintainAspectRatio: false,
+        responsive: true,
         plugins: {
+          filler: {
+            propagate: false,
+          },
+          legend: {
+            display: false,
+          },
           tooltip: {
+            enabled: false,
+            position: 'followCursor',
             callbacks: tooltipCallbacks,
             external: (context) => {
               this.graphs_records[metric].m_tooltip = context.tooltip;
             },
+          },
+        },
+        elements: {
+          line: {
+            borderWidth: 2,
+            tension: 0, // Use this to curve the lines, 0 means straight line
+          },
+          bar: {
+            borderWidth: 0,
           },
         },
         interaction: {
@@ -877,8 +840,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           intersect: interactionIntersect,
         },
       },
-    }];
+    };
 
+    return [type, config];
   }
 
   chart_builder(metric: string, data: Object): Chart {
@@ -1003,9 +967,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     return !this.wrap && inputValue >= this.max;
   }
 
-  on_slide_toggle_change($event: Event, query: string): void {
-    // TODO : get event Type
-    if ($event['checked']) {
+  on_slide_toggle_change($event: MatSlideToggleChange, query: string): void {
+    if ($event.checked) {
       const tValue = this.graphs_records[query].t_value;
       const tUnit = this.graphs_records[query].t_unit;
       this.upStartTime = -1 * tValue * this.unit[tUnit];
@@ -1041,21 +1004,26 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.graphs_records[metric].m_chart.update();
   }
 
+  isLinesStackable(grm) {
+    return grm.m_chart?.data?.datasets.some(element => element.yAxisID === 'yStacked');
+  }
+
   switch_stack_lines(grm) {
     grm.m_chart.options.scales.yStacked.stacked = !grm.m_chart.options.scales.yStacked.stacked;
     this.stack_lines(grm);
   }
 
-  stack_lines(grm: string): void {
-    let isStacked: boolean = grm['m_chart'].options.scales.yStacked.stacked;
+  stack_lines(grm: GraphRecord): void {
+    let isStacked: boolean = grm.m_chart.options.scales.yStacked.stacked;
+    grm.m_stacked = isStacked;
 
-    grm['m_stacked'] = isStacked;
-    grm['m_chart'].data.datasets.forEach(element => {
+    grm.m_chart.data.datasets.forEach(element => {
       if (element.yAxisID === 'yStacked') {
         element.fill = isStacked ? 'origin' : false;
       }
     });
-    grm['m_chart'].update();
+
+    grm.m_chart.update();
   }
 
   change_theme(dark_theme: boolean): void {
