@@ -121,6 +121,8 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getUserMetrics();
     this.getMapDevices();
     this.dataSource = new MatTableDataSource<any>(this.tableDevicesInformations);
+    const search = localStorage.getItem('traffic-searchbar');
+    this.dataSource.filter = search;
   }
 
   ngOnDestroy(): void {
@@ -196,6 +198,7 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+    localStorage.setItem('traffic-searchbar', this.dataSource.filter);
   }
 
   on_row_click(row: TableDevicesInfo): void {

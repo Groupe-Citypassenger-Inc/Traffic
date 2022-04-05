@@ -14,7 +14,8 @@
         <mat-label i18n="search text|tip text for seach input in device table@@search_tip_devices_table">
           Type here to search for a specific device
         </mat-label>
-        <input matInput (keyup)="apply_filter($event)" placeholder="Ex. Citybox" #input>
+        <input matInput (keyup)="apply_filter($event)" placeholder="Ex. Citybox" #input
+          [value]="this.dataSource.filter">
       </mat-form-field>
 
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z1" matSort>
