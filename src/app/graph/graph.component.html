@@ -129,16 +129,16 @@
             </button>
 
             <!-- Stack lines -->
-            <button *ngIf="false === this.graphs_records[query]['m_stacked']" mat-button
-              (click)="switch_stack_lines(this.graphs_records[query])"
+            <button mat-button (click)="switch_stack_lines(this.graphs_records[query])"
+              *ngIf="false === this.graphs_records[query].m_stacked && isLinesStackable(this.graphs_records[query])"
               i18n-matTooltip="tooltip Stack lines@@tooltip_stacked_lines_graph" matTooltip="Stack lines"
               class="icon_button">
               <mat-icon>stacked_line_chart</mat-icon>
             </button>
 
             <!-- Unstack lines -->
-            <button *ngIf="this.graphs_records[query]['m_stacked']" mat-button
-              (click)="switch_stack_lines(this.graphs_records[query])"
+            <button mat-button (click)="switch_stack_lines(this.graphs_records[query])"
+              *ngIf="this.graphs_records[query].m_stacked && isLinesStackable(this.graphs_records[query])"
               i18n-matTooltip="tooltip Unstack lines@@tooltip_unstacked_lines_graph" matTooltip="Unstack lines"
               class="icon_button">
               <mat-icon>multiline_chart</mat-icon>
@@ -160,12 +160,12 @@
             </mat-form-field>
 
             <!-- Select a specific Service -->
-            <mat-form-field *ngIf="false === !this.graphs_records[query]['m_request_services'].length"
+            <mat-form-field *ngIf="false === !this.graphs_records[query].m_request_services.length"
               style="margin-left: 20px;" appearance="fill">
               <mat-label>Service</mat-label>
-              <mat-select [formControl]="this.graphs_records[query]['m_selected_services']" multiple
-                (selectionChange)="showLegendSelected(this.graphs_records[query], graphLegends.get(query), query)">
-                <mat-option *ngFor="let service of this.graphs_records[query]['m_request_services']" [value]="service">
+              <mat-select [formControl]="this.graphs_records[query].m_selected_services" multiple
+                (selectionChange)="showLegendSelected(query)">
+                <mat-option *ngFor="let service of this.graphs_records[query].m_request_services" [value]="service">
                   {{service}}
                 </mat-option>
               </mat-select>
