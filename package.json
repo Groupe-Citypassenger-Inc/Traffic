@@ -8,6 +8,7 @@
     "start:en": "ng serve --configuration=en --host app.citypassenger.com --port 4200",
     "start:fr:proxyA": "ng serve --configuration=fr --public-host app.citypassenger.com --port 4200 --proxy-config src/proxyAdmin.conf.json",
     "s:f:A": "ng serve --configuration=fr --public-host app.citypassenger.com --port 4500 --proxy-config src/proxyAdmin.conf.json",
+    "s:f:P": "ng serve --configuration=fr --public-host app.citypassenger.com --port 4500 --proxy-config src/proxyPreprod.conf.json",
     "s:e:A": "ng serve --configuration=en --public-host app.citypassenger.com --port 4500 --proxy-config src/proxyAdmin.conf.json",
     "build": "ng build",
     "build:fr": "ng build --configuration=fr",
