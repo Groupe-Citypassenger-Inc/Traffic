@@ -174,6 +174,10 @@
         <target>Volume</target>
       </trans-unit>
 
+      <trans-unit id="text_duration_tooltip">
+        <target>Durée</target>
+      </trans-unit>
+
       <trans-unit id="text_protocol_tooltip">
         <target>Protocole</target>
       </trans-unit>

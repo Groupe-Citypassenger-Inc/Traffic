@@ -222,7 +222,7 @@
                   <td [ngSwitch]="line.switchCase">
                     <div *ngSwitchCase="'Start_Duration'">
                       <span [ngStyle]="{ 'background-color' : line.color}" class="lineColorContainer"></span>
-                      {{line.start | timestampToDate : line.format}} ({{line.duration | transformSeconds}})
+                      {{line.start | timestampToDate : line.format}}
                     </div>
                     <div *ngSwitchCase="['Volume', 'Time', 'Number'].includes(line.switchCase) ? line.switchCase :
                       !line.switchCase">
@@ -247,6 +247,11 @@
 
                 <tr *ngFor="let afterLine of dataset.after">
                   <td [ngSwitch]="afterLine.switchCase">
+                    <div *ngSwitchCase="'Duration'">
+                      <span i18n="'duration' text | 'duration' text in chart afterLabel tooltip@@text_duration_tooltip">
+                        Duration
+                      </span> : {{afterLine.duration | transformSeconds}}
+                    </div>
                     <div *ngSwitchCase="'Protocol'">
                       <span i18n="'protocol' text | 'protocol' text in chart afterLabel tooltip@@text_protocol_tooltip">
                         Protocol

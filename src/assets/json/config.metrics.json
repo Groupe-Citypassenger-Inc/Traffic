@@ -477,6 +477,7 @@
           },
           "afterLabel": {
             "to_show": [
+              "Duration",
               "Protocol",
               "Port"
             ]

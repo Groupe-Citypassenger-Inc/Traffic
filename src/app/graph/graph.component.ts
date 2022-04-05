@@ -1088,6 +1088,9 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       switchCase: line_type,
     };
     switch (line_type) {
+      case 'Duration':
+        tooltipLine.duration = current_metric.age;
+        break;
       case 'Port':
         tooltipLine.port = current_metric.dst_port;
         break;
@@ -1099,7 +1102,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
         tooltipLine.dest = current_metric.dst_ip;
         break;
       case 'Start_Duration':
-        tooltipLine.start = (current_metric.endTime - current_metric.age) * 1000;
+        tooltipLine.start = (current_metric.end_time - current_metric.age) * 1000;
         tooltipLine.duration = current_metric.age;
         tooltipLine.format = 'LLL';
         tooltipLine.color = element.dataset.backgroundColor[element.dataIndex];
