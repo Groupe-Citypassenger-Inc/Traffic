@@ -71,8 +71,7 @@ input[type=number] {
   font: 400 14px / 20px Ubuntu, sans-serif;
   transform: translate(-50%, 0px);
   transition: all 0.1s ease 0s;
-  left: 0px;
-  top: 0px;
+  width: max-content;
   padding: 10px;
   display: inline-flex;
 }

@@ -1198,12 +1198,8 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   createFollowCursorTooltipPositioner() {
     const tooltipPlugin = Chart.registry.getPlugin('tooltip');
     tooltipPlugin.positioners.followCursor = function (elements, eventPosition) {
-      let xPos = 0;
-      if (eventPosition.x > window.screen.width / 2) {
-        xPos = eventPosition.x - (this.width / 2);
-      } else {
-        xPos = eventPosition.x + (this.width / 2);
-      }
+      const pourcentage = (eventPosition.x * 100 / window.screen.width);
+      const xPos = eventPosition.x - (pourcentage * this.width / 100);
       return {
         x: xPos,
         y: eventPosition.y,
