@@ -152,7 +152,7 @@
                 <mat-option *ngFor="let ip of this.graphs_records[query].m_request_IPs" [value]="ip">
                   <span *ngIf="ip === '0.0.0.0'"
                     i18n="'all' text ip selection | 'all' text in ip selection@@text_all_ip_selection">
-                    Grouped curves
+                    ALL
                   </span>
                   <span *ngIf="ip !== '0.0.0.0'">{{ ip }}</span>
                 </mat-option>
