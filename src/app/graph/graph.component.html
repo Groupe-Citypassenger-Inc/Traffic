@@ -147,9 +147,14 @@
             <!-- Select a specific IP -->
             <mat-form-field *ngIf="false === !this.graphs_records[query].m_request_IPs.length" appearance="fill">
               <mat-label>IP</mat-label>
-              <mat-select [formControl]="this.graphs_records[query]['m_selected_IPs']" multiple
-                (selectionChange)="showLegendSelected(this.graphs_records[query], graphLegends.get(query), query)">
-                <mat-option *ngFor="let ip of this.graphs_records[query]['m_request_IPs']" [value]="ip">{{ip}}
+              <mat-select [formControl]="this.graphs_records[query].m_selected_IPs" multiple
+                (selectionChange)="showLegendSelected(query)">
+                <mat-option *ngFor="let ip of this.graphs_records[query].m_request_IPs" [value]="ip">
+                  <span *ngIf="ip === '0.0.0.0'"
+                    i18n="'all' text ip selection | 'all' text in ip selection@@text_all_ip_selection">
+                    Grouped curves
+                  </span>
+                  <span *ngIf="ip !== '0.0.0.0'">{{ ip }}</span>
                 </mat-option>
               </mat-select>
             </mat-form-field>
