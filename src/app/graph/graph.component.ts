@@ -257,12 +257,10 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   mapObjectValueToArray(object) {
-    const newObject = {};
-    Object.keys(object).forEach((key) => {
-      if (key === 'metric') return;
-      newObject[key] = [object[key]];
-    });
-    return newObject;
+    return Object.entries(object).reduce((acc, [key, value]) => {
+      if (key !== 'metric') acc[key] = [value];
+      return acc;
+    }, {});
   }
 
   getUserMetrics(): void {
@@ -401,7 +399,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
 
     if ($t >= startTime) return url + this.baseUrl + query;
     if (metric in customMetric.multi_query) return url + this.baseUrl + query;
-    return url + this.baseUrlBuffer + query;
+    return `${url}${this.baseUrlBuffer}${query}`;
   }
 
   private async fetchData(url) {
