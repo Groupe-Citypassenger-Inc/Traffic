@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { HistoryServiceService } from './history-service.service';
 
 describe('HistoryServiceService', () => {

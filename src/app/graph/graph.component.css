@@ -10,18 +10,22 @@ input[type=number] {
 #datetime {
   width: 100%;
 }
+
 [class="0-legend"] {
   list-style: none;
   cursor: pointer;
   padding-left: 0;
 }
+
 [class="0-legend"] li {
   display: inline-block;
   padding: 0 5px;
 }
+
 [class="0-legend"] li.hidden {
   text-decoration: line-through;
 }
+
 [class="0-legend"] li span {
   border-radius: 5px;
   display: inline-block;
@@ -67,8 +71,7 @@ input[type=number] {
   font: 400 14px / 20px Ubuntu, sans-serif;
   transform: translate(-50%, 0px);
   transition: all 0.1s ease 0s;
-  left: 0px;
-  top: 0px;
+  width: max-content;
   padding: 10px;
   display: inline-flex;
 }

@@ -2,27 +2,26 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeHandlerService {
-  is_dark_mode_enabled: boolean;
+  isDarkMode: boolean;
   theme: string;
-  theme_changes: Subject<string> = new Subject<string>();
+  themeChanges: Subject<string> = new Subject<string>();
+  
   constructor() {
-    this.is_dark_mode_enabled = localStorage.getItem('theme') === 'Dark' ? true : false;
+    this.isDarkMode = localStorage.getItem('theme') === 'Dark' ? true : false;
     this.theme = localStorage.getItem('theme');
   }
 
-  update_theme(theme:string): void{
+  updateTheme(theme: string): void {
     this.theme = theme;
     localStorage.setItem('theme', theme);
-    this.is_dark_mode_enabled = localStorage.getItem('theme') === 'Dark' ? true : false;
-    this.theme_changes.next(theme);
+    this.isDarkMode = localStorage.getItem('theme') === 'Dark' ? true : false;
+    this.themeChanges.next(theme);
   }
 
-  get_theme(): string{
+  getTheme(): string {
     return localStorage.getItem('theme');
   }
 }
-
-

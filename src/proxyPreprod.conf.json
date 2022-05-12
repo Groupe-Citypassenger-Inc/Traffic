@@ -1,0 +1,26 @@
+{
+  "/ws": {
+    "target": "https://preprod.citypassenger.com",
+    "secure": false
+  },
+  "/prometheus": {
+    "target": "https://preprod.citypassenger.com",
+    "secure": false
+  },
+  "/api": {
+    "target": "https://preprod.citypassenger.com",
+    "secure": false
+  },
+  "/2019": {
+    "target": "https://preprod.citypassenger.com",
+    "secure": false
+  },
+  "/swagger": {
+    "target": "https://preprod.citypassenger.com",
+    "secure": false
+  },
+  "/AppFiltering": {
+    "target": "https://preprod.citypassenger.com",
+    "secure": false
+  }
+}

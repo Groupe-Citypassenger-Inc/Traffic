@@ -24,8 +24,8 @@
       </trans-unit>
 
       <trans-unit id="description_graph_box" datatype="html">
-        <source>You are currently viewing the data of  <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{box_selected}}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt; "/> device.</source>
-        <target>Vous êtes en train de consulter les données du boîtier <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{box_selected}}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt; "/>  .</target>
+        <source>You are currently viewing the data of <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{boxSelected}}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt; "/> device.</source>
+        <target>Vous êtes en train de consulter les données du boîtier <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{boxSelected}}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt; "/>.</target>
       </trans-unit>
 
       <trans-unit id="hour_unit_time_selection_graph">
@@ -73,6 +73,11 @@
       <trans-unit id="text_until_date_selection_time_selection_graph" datatype="html">
         <source>Until</source>
         <target>jusqu'au</target>
+      </trans-unit>
+      
+      <trans-unit id="text_all_ip_selection" datatype="html">
+        <source>ALL</source>
+        <target>TOUT</target>
       </trans-unit>
       
       <trans-unit id="text_choose_a_date_graph">
@@ -172,6 +177,10 @@
 
       <trans-unit id="text_volume_tooltip">
         <target>Volume</target>
+      </trans-unit>
+
+      <trans-unit id="text_duration_tooltip">
+        <target>Durée</target>
       </trans-unit>
 
       <trans-unit id="text_protocol_tooltip">

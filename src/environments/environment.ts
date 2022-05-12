@@ -5,15 +5,15 @@
 export const environment = {
   production: false,
   appVersion: require('../../package.json').version + '-dev',
-  prometheus_base_api_url:'https://XXXX.citypassenger.com:4443',
-  city_url_api: 'http://app.citypassenger.com:4200'
+  prometheusBaseApiUrl: 'https://XXXX.citypassenger.com:4443',
+  cityUrlApi: 'http://app.citypassenger.com:4200',
 };
 /*
 export const environment = {
   production: false,
   appVersion: require('../../package.json').version + '-dev',
-  prometheus_base_api_url:'http://demo.robustperception.io:9090',
-  city_url_api: 'https://preprod.citypassenger.com'
+  prometheusBaseApiUrl:'http://demo.robustperception.io:9090',
+  cityUrlApi: 'https://preprod.citypassenger.com'
 };*/
 
 /*

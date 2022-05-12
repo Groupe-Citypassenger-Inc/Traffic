@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { GuardService } from './guard.service';
 
 describe('GuardService', () => {

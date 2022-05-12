@@ -8,6 +8,7 @@
     "start:en": "ng serve --configuration=en --host app.citypassenger.com --port 4200",
     "start:fr:proxyA": "ng serve --configuration=fr --public-host app.citypassenger.com --port 4200 --proxy-config src/proxyAdmin.conf.json",
     "s:f:A": "ng serve --configuration=fr --public-host app.citypassenger.com --port 4500 --proxy-config src/proxyAdmin.conf.json",
+    "s:f:P": "ng serve --configuration=fr --public-host app.citypassenger.com --port 4500 --proxy-config src/proxyPreprod.conf.json",
     "s:e:A": "ng serve --configuration=en --public-host app.citypassenger.com --port 4500 --proxy-config src/proxyAdmin.conf.json",
     "build": "ng build",
     "build:fr": "ng build --configuration=fr",
@@ -42,6 +43,11 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.2.4",
+    "@angular-eslint/builder": "13.1.0",
+    "@angular-eslint/eslint-plugin": "13.1.0",
+    "@angular-eslint/eslint-plugin-template": "13.1.0",
+    "@angular-eslint/schematics": "13.1.0",
+    "@angular-eslint/template-parser": "13.1.0",
     "@angular/cli": "^13.2.4",
     "@angular/compiler-cli": "^13.2.3",
     "@angular/localize": "^13.2.3",
@@ -49,7 +55,13 @@
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.19.9",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "codelyzer": "^6.0.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-plugin-import": "^2.25.2",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "^6.3.4",
@@ -58,7 +70,6 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "protractor": "~7.0.0",
-    "ts-node": "~8.3.0",
-    "tslint": "~6.1.0"
+    "ts-node": "~8.3.0"
   }
 }

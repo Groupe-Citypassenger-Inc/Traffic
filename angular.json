@@ -25,7 +25,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies":[
+            "allowedCommonJsDependencies": [
               "chart.js"
             ],
             "outputPath": "dist/traffic/",
@@ -81,10 +81,14 @@
               ]
             },
             "fr": {
-              "localize": ["fr"]
+              "localize": [
+                "fr"
+              ]
             },
             "en": {
-              "localize": ["en"]
+              "localize": [
+                "en"
+              ]
             }
           },
           "defaultConfiguration": ""
@@ -141,6 +145,15 @@
               "devServerTarget": "traffic:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
@@ -150,5 +163,8 @@
     "@schematics/angular:component": {
       "styleext": "scss"
     }
+  },
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }
