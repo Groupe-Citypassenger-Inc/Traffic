@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
     }
     let username = encodeURIComponent(form.controls.username.value);
     let password = encodeURIComponent(form.controls.password.value);
-    let urlLogin = '/ws/User/Login?login=' + username + '&password=' + password;
+    let urlLogin = `/ws/User/Login?login=${username}&password=${password}`;
     this.auth.login(urlLogin, this.returnUrl);
   }
 }

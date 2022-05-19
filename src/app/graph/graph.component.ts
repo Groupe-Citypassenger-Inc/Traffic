@@ -199,8 +199,8 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       this.router.navigate(['/select']);
     }
 
-    this.baseUrl = '/' + this.password + '/prometheus/' + this.group_name + '/api/v1';
-    this.baseUrlBuffer = '/' + this.password + '/prometheus/' + this.group_name + '/api/v1';
+    this.baseUrl = `/${this.password}/prometheus/${this.group_name}/api/v1`;
+    this.baseUrlBuffer = `/${this.password}/prometheus/${this.group_name}/api/v1`;
     this.prometheusApiUrl = this.prometheusApiUrl.replace('XXXX', this.groupRouter);
 
     this.get_records(this.queryList);
@@ -265,8 +265,8 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
 
   getUserMetrics(): void {
     const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
-    let userConfigBaseUrl = '/traffic/' + this.lang + '/assets/json/';
-    let userConfigUrl = userConfigBaseUrl + this.userInformation.username + '.json.nousNeVoulousPlusDeConfigPerso';
+    let userConfigBaseUrl = `/traffic/${this.lang}/assets/json/`;
+    let userConfigUrl = `${userConfigBaseUrl}${this.userInformation.username}.json.nousNeVoulousPlusDeConfigPerso`;
 
     this.httpClient.get<any>(userConfigUrl, { headers })
       .pipe(
@@ -319,7 +319,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
   transform_metric_query(metricName: string, box: string): string {
     let query: string = metricName;
     if (box !== null) {
-      query = metricName + '%7Bjob=~%22' + box + '.*%22%7D';
+      query = `${metricName}%7Bjob=~%22${box}.*%22%7D`;
     }
     const scrapeInterval = 2; //scrape interval => 2min
     const range = scrapeInterval * 4; //safe 
@@ -327,12 +327,13 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     if (this.metricsConfig.includes(metricName) === false) return query;
 
     const type = this.metricsConfig[metricName]?.type; // TODO ? should help delete L-2
+    const promql = this.metricsConfig[metricName].promql;
     switch (type) {
       case 'range_vectors':
-        return this.metricsConfig[metricName].promql + '(' + query + '[' + range + 'm])';
+        return `${promql}(${query}[${range}m])`;
       case 'instant_vectors':
       case 'multi_query':
-        return this.metricsConfig[metricName].promql + '(' + query + ')';
+        return `${promql}(${query})`;
     }
     return query;
   }
@@ -361,16 +362,18 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     return [startTime, endTime];
   }
 
-  private getMetricInfos(customMetric, metric) {
+  private getMetricInfos(customMetric, metricKey) {
     let chartType = '';
     let query = '';
     Object.keys(customMetric).forEach(vector_type => {
-      if (metric in customMetric[vector_type]) {
-        chartType = customMetric[vector_type][metric].chart_type;
-        this.graphs_records[metric].m_chart_date_picker = customMetric[vector_type][metric].chart_date_picker;
-        query = '/query_range?query=' + customMetric[vector_type][metric].query;
+      const metrics = customMetric[vector_type];
+      if (metricKey in metrics) {
+        const metricValue = metrics[metricKey];
+        chartType = metricValue.chart_type;
+        this.graphs_records[metricKey].m_chart_date_picker = metricValue.chart_date_picker;
+        query = `/query_range?query=${metricValue.query}`;
         if (this.boxSelected !== null) {
-          let boxFilter: string = 'job=~"' + this.boxSelected + '.*"';
+          let boxFilter = `job=~"${this.boxSelected}.*"`;
           query = query.split('<box_filter>').join(boxFilter);
         } else {
           query = query.split('<box_filter>').join('');
@@ -386,9 +389,9 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       if (metric.includes('_raw')) {
         metric = metric.replace('_raw', '');
       }
-      query = '/query_range?query=' + metric + '&start=' + startTime + '&end=' + endTime + '&step=' + step;
+      query = `/query_range?query=${metric}&start=${startTime}&end=${endTime}&step=${step}`;
     } else {
-      query = query + '&start=' + startTime + '&end=' + endTime + '&step=' + step;
+      query = `${query}&start=${startTime}&end=${endTime}&step=${step}`;
     }
     return [query, metric];
   }
@@ -584,8 +587,8 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
         data: metricValueList,
         yAxisID: yAxisID,
         pointRadius: 1, // Graph dot size : 0 -> no dot
-        borderColor: '#' + this.crc32(label), // Line color
-        backgroundColor: '#' + this.crc32(label), // Legend color
+        borderColor: `#${this.crc32(label)}`, // Line color
+        backgroundColor: `#${this.crc32(label)}`, // Legend color
         src_ip: srcIp,
         service: service,
       };
@@ -855,7 +858,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
 
     let canvas = <HTMLCanvasElement>document.getElementById(metric);
     if (canvas === null) {
-      console.warn("No canvas with id : '" + metric + "' found on the page!");
+      console.warn(`No canvas with id : '${metric}' found on the page!`);
       console.warn('Have you changed the value of metric?');
       return;
     }
@@ -919,6 +922,12 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     this.update_url();
   }
 
+  getTextNotificationAndLang(): [string, string] {
+    if (this.lang === 'fr') 
+      return ['La date choisie ne doit pas se situer dans le futur. Date sélectionnée :', 'fr-FR'];
+    return ['The selected date must not be in the future. Selected date :', 'en-US'];
+  }
+
   date_changes(date: Date, query: string): void {
     this.defaultDate = new Date();
     let currentTimestamp = this.defaultDate.getTime();
@@ -935,23 +944,12 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
       this.endTime = 0;
       this.upStartTime = -1 * tValue * this.unit[tUnit];
       this.formGroup.controls[query].setValue(this.defaultDate);
-      if (this.lang === 'fr') {
-        this.notification.show_notification(
-          'La date choisie ne doit pas se situer dans le futur. Date sélectionnée : '
-          + date.toLocaleDateString('fr-FR') + ' '
-          + date.toLocaleTimeString('fr-FR'),
-          'Ok',
-          'error',
-        );
-      } else {
-        this.notification.show_notification(
-          'The selected date must not be in the future. Selected date : '
-          + date.toLocaleDateString('en-US') + ' '
-          + date.toLocaleTimeString('en-US'),
-          'Ok',
-          'error',
-        );
-      }
+      const [notifText, notifLang] = this.getTextNotificationAndLang();
+      this.notification.show_notification(
+        `${notifText} ${date.toLocaleDateString(notifLang)} ${date.toLocaleTimeString(notifLang)}`,
+        'Ok',
+        'error',
+      );
     }
     this.regenerate(query);
     this.update_url();
@@ -1040,34 +1038,25 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     this.update_url();
   }
 
+  getUrl(metric, isLastMetricToAdd): string {
+    const metricValue = this.graphs_records[metric];
+    const urlStart = `/graph/${this.group_name}/${this.groupRouter}/${this.password}`;
+    const urlBoxSelect = this.boxSelected === null ? '' : `/${this.boxSelected}`;
+    const urlParams = `metric=${metric}&value=${metricValue.t_value}&unit=${metricValue.t_unit}
+      &now=${metricValue.t_now}&date=${metricValue.t_date.value.toISOString()}`;
+    const urlEnd = isLastMetricToAdd ? '' : '&';
+    return `${urlStart}${urlBoxSelect}/metric?${urlParams}${urlEnd}`;
+  }
+
   update_url(): void {
     if (Object.keys(this.graphs_records).length === 0) {
       this.router.navigateByUrl('/select');
     } else {
-      let url: string;
-      if (this.boxSelected === null) {
-        url = '/graph/' + this.group_name + '/' + this.groupRouter + '/' + this.password + '/metric?';
-      } else {
-        url = '/graph/' + this.group_name + '/' + this.groupRouter + '/' + this.password + '/' + this.boxSelected + '/metric?';
-      }
-
       Object.keys(this.graphs_records).forEach((metric, index) => {
-        if (Object.keys(this.graphs_records).length - 1 === index) {
-          url = url + 'metric=' + metric
-            + '&value=' + this.graphs_records[metric].t_value
-            + '&unit=' + this.graphs_records[metric].t_unit
-            + '&now=' + this.graphs_records[metric].t_now
-            + '&date=' + this.graphs_records[metric].t_date.value.toISOString();
-        } else {
-          url = url + 'metric=' + metric
-            + '&value=' + this.graphs_records[metric].t_value
-            + '&unit=' + this.graphs_records[metric].t_unit
-            + '&now=' + this.graphs_records[metric].t_now
-            + '&date=' + this.graphs_records[metric].t_date.value.toISOString() + '&';
-        }
+        const isLastMetricToAdd = Object.keys(this.graphs_records).length - 1 === index;
+        const url = this.getUrl(metric, isLastMetricToAdd);
+        this.router.navigateByUrl(url);
       });
-
-      this.router.navigateByUrl(url);
     }
   }
 
@@ -1124,7 +1113,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
         tooltipLine.date = element.label;
         break;
       default:
-        console.error(line_type + " doesn't match any case, you can visit ");
+        console.error(`${line_type} doesn't match any case, you can visit`);
         break;
     }
     return tooltipLine;
@@ -1239,7 +1228,7 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     let yAxisMin = this.GetDefaultOrCurrent(metric_data.y.min, 0);
     let yAxisScales = this.GetDefaultOrCurrent(metric_data.y_axis_scales, []);
     if (UNIT_INFORMATION.get(yAxisUnit) === undefined) {
-      console.log(yAxisUnit + ' has no match in ' + UNIT_INFORMATION);
+      console.log(`${yAxisUnit} has no match in ${UNIT_INFORMATION}`);
       console.log("Either the unit is misspelled or you need to add the unit in 'data.constants.ts'.");
       yAxisUnit = 'unknownName';
     }
