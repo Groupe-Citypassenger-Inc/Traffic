@@ -165,12 +165,12 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     moment.locale(this.lang);
   }
 
+  getIsMobile(): boolean {
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+  }
+
   ngOnInit(): void {
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-      this.isMobile = true;
-    } else {
-      this.isMobile = false;
-    }
+    this.isMobile = this.getIsMobile();
     this.userInformation = this.auth.userInfo;
     this.getUserMetrics();
 
