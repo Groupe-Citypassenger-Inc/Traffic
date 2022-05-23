@@ -1038,25 +1038,36 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
     this.update_url();
   }
 
-  getUrl(metric, isLastMetricToAdd): string {
+  private getGraphsUrlSearchParams(metric) {
     const metricValue = this.graphs_records[metric];
+    const searchParams = new URLSearchParams();
+
+    searchParams.append('metric', metric);
+    searchParams.append('value', metricValue.t_value.toString());
+    searchParams.append('unit', metricValue.t_unit);
+    searchParams.append('now', metricValue.t_now.toString());
+    searchParams.append('date', metricValue.t_date.value.toISOString());
+
+    return searchParams.toString();
+  }
+  
+  getUrl(): string {
     const urlStart = `/graph/${this.group_name}/${this.groupRouter}/${this.password}`;
     const urlBoxSelect = this.boxSelected === null ? '' : `/${this.boxSelected}`;
-    const urlParams = `metric=${metric}&value=${metricValue.t_value}&unit=${metricValue.t_unit}
-      &now=${metricValue.t_now}&date=${metricValue.t_date.value.toISOString()}`;
-    const urlEnd = isLastMetricToAdd ? '' : '&';
-    return `${urlStart}${urlBoxSelect}/metric?${urlParams}${urlEnd}`;
+
+    const searchParams = Object.keys(this.graphs_records).reduce((searchP, currentMettric) => {
+      return `${searchP}${this.getGraphsUrlSearchParams(currentMettric)}&`;
+    }, '');
+
+    return `${urlStart}${urlBoxSelect}/metric?${searchParams}`;
   }
 
   update_url(): void {
     if (Object.keys(this.graphs_records).length === 0) {
       this.router.navigateByUrl('/select');
     } else {
-      Object.keys(this.graphs_records).forEach((metric, index) => {
-        const isLastMetricToAdd = Object.keys(this.graphs_records).length - 1 === index;
-        const url = this.getUrl(metric, isLastMetricToAdd);
-        this.router.navigateByUrl(url);
-      });
+      const url = this.getUrl();
+      this.router.navigateByUrl(url);
     }
   }
 

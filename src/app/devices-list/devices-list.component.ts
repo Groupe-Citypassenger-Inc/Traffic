@@ -354,6 +354,18 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.devicesInformations[groupName].group_metric_backup.filter(unit => unit.indexOf(val) > -1);
   }
 
+  getUrlSearchParams(metric, dateString) {
+    const searchParams = new URLSearchParams();
+
+    searchParams.append('metric', metric);
+    searchParams.append('value', '1');
+    searchParams.append('unit', 'hour');
+    searchParams.append('now', 'true');
+    searchParams.append('date', dateString);
+
+    return searchParams.toString();
+  }
+
   visualize(groupName: string, boxName?: string): void {
     const devicesInformations: DevicesInformations = this.devicesInformations;
     const graphInformations: Array<any> = [];
@@ -388,10 +400,10 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const date = new Date();
     const dateString = date.toISOString();
-    metricChecked.forEach((metric, index) => {
+    metricChecked.forEach((metric) => {
       graphInformations.push(metric);
-      redirectUrl += `metric=${metric}&value=1&unit=hour&now=true&date=${dateString}`;
-      if (metricChecked.length - 1 !== index) redirectUrl += '&';
+      const searchParams = this.getUrlSearchParams(metric, dateString);
+      redirectUrl += searchParams;
     });
     this.router.navigateByUrl(redirectUrl);
   }
