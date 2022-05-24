@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { NotificationServiceService } from './notification-service.service';
 
 describe('NotificationServiceService', () => {

@@ -1,0 +1,26 @@
+{
+  "/ws": {
+    "target": "https://admin.citypassenger.com",
+    "secure": false
+  },
+  "/prometheus": {
+    "target": "https://admin.citypassenger.com",
+    "secure": false
+  },
+  "/api": {
+    "target": "https://admin.citypassenger.com",
+    "secure": false
+  },
+  "/2019": {
+    "target": "https://admin.citypassenger.com",
+    "secure": false
+  },
+  "/swagger": {
+    "target": "https://admin.citypassenger.com",
+    "secure": false
+  },
+  "/AppFiltering": {
+    "target": "https://admin.citypassenger.com",
+    "secure": false
+  }
+}

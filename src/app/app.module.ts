@@ -3,19 +3,16 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { GraphComponent } from './graph/graph.component';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { SelectionModel } from '@angular/cdk/collections';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
-import { OverlayModule} from '@angular/cdk/overlay';
-import { throwError, TimeoutError } from 'rxjs';
-import { catchError, timeout, map } from 'rxjs/operators';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule, MatFormFieldControl } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -47,7 +44,7 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
 import { TransformSecondsPipe } from './pipes/transform-seconds.pipe'
 import { AddUnitToValuePipe } from './pipes/add-unit-to-value.pipe'
 import { TimestampToDatePipe } from './pipes/timestamp-to-date.pipe'
-import { ShowDetailsPipe } from './pipes/show-details.pipe'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -60,8 +57,7 @@ import { ShowDetailsPipe } from './pipes/show-details.pipe'
     DevicesListComponent,
     TransformSecondsPipe,
     AddUnitToValuePipe,
-    TimestampToDatePipe,
-    ShowDetailsPipe
+    TimestampToDatePipe
   ],
   imports: [
     BrowserModule,
@@ -97,11 +93,11 @@ import { ShowDetailsPipe } from './pipes/show-details.pipe'
     AppRoutingModule,
     OverlayModule,
   ],
-  exports:[
+  exports: [
     MatExpansionModule
   ],
   providers: [
-    { provide:HTTP_INTERCEPTORS, useClass:InterceptorService, multi:true },
+    { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
     AuthService,
     GuardService,
     GraphMethodsService

@@ -4,7 +4,11 @@
       "average_pfstats_latence_1h": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "avg_over_time(pf_stats{data_type='avg_latency' ,<box_filter>}[1h])",
         "description": "Latence moyenne des applications supervisées",
         "x": {
@@ -22,10 +26,18 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": [""],
-        "metric_legend": ["-SERVICE- [-SRC_IP-] : -JOB-"],
+        "metric_separator": [
+          ""
+        ],
+        "metric_legend": [
+          "-SERVICE- [-SRC_IP-] : -JOB-"
+        ],
         "legend_text_to_replace": [
-          { "-SERVICE-": "service", "-SRC_IP-": "src_ip", "-JOB-": "job" }
+          {
+            "-SERVICE-": "service",
+            "-SRC_IP-": "src_ip",
+            "-JOB-": "job"
+          }
         ],
         "y_axis_scales": {
           "yNotStacked": {
@@ -41,18 +53,25 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Time"]
+            "to_show": [
+              "Time"
+            ]
           }
         }
       },
-
       "sum_pfstats_ccnxcount_1h": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "sum_over_time(pf_stats{data_type='ccnx_count' ,<box_filter>}[1h])",
         "description": "Nombre de connexions sur les applications supervisées (lissage 1h)",
         "x": {
@@ -70,10 +89,17 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": [""],
-        "metric_legend": ["-SERVICE- [-SRC_IP-]"],
+        "metric_separator": [
+          ""
+        ],
+        "metric_legend": [
+          "-SERVICE- [-SRC_IP-]"
+        ],
         "legend_text_to_replace": [
-          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+          {
+            "-SERVICE-": "service",
+            "-SRC_IP-": "src_ip"
+          }
         ],
         "y_axis_scales": {
           "yNotStacked": {
@@ -89,18 +115,25 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Number"]
+            "to_show": [
+              "Number"
+            ]
           }
         }
       },
-
       "sum_pfstats_restransmit_1h": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "sum_over_time(pf_stats{data_type='retransmit' ,<box_filter>}[1h])",
         "description": "Nombre de retransmissions sur les applications supervisées (lissage 1h)",
         "x": {
@@ -118,10 +151,17 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": [""],
-        "metric_legend": ["-SERVICE- [-SRC_IP-]"],
+        "metric_separator": [
+          ""
+        ],
+        "metric_legend": [
+          "-SERVICE- [-SRC_IP-]"
+        ],
         "legend_text_to_replace": [
-          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+          {
+            "-SERVICE-": "service",
+            "-SRC_IP-": "src_ip"
+          }
         ],
         "y_axis_scales": {
           "yNotStacked": {
@@ -137,18 +177,25 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Number"]
+            "to_show": [
+              "Number"
+            ]
           }
         }
       },
-
       "pfstats_up": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "pf_stats{data_type=~'bytes_UP' ,<box_filter>}",
         "description": "Consommation bande passante (upload)",
         "x": {
@@ -166,10 +213,17 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": [""],
-        "metric_legend": ["-SERVICE- [-SRC_IP-]"],
+        "metric_separator": [
+          ""
+        ],
+        "metric_legend": [
+          "-SERVICE- [-SRC_IP-]"
+        ],
         "legend_text_to_replace": [
-          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+          {
+            "-SERVICE-": "service",
+            "-SRC_IP-": "src_ip"
+          }
         ],
         "y_axis_scales": {
           "yNotStacked": {
@@ -185,17 +239,25 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Volume"]
+            "to_show": [
+              "Volume"
+            ]
           }
         }
       },
       "pfstats_down": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "pf_stats{data_type=~'bytes_DOWN' ,<box_filter>}",
         "description": "Consommation bande passante (download)",
         "x": {
@@ -213,10 +275,17 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": [""],
-        "metric_legend": ["-SERVICE- [-SRC_IP-]"],
+        "metric_separator": [
+          ""
+        ],
+        "metric_legend": [
+          "-SERVICE- [-SRC_IP-]"
+        ],
         "legend_text_to_replace": [
-          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+          {
+            "-SERVICE-": "service",
+            "-SRC_IP-": "src_ip"
+          }
         ],
         "y_axis_scales": {
           "yNotStacked": {
@@ -232,17 +301,25 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Volume"]
+            "to_show": [
+              "Volume"
+            ]
           }
         }
       },
       "output_wan": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "increase(output{wan=~'.%2B' ,<box_filter>}[10m])",
         "description": "Wan output",
         "x": {
@@ -260,9 +337,18 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": [""],
-        "metric_legend": ["-PORT- [-WAN-]"],
-        "legend_text_to_replace": [{ "-PORT-": "port", "-WAN-": "wan" }],
+        "metric_separator": [
+          ""
+        ],
+        "metric_legend": [
+          "-PORT- [-WAN-]"
+        ],
+        "legend_text_to_replace": [
+          {
+            "-PORT-": "port",
+            "-WAN-": "wan"
+          }
+        ],
         "y_axis_scales": {
           "yNotStacked": {
             "stacked": false,
@@ -277,17 +363,25 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Volume"]
+            "to_show": [
+              "Volume"
+            ]
           }
         }
       },
       "input_wan": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "increase(input{wan=~'.%2B' ,<box_filter>}[10m])",
         "description": "Wan input",
         "x": {
@@ -305,9 +399,18 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": [""],
-        "metric_legend": ["-PORT- [-WAN-]"],
-        "legend_text_to_replace": [{ "-PORT-": "port", "-WAN-": "wan" }],
+        "metric_separator": [
+          ""
+        ],
+        "metric_legend": [
+          "-PORT- [-WAN-]"
+        ],
+        "legend_text_to_replace": [
+          {
+            "-PORT-": "port",
+            "-WAN-": "wan"
+          }
+        ],
         "y_axis_scales": {
           "yNotStacked": {
             "stacked": false,
@@ -322,18 +425,25 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Volume"]
+            "to_show": [
+              "Volume"
+            ]
           }
         }
       },
-
       "largest_connection": {
         "chart_type": "horizontal_bar",
         "chart_date_picker": "day_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "outlyers_download{<box_filter>}",
         "description": "Largest connection of the day",
         "legend_title": "IP source",
@@ -356,16 +466,26 @@
         "number_of_element_to_show": 10,
         "custom_tooltip": {
           "title": {
-            "to_show": ["Src_To_Dest"]
+            "to_show": [
+              "Src_To_Dest"
+            ]
           },
           "label": {
-            "to_show": ["Start_Duration"]
+            "to_show": [
+              "Start_Duration"
+            ]
           },
           "afterLabel": {
-            "to_show": ["Protocol", "Port"]
+            "to_show": [
+              "Duration",
+              "Protocol",
+              "Port"
+            ]
           },
           "footer": {
-            "to_show": ["Volume"]
+            "to_show": [
+              "Volume"
+            ]
           }
         }
       }
@@ -375,7 +495,11 @@
       "pfstats_down_with_input_wan_15m": {
         "chart_type": "line",
         "chart_date_picker": "range_type",
-        "role": ["Support", "Admin", "User"],
+        "role": [
+          "Support",
+          "Admin",
+          "User"
+        ],
         "query": "pf_stats{data_type=~'bytes_DOWN', src_ip=~'0.0.0.0' ,<box_filter>}[15m] or sum(increase(input{wan=~'.%2B' ,<box_filter>}[15m]))",
         "description": "Consommation de bande passante des services par rapport à l'ensemble de la consommation",
         "y": {
@@ -387,14 +511,20 @@
           "min": 0,
           "step": ""
         },
-        "metric_separator": ["", "bytes_DOWN"],
+        "metric_separator": [
+          "",
+          "bytes_DOWN"
+        ],
         "metric_legend": [
           "Somme des downloads des wans over the last 15 minutes",
           "-SERVICE- [-SRC_IP-]"
         ],
         "legend_text_to_replace": [
           {},
-          { "-SERVICE-": "service", "-SRC_IP-": "src_ip" }
+          {
+            "-SERVICE-": "service",
+            "-SRC_IP-": "src_ip"
+          }
         ],
         "y_axis_scales": {
           "yNotStacked": {
@@ -410,16 +540,19 @@
         "custom_tooltip": {
           "title": {
             "do_once": true,
-            "to_show": ["FullDate"]
+            "to_show": [
+              "FullDate"
+            ]
           },
           "label": {
-            "to_show": ["Volume"]
+            "to_show": [
+              "Volume"
+            ]
           }
         }
       }
     }
   },
-
   "": {
     "x": {
       "unit": {
@@ -437,7 +570,6 @@
     "promql": "",
     "tension": 0.5
   },
-
   "example_simple": {
     "x": {
       "unit": "___",
@@ -454,7 +586,11 @@
     "tension": 1
   },
   "example_multi_query": {
-    "role": ["Support", "Admin", "User"],
+    "role": [
+      "Support",
+      "Admin",
+      "User"
+    ],
     "query": "promql query, use 'A(data_type=~'bytes_DOWN') or B()' to combine query A & B on the same Chart",
     "description": "example of multi query structure",
     "x": {
@@ -477,7 +613,9 @@
     ],
     "legendReplace": [
       "to replace use Object, [key = text to replace inside newLegend | value = key of oldLegend to acces the value we need]",
-      { "-AAAAA-": "aaaaa" },
+      {
+        "-AAAAA-": "aaaaa"
+      },
       {}
     ],
     "yAxis": {

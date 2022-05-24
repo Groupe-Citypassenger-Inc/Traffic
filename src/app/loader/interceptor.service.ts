@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { LoaderService } from './loader.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InterceptorService implements HttpInterceptor {
 
@@ -17,8 +17,8 @@ export class InterceptorService implements HttpInterceptor {
       finalize(
         () => {
           this.loaderService.isLoading.next(false);
-        }
-      )
+        },
+      ),
     );
   }
 }
