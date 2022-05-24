@@ -147,7 +147,7 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
           this.devicesInformations = this.parseMapDevices(response);
           this.refresh_table();
         } else {
-          throw new Error('Can get map device. Requested URI : ' + mapDevicesApiUrl);
+          throw new Error(`Can get map device. Requested URI : ${mapDevicesApiUrl}`);
         }
       });
   }
@@ -218,8 +218,8 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getUserMetrics(): void {
     const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
-    const userConfigBaseUrl = '/traffic/' + this.lang + '/assets/json/';
-    const userConfigUrl = userConfigBaseUrl + this.userInformation.username + '.json.nousNeVoulousPlusDeConfigPerso';
+    const userConfigBaseUrl = `/traffic/${this.lang}/assets/json/`;
+    const userConfigUrl = `${userConfigBaseUrl}${this.userInformation.username}.json.nousNeVoulousPlusDeConfigPerso`;
 
     this.httpClient
       .get<any>(userConfigUrl, { headers })
@@ -235,6 +235,12 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+  getTextNotification(): string{
+    if (this.lang === 'fr') 
+      return 'Une erreur est survenue lors de la communication avec prometheus, veuillez réessayer plus tard.';
+    return 'An error occurred while communicating with prometheus, please try again later.';
+  }
+
   getMetricList(row: TableDevicesInfo): void {
     const groupName: string = row.group_name;
     const boxName: string = row.box_name;
@@ -243,7 +249,7 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const boxPassword: string = this.devicesInformations[groupName][boxName].box_password;
     const citynetUrl: string = this.devicesInformations[groupName].citynet_url;
-    prometheusApiUrl = citynetUrl + '/' + boxPassword + '/prometheus/' + groupName + '/api/v1/label/__name__/values';
+    prometheusApiUrl = `${citynetUrl}/${boxPassword}/prometheus/${groupName}/api/v1/label/__name__/values`;
 
     let headers = new HttpHeaders();
     headers = headers.set('accept', 'application/json');
@@ -265,11 +271,7 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.devicesInformations[row.group_name].form_disabled = false;
       }, err => {
         this.devicesInformations[row.group_name].form_disabled = true;
-        if (this.lang === 'fr') {
-          this.notification.show_notification('Une erreur est survenue lors de la communication avec prometheus, veuillez réessayer plus tard.', 'Fermer', 'error');
-        } else {
-          this.notification.show_notification('An error occurred while communicating with prometheus, please try again later.', 'Close', 'error');
-        }
+        this.notification.show_notification(this.getTextNotification(), 'Fermer', 'error');
         console.error(err);
       });
   }
@@ -302,8 +304,8 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getBoxPassword(row: TableDevicesInfo): void {
     const groupId: number = this.devicesInformations[row.group_name].group_id;
-    const groupName: string = row.group_name;
-    const groupInfoApiUrl: string = '/ws/Group/Info/' + groupId;
+    const groupName = row.group_name;
+    const groupInfoApiUrl = `/ws/Group/Info/${groupId}`;
 
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.set('accept', 'application/json');
@@ -312,7 +314,7 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
       .toPromise()
       .then((response: { group /*TODO */ }) => {
         if (!('group' in response)) {
-          throw new Error('Can get group info Requested URI : ' + groupInfoApiUrl);
+          throw new Error(`Can get group info Requested URI : ${groupInfoApiUrl}`);
         }
         Object.keys(response.group.ienaDevices).forEach(boxName => {
           this.devicesInformations[groupName][boxName].box_password =
@@ -352,6 +354,17 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.devicesInformations[groupName].group_metric_backup.filter(unit => unit.indexOf(val) > -1);
   }
 
+  getUrlSearchParams(metric, dateString) {
+    const searchParams = new URLSearchParams({
+      metric: metric,
+      value: '1',
+      unit: 'hour',
+      now: 'true',
+      date: dateString,
+    });
+    return searchParams.toString();
+  }
+
   visualize(groupName: string, boxName?: string): void {
     const devicesInformations: DevicesInformations = this.devicesInformations;
     const graphInformations: Array<any> = [];
@@ -359,26 +372,26 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
     let metricChecked: Array<string>;
     const router: string = devicesInformations[groupName].router;
     const citynetUrl: string = devicesInformations[groupName].citynet_url;
-    let redirectUrl: string = '/graph/' + groupName + '/' + router + '/';
+    let redirectUrl = `/graph/${groupName}/${router}/`;
 
     if (boxName === undefined) {
       const key: string = Object.keys(devicesInformations[groupName]).pop();
       password = devicesInformations[groupName][key].box_password;
       metricChecked = devicesInformations[groupName].form_control.value;
       graphInformations.push([groupName, citynetUrl]);
-      redirectUrl = redirectUrl + password + '/' + 'metric?';
+      redirectUrl += `${password}/metric?`;
     } else {
       password = devicesInformations[groupName][boxName].box_password;
       metricChecked = devicesInformations[groupName][boxName].form_control.value;
       graphInformations.push([groupName, citynetUrl, boxName]);
-      redirectUrl = redirectUrl + password + '/' + boxName + '/metric?';
+      redirectUrl += `${password}/${boxName}/metric?`;
     }
 
     if (this.userInformation.role === 'Support' || this.userInformation.role === 'Admin') {
       metricChecked.forEach((metricName, index) => {
         if (metricName in this.metricsConfig) {
           if (this.metricsConfig[metricName].promql !== '') {
-            metricChecked.splice(index + 1, 0, metricName + '_raw');
+            metricChecked.splice(index + 1, 0, `${metricName}_raw`);
           }
         }
       });
@@ -386,13 +399,10 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const date = new Date();
     const dateString = date.toISOString();
-    metricChecked.forEach((metric, index) => {
+    metricChecked.forEach((metric) => {
       graphInformations.push(metric);
-      if (metricChecked.length - 1 === index) {
-        redirectUrl = redirectUrl + 'metric=' + metric + '&value=1&unit=hour&now=true&date=' + dateString; //
-      } else {
-        redirectUrl = redirectUrl + 'metric=' + metric + '&value=1&unit=hour&now=true&date=' + dateString + '&'; //
-      }
+      const searchParams = this.getUrlSearchParams(metric, dateString);
+      redirectUrl += `${searchParams}&`;
     });
     this.router.navigateByUrl(redirectUrl);
   }
