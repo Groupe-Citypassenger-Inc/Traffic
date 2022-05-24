@@ -355,14 +355,13 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getUrlSearchParams(metric, dateString) {
-    const searchParams = new URLSearchParams();
-
-    searchParams.append('metric', metric);
-    searchParams.append('value', '1');
-    searchParams.append('unit', 'hour');
-    searchParams.append('now', 'true');
-    searchParams.append('date', dateString);
-
+    const searchParams = new URLSearchParams({
+      metric: metric,
+      value: '1',
+      unit: 'hour',
+      now: 'true',
+      date: dateString,
+    });
     return searchParams.toString();
   }
 
@@ -403,7 +402,7 @@ export class DevicesListComponent implements OnInit, OnDestroy, AfterViewInit {
     metricChecked.forEach((metric) => {
       graphInformations.push(metric);
       const searchParams = this.getUrlSearchParams(metric, dateString);
-      redirectUrl += searchParams;
+      redirectUrl += `${searchParams}&`;
     });
     this.router.navigateByUrl(redirectUrl);
   }

@@ -1040,14 +1040,13 @@ export class GraphComponent implements OnInit, OnChanges, OnDestroy {
 
   private getGraphsUrlSearchParams(metric) {
     const metricValue = this.graphs_records[metric];
-    const searchParams = new URLSearchParams();
-
-    searchParams.append('metric', metric);
-    searchParams.append('value', metricValue.t_value.toString());
-    searchParams.append('unit', metricValue.t_unit);
-    searchParams.append('now', metricValue.t_now.toString());
-    searchParams.append('date', metricValue.t_date.value.toISOString());
-
+    const searchParams = new URLSearchParams({
+      metric: metric,
+      value: metricValue.t_value.toString(),
+      unit: metricValue.t_unit,
+      now: metricValue.t_now.toString(),
+      date: metricValue.t_date.value.toISOString(),
+    });
     return searchParams.toString();
   }
   
