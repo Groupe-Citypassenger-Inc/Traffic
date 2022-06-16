@@ -31,7 +31,6 @@
     "@angular/platform-browser": "^13.2.3",
     "@angular/platform-browser-dynamic": "^13.2.3",
     "@angular/router": "^13.2.3",
-    "@mat-datetimepicker/core": "^5.1.2",
     "chart.js": "3.2.1",
     "chartjs-adapter-moment": "^1.0.0",
     "city_style": "^1.1.4",
