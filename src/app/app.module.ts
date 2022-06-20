@@ -26,7 +26,6 @@ import { LoginComponent } from './login/login.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatDatetimepickerModule, MatNativeDatetimeModule } from "@mat-datetimepicker/core";
 import { AppRoutingModule, routingComponents } from './app-routing/app-routing.module';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -83,8 +82,6 @@ import { TimestampToDatePipe } from './pipes/timestamp-to-date.pipe'
     MatNativeDateModule,
     MatDatepickerModule,
     MatDialogModule,
-    MatDatetimepickerModule,
-    MatNativeDatetimeModule,
     MatSliderModule,
     MatTooltipModule,
     MatSlideToggleModule,
